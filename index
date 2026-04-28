@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Radio Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0; padding: 0; background-color: #000; color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex; height: 100vh; width: 100vw; overflow: hidden;
+            -webkit-user-select: none; user-select: none;
+        }
+
+        /* ĽAVÁ STRANA: OnePlus Style Hodiny */
+        .clock-section {
+            flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            border-right: 1px solid #222; padding: 10px; transition: all 0.5s ease-in-out;
+        }
+        
+        #time { 
+            font-size: 20vw; line-height: 0.85; letter-spacing: -4px; 
+            margin-bottom: 10px; display: flex; align-items: baseline;
+        }
+        .hours-part { font-weight: 600; color: #ffffff; } 
+        .minutes-part { font-weight: 400; color: #ffffff; margin-left: 15px; } 
+        .red-digit { color: #eb0028 !important; } 
+        
+        /* POČASIE - v kľude obrovské */
+        .weather-section { display: flex; align-items: center; gap: 15px; transition: all 0.5s ease; }
+        #weather-temp { font-size: 8.5vw; font-weight: 300; } 
+        #weather-icon { font-size: 8.5vw; color: #ffcc00; }
+
+        /* SKLADBA - veľká a čitateľná */
+        #song-container { 
+            margin-top: 15px; padding: 10px 20px; background: #0a0a0a; border-radius: 12px;
+            text-align: center; color: #1db954; font-weight: 700; display: none; 
+            max-width: 90%; border: 1px solid #222;
+        }
+        #current-song { 
+            font-size: 3.8vw; display: block; white-space: nowrap; 
+            overflow: hidden; text-overflow: ellipsis; max-width: 45vw; 
+        }
+
+        /* REŽIM PRI PREHRÁVANÍ */
+        .is-playing #weather-temp, .is-playing #weather-icon { font-size: 4.5vw; }
+        .is-playing .weather-section { margin-bottom: 0; }
+        .is-playing #song-container { display: block; }
+
+        .bt-mini-link { margin-top: 20px; color: #007AFF; font-size: 28px; text-decoration: none; opacity: 0.15; }
+
+        /* PRAVÁ STRANA: Tlačidlá */
+        .buttons-section {
+            flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505;
+        }
+        .btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: none; background: #151515; color: white; border-radius: 18px; 
+            cursor: pointer; padding: 5px; -webkit-tap-highlight-color: transparent;
+        }
+        .btn:active { background: #222; }
+        .btn img { max-height: 45%; max-width: 80%; width: auto; height: auto; object-fit: contain; margin-bottom: 4px; }
+        .btn i { font-size: 28px; margin-bottom: 4px; }
+        .btn span { font-size: 8px; text-transform: uppercase; opacity: 0.5; font-weight: 700; }
+        
+        .vypni { background-color: #1a1a1a; grid-column: span 2; }
+        .vypni i { color: #eb0028; font-size: 32px; }
+        .rozhlas { background-color: #c46a1d; } 
+        .fun { background-color: #b53a65; }
+        .rock { background-color: #264a8a; }
+        .spotify { background-color: #198c47; }
+        .white-logo { filter: brightness(0) invert(1); }
+        .playing { border: 2px solid #fff !important; }
+    </style>
+</head>
+<body id="mainBody">
+
+    <audio id="audioPlayer" preload="none" playsinline></audio>
+
+    <div class="clock-section">
+        <div id="time">
+            <span id="h-part" class="hours-part">00</span>
+            <span id="m-part" class="minutes-part">00</span>
+        </div>
+        <div class="weather-section">
+            <i id="weather-icon" class="fas fa-sun"></i>
+            <span id="weather-temp">--°C</span>
+        </div>
+        <div id="song-container">
+            <span id="current-song">Zisťujem...</span>
+        </div>
+        <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link"><i class="fa-brands fa-bluetooth-b"></i></a>
+    </div>
+
+    <div class="buttons-section">
+        <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i><span>Vypnúť</span></button>
+        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas">
+            <img src="https://www.stvr.sk/media/images/STVR.png" alt="STVR"><span>Slovensko</span>
+        </button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun">
+            <img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" alt="Fun"><span>Fun</span>
+        </button>
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock">
+            <img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo"><span>Rock</span>
+        </button>
+        <a href="shortcuts://run-shortcut?name=Spotify" class="btn spotify"><i class="fa-brands fa-spotify"></i><span>Spotify</span></a>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const buttons = document.querySelectorAll('.btn');
+        const body = document.getElementById('mainBody');
+        let currentActiveRadio = null;
+
+        function updateClock() {
+            const now = new Date();
+            let h = String(now.getHours()).padStart(2, '0');
+            let m = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
+            document.getElementById('m-part').textContent = m;
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        function playRadio(url, element, type) {
+            currentActiveRadio = type;
+            buttons.forEach(btn => btn.classList.remove('playing'));
+            body.classList.add('is-playing');
+            audio.pause(); audio.src = url; audio.load();
+            audio.play().then(_ => {
+                element.classList.add('playing');
+                updateMetadata(); 
+            });
+        }
+
+        function stopRadio() {
+            currentActiveRadio = null; audio.pause();
+            body.classList.remove('is-playing');
+            buttons.forEach(btn => btn.classList.remove('playing'));
+            document.getElementById('song-container').style.display = 'none';
+        }
+
+        async function updateMetadata() {
+            if (!currentActiveRadio) return;
+            const names = { 'slovensko': 'Rádio Slovensko', 'fun': 'Fun Rádio', 'rock': 'Rádio Rock' };
+            let api = "";
+            if (currentActiveRadio === 'slovensko') api = "https://shoutcast.rtvs.sk/json/slovensko-current.json";
+            else if (currentActiveRadio === 'fun') api = "https://api.funradio.sk/playlist/current";
+            else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
+
+            try {
+                // Skúsime najstabilnejšie proxy
+                const finalUrl = `https://corsproxy.io/?${encodeURIComponent(api + "?cb=" + Date.now())}`;
+                const response = await fetch(finalUrl);
+                const json = await response.json();
+                
+                let track = "";
+                if (currentActiveRadio === 'slovensko') {
+                    track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
+                } else if (currentActiveRadio === 'fun') {
+                    const d = Array.isArray(json) ? json[0] : json;
+                    track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
+                } else if (currentActiveRadio === 'rock') {
+                    track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
+                }
+
+                document.getElementById('current-song').textContent = track || names[currentActiveRadio];
+            } catch (e) {
+                document.getElementById('current-song').textContent = names[currentActiveRadio];
+            }
+        }
+        setInterval(updateMetadata, 20000);
+
+        async function updateWeather() {
+            try {
+                const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true`);
+                const d = await r.json();
+                document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
+                const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
+                document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
+            } catch (e) {}
+        }
+        updateWeather(); setInterval(updateWeather, 1800000);
+    </script>
+</body>
+</html>
