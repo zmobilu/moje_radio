@@ -93,7 +93,7 @@
         <!-- TLAČIDLÁ POD PREHRÁVAČOM S PÍSMENKAMI -->
     <div style="display: flex; justify-content: space-around; padding: 8px; background: #111; border-top: 1px solid #222;">
         <span onclick="changePlaylist('67q2IYkPShkkWCbV14rRil')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">🎵 Janka</span>
-        <span onclick="changePlaylist('63bq913mo2Dv0KIonnuUzam')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">☕ Domko</span>
+        <span onclick="changePlaylist('63bq913mo2Dv0KIOnnUzam')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">☕ Domko</span>
         <span onclick="changePlaylist('4qt5UnxtUueWBN9kPVFIrO')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">🔥 Tatino</span>
     </div>
 </div>
@@ -124,114 +124,104 @@
     </div>
 
     <script>
-        function changePlaylist(playlistId) {
-            const iframe = document.getElementById('spotify-iframe');
-            iframe.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`; }
-        
-        const audio = document.getElementById('audioPlayer');
-        const buttons = document.querySelectorAll('.btn');
-        const body = document.getElementById('mainBody');
-        let currentActiveRadio = null;
+    // Funkcia na prepínanie playlistov
+    function changePlaylist(playlistId) {
+        const iframe = document.getElementById('spotify-iframe');
+        iframe.src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+    }
 
-        // MAPA HLASITOSTÍ (vrátená späť)[cite: 1]
-        const VOLUME_MAP = {
-            'slovensko': 0.4,
-            'fun': 1.0,
-            'rock': 0.5
-        };
+    const audio = document.getElementById('audioPlayer');
+    const buttons = document.querySelectorAll('.btn');
+    const body = document.getElementById('mainBody');
+    let currentActiveRadio = null;
 
-        function updateClock() {
-            const now = new Date();
-            let h = String(now.getHours()).padStart(2, '0');
-            let m = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
-            document.getElementById('m-part').textContent = m; }
-        setInterval(updateClock, 1000); updateClock();
-    
-        // NOVÁ FUNKCIA PRE SPOTIFY
-        function showSpotify() {
-            stopRadio(); // Zastavíme rádio ak hrá
-            const container = document.getElementById('spotify-player-container');
-            const iframe = document.getElementById('spotify-iframe');
-            
-            // Tu si môžeš zmeniť playlist ID (za /playlist/)
-            iframe.src = "https://open.spotify.com/embed/playlist/67q2IYkPShkkWCbV14rRil?utm_source=generator&theme=0";
-            container.style.display = 'block';
-            body.classList.add('is-playing');
-            document.querySelector('.spotify').classList.add('playing'); }
-        
-        function playRadio(url, element, type) {
-            // Ak púšťame rádio, musíme vypnúť Spotify prehrávač
-            document.getElementById('spotify-player-container').style.display = 'none';
-            document.getElementById('spotify-iframe').src = "";
-    
-            currentActiveRadio = type;
-            buttons.forEach(btn => btn.classList.remove('playing'));
-            body.classList.add('is-playing');
-    
-            // NASTAVENIE HLASITOSTI PODĽA MAPY
-            audio.volume = VOLUME_MAP[type] || 1.0; 
-            
-            audio.pause(); 
-            audio.src = url; 
-            audio.load();
-            audio.play().then(_ => {
+    // MAPA HLASITOSTÍ[cite: 1]
+    const VOLUME_MAP = {
+        'slovensko': 0.4,
+        'fun': 1.0,
+        'rock': 0.5
+    };
+
+    function updateClock() {
+        const now = new Date();
+        let h = String(now.getHours()).padStart(2, '0');
+        let m = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
+        document.getElementById('m-part').textContent = m;
+    }
+    setInterval(updateClock, 1000); updateClock();
+
+    function showSpotify() {
+        stopRadio(); 
+        const container = document.getElementById('spotify-player-container');
+        const iframe = document.getElementById('spotify-iframe');
+        iframe.src = "https://open.spotify.com/collection/tracks?utm_source=generator&theme=0";
+        container.style.display = 'block';
+        body.classList.add('is-playing');
+        document.querySelector('.spotify').classList.add('playing');
+    }
+
+    function playRadio(url, element, type) {
+        document.getElementById('spotify-player-container').style.display = 'none';
+        document.getElementById('spotify-iframe').src = "";
+        currentActiveRadio = type;
+        buttons.forEach(btn => btn.classList.remove('playing'));
+        body.classList.add('is-playing');
+        audio.volume = VOLUME_MAP[type] || 1.0;[cite: 1]
+        audio.pause(); audio.src = url; audio.load();
+        audio.play().then(_ => {
             element.classList.add('playing');
             updateMetadata(); 
-            });
-        }
+        });
+    }
 
-        function stopRadio() {
-            currentActiveRadio = null; audio.pause();
-            body.classList.remove('is-playing');
-            buttons.forEach(btn => btn.classList.remove('playing'));
-            document.getElementById('song-container').style.display = 'none';
-            
-        // Schovanie a zastavenie Spotify
-            document.getElementById('spotify-player-container').style.display = 'none';
-            document.getElementById('spotify-iframe').src = "";
-        }
-        async function updateMetadata() {
-            if (!currentActiveRadio) return;
-            const names = { 'slovensko': 'Rádio Slovensko', 'fun': 'Fun Rádio', 'rock': 'Rádio Rock' };
-            let api = "";
-            if (currentActiveRadio === 'slovensko') api = "https://shoutcast.rtvs.sk/json/slovensko-current.json";
-            else if (currentActiveRadio === 'fun') api = "https://api.funradio.sk/playlist/current";
-            else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
+    function stopRadio() {
+        currentActiveRadio = null; 
+        audio.pause();
+        audio.src = "";
+        body.classList.remove('is-playing');
+        buttons.forEach(btn => btn.classList.remove('playing'));
+        document.getElementById('song-container').style.display = 'none';
+        // OPRAVA: Tu bola predtým zátvorka navyše, teraz je to správne
+        document.getElementById('spotify-player-container').style.display = 'none';
+        document.getElementById('spotify-iframe').src = "";
+    }
 
-            try {
-                // Skúsime najstabilnejšie proxy
-                const finalUrl = `https://corsproxy.io/?${encodeURIComponent(api + "?cb=" + Date.now())}`;
-                const response = await fetch(finalUrl);
-                const json = await response.json();
-                
-                let track = "";
-                if (currentActiveRadio === 'slovensko') {
-                    track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-                } else if (currentActiveRadio === 'fun') {
-                    const d = Array.isArray(json) ? json[0] : json;
-                    track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
-                } else if (currentActiveRadio === 'rock') {
-                    track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-                }
+    async function updateMetadata() {
+        if (!currentActiveRadio) return;
+        const names = { 'slovensko': 'Rádio Slovensko', 'fun': 'Fun Rádio', 'rock': 'Rádio Rock' };
+        let api = "";
+        if (currentActiveRadio === 'slovensko') api = "https://shoutcast.rtvs.sk/json/slovensko-current.json";
+        else if (currentActiveRadio === 'fun') api = "https://api.funradio.sk/playlist/current";
+        else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
 
-                document.getElementById('current-song').textContent = track || names[currentActiveRadio];
-            } catch (e) {
-                document.getElementById('current-song').textContent = names[currentActiveRadio];
-            }
+        try {
+            const finalUrl = `https://corsproxy.io/?${encodeURIComponent(api + "?cb=" + Date.now())}`;
+            const response = await fetch(finalUrl);
+            const json = await response.json();
+            let track = "";
+            if (currentActiveRadio === 'slovensko') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
+            else if (currentActiveRadio === 'fun') {
+                const d = Array.isArray(json) ? json[0] : json;
+                track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
+            } else if (currentActiveRadio === 'rock') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
+            document.getElementById('current-song').textContent = track || names[currentActiveRadio];
+        } catch (e) {
+            document.getElementById('current-song').textContent = names[currentActiveRadio];
         }
-        setInterval(updateMetadata, 20000);
+    }
+    setInterval(updateMetadata, 20000);
 
-        async function updateWeather() {
-            try {
-                const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true`);
-                const d = await r.json();
-                document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
-                const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
-                document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
-            } catch (e) {}
-        }
-        updateWeather(); setInterval(updateWeather, 1800000);
-    </script>
+    async function updateWeather() {
+        try {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true`);
+            const d = await r.json();
+            document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
+            const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
+            document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
+        } catch (e) {}
+    }
+    updateWeather(); setInterval(updateWeather, 1800000);
+</script>
 </body>
 </html>
