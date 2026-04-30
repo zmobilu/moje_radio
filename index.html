@@ -93,7 +93,7 @@
         <!-- TLAČIDLÁ POD PREHRÁVAČOM S PÍSMENKAMI -->
     <div style="display: flex; justify-content: space-around; padding: 8px; background: #111; border-top: 1px solid #222;">
         <span onclick="changePlaylist('67q2IYkPShkkWCbV14rRil')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">🎵 Janka</span>
-        <span onclick="changePlaylist('63bq913mo2Dv0KIOnnUzam')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">☕ Domko</span>
+        <span onclick="changePlaylist('2xLrXn0HleL3pJvnRWnRcJ')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">☕ ROCK</span>
         <span onclick="changePlaylist('4qt5UnxtUueWBN9kPVFIrO')" style="cursor:pointer; font-size: 12px; color: #1db954; font-weight: bold;">🔥 Tatino</span>
     </div>
 </div>
@@ -167,7 +167,7 @@
         currentActiveRadio = type;
         buttons.forEach(btn => btn.classList.remove('playing'));
         body.classList.add('is-playing');
-        audio.volume = VOLUME_MAP[type] || 1.0;[cite: 1]
+        audio.volume = VOLUME_MAP[type] || 1.0;
         audio.pause(); audio.src = url; audio.load();
         audio.play().then(_ => {
             element.classList.add('playing');
