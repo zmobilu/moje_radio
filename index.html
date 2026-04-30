@@ -73,9 +73,8 @@
         .rozhlas { background-color: #c46a1d; } 
         .fun { background-color: #b53a65; }
         .rock { background-color: #264a8a; }
-        .spotify { background-color: #000 !important; /* Čierne pozadie, aby splynulo s prehrávačom */ 
-                  padding: 0 !important; border-radius: 18px; overflow: hidden; }
-        .spotify iframe { border-radius: 18px; border: none; }
+        .spotify { background-color: #198c47; /* Pôvodná Spotify zelená */ }
+        .spotify i { font-size: 60px; /* Veľká ikona pre ľahké ovládanie z gauča */ margin-bottom: 0px; }
         .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
     </style>
@@ -110,12 +109,18 @@
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock">
             <img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo"><span>Rock</span>
         </button>
-        <div class="btn spotify" style="padding: 0; overflow: hidden; background: #000;">
-        <iframe src="https://open.spotify.com/embed/playlist/67q2IYkPShkkWCbV14rRil?utm_source=generator&theme=0" 
+        <a href="https://open.spotify.com/collection/tracks" class="btn spotify">
+        <i class="fa-brands fa-spotify"></i>
+        <span>Spotify</span>
+        </a>
+        <!-- TENTO KÓD NIŽŠIE JE ZAKOMENTOVANÝ A NEAKTÍVNY (ZÁLOHA)
+<div class="btn spotify" style="padding: 0; overflow: hidden; background: #000;">
+    <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M?utm_source=generator&theme=0" 
             width="100%" height="100%" frameBorder="0" allowfullscreen="" 
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
             loading="lazy"></iframe>
-        </div>
+</div>
+-->
     </div>
 
     <script>
