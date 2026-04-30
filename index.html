@@ -122,6 +122,8 @@
         const buttons = document.querySelectorAll('.btn');
         const body = document.getElementById('mainBody');
         let currentActiveRadio = null;
+
+        // MAPA HLASITOSTÍ (vrátená späť)[cite: 1]
         const VOLUME_MAP = {
             'slovensko': 0.4,
             'fun': 1.0,
@@ -134,7 +136,6 @@
             let m = String(now.getMinutes()).padStart(2, '0');
             document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
             document.getElementById('m-part').textContent = m; }
-        
         setInterval(updateClock, 1000); updateClock();
     
         // NOVÁ FUNKCIA PRE SPOTIFY
@@ -144,7 +145,7 @@
             const iframe = document.getElementById('spotify-iframe');
             
             // Tu si môžeš zmeniť playlist ID (za /playlist/)
-            iframe.src = "https://open.spotify.com/playlist/67q2IYkPShkkWCbV14rRil?utm_source=generator&theme=0";
+            iframe.src = "https://open.spotify.com/emded/playlist/67q2IYkPShkkWCbV14rRil?utm_source=generator&theme=0";
             container.style.display = 'block';
             body.classList.add('is-playing');
             document.querySelector('.spotify').classList.add('playing'); }
@@ -160,7 +161,7 @@
     
             // NASTAVENIE HLASITOSTI PODĽA MAPY
             audio.volume = VOLUME_MAP[type] || 1.0; 
-    
+            
             audio.pause(); 
             audio.src = url; 
             audio.load();
