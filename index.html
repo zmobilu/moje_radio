@@ -129,10 +129,12 @@
     <script>
     // Nová funkcia pre otvorenie Safari
     function openSpotify(playlistId) {
-        const url = `https://open.spotify.com/playlist/${playlistId}`;
-        // Voláme systémovú schému pre aplikáciu Skratky
-        window.location.href = `shortcuts://run-shortcut?name=SpustiSpotify&input=text&text=${encodeURIComponent(url)}`;
+        // Týmto donútime zmenu URL celého okna.
+        // Pre iOS Web App to často znamená, že ak ide o externú doménu,
+        // musí ju otvoriť v systémovom prehliadači.
+        window.location.assign(`https://open.spotify.com/playlist/${playlistId}`);
     }
+
     const audio = document.getElementById('audioPlayer');
     const buttons = document.querySelectorAll('.btn');
     const body = document.getElementById('mainBody');
