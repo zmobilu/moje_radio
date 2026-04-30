@@ -122,6 +122,11 @@
         const buttons = document.querySelectorAll('.btn');
         const body = document.getElementById('mainBody');
         let currentActiveRadio = null;
+        const VOLUME_MAP = {
+            'slovensko': 0.4,
+            'fun': 1.0,
+            'rock': 0.5
+        };
 
         function updateClock() {
             const now = new Date();
@@ -148,14 +153,20 @@
             // Ak púšťame rádio, musíme vypnúť Spotify prehrávač
             document.getElementById('spotify-player-container').style.display = 'none';
             document.getElementById('spotify-iframe').src = "";
-            
+    
             currentActiveRadio = type;
             buttons.forEach(btn => btn.classList.remove('playing'));
             body.classList.add('is-playing');
-            audio.pause(); audio.src = url; audio.load();
+    
+            // NASTAVENIE HLASITOSTI PODĽA MAPY
+            audio.volume = VOLUME_MAP[type] || 1.0; 
+    
+            audio.pause(); 
+            audio.src = url; 
+            audio.load();
             audio.play().then(_ => {
-                element.classList.add('playing');
-                updateMetadata(); 
+            element.classList.add('playing');
+            updateMetadata(); 
             });
         }
 
