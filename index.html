@@ -19,7 +19,7 @@
             border-right: 1px solid #222; padding-top: 3vh; transition: all 0.5s ease-in-out; }
         
         #time { font-size: 26vw; line-height: 0.8; letter-spacing: -4px; 
-            margin-bottom: -2vh; display: flex; align-items: baseline; }
+            margin-bottom: 0vh; display: flex; align-items: baseline; }
         .hours-part { font-weight: 600; color: #ffffff; } 
         .minutes-part { font-weight: 300; color: #ffffff; margin-left: 15px; } 
         .red-digit { color: #eb0028 !important; } 
@@ -79,9 +79,21 @@
             <span id="h-part" class="hours-part">00</span>
             <span id="m-part" class="minutes-part">00</span>
         </div>
-        <div class="weather-section">
+        <!-- POČASIE - v kľude obrovské -->
+        <div class="weather-section" onclick="toggleForecast()" style="cursor: pointer;">
             <i id="weather-icon" class="fas fa-sun"></i>
             <span id="weather-temp">--°C</span>
+        </div>
+
+        <!-- VYSKAKOVACIE OKNO PREDPOVEDE -->
+        <div id="forecast-container" style="display: none; position: absolute; top: 15%; left: 5%; width: 45%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid #333; padding: 15px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 12px;">
+                <span style="color: #ffcc00; font-weight: 700; font-size: 16px; text-transform: uppercase;">Predpoveď</span>
+                <i class="fas fa-times" onclick="toggleForecast()" style="cursor: pointer; font-size: 22px; color: #eb0028;"></i>
+            </div>
+            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Tu sa automaticky načítajú dni -->
+            </div>
         </div>
         <!-- INFO O SKLADBE RÁDIA -->
         <div id="song-container">
@@ -218,14 +230,65 @@
 
     async function updateWeather() {
         try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true`);
+            // Zmenená URL - pridali sme stiahnutie predpovede na 5 dní (min/max teploty)
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
             const d = await r.json();
+            
+            // 1. Zobrazenie aktuálneho počasia na ploche
             document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
             const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
             document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
+
+            // 2. Vygenerovanie predpovede pre vyskakovacie okno
+            let forecastHTML = "";
+            const days = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
+            
+            for(let i=0; i<5; i++) {
+                let date = new Date(d.daily.time[i]);
+                let dayName = i === 0 ? "Dnes" : days[date.getDay()];
+                let maxT = Math.round(d.daily.temperature_2m_max[i]);
+                let minT = Math.round(d.daily.temperature_2m_min[i]);
+                let iconClass = codes[d.daily.weathercode[i]] || 'fa-cloud';
+                
+                forecastHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: 500;">
+                        <span style="width: 50px;">${dayName}</span>
+                        <i class="fas ${iconClass}" style="color: #ffcc00; font-size: 20px; width: 30px; text-align: center;"></i>
+                        <span><span style="color: #777; font-weight: 300;">${minT}°</span> / <b>${maxT}°</b></span>
+                    </div>
+                `;
+            }
+            document.getElementById('forecast-days').innerHTML = forecastHTML;
+
         } catch (e) {}
     }
     updateWeather(); setInterval(updateWeather, 1800000);
+
+    // Premenná na uloženie bežiaceho časovača
+    let forecastTimeout;
+
+    // Funkcia na zobrazenie a skrytie okna s predpoveďou
+    function toggleForecast() {
+        const container = document.getElementById('forecast-container');
+        
+        // Vždy najprv zrušíme predchádzajúci časovač, ak sme na počasie ťukli viackrát po sebe
+        clearTimeout(forecastTimeout);
+
+        if (container.style.display === 'none' || container.style.display === '') {
+            // Zobrazíme predpoveď
+            container.style.display = 'block';
+            
+            // Nastavíme automatické skrytie po 5 sekundách (5000 milisekúnd)
+            forecastTimeout = setTimeout(() => {
+                container.style.display = 'none';
+            }, 7000);
+            
+        } else {
+            // Ak už bola predpoveď zobrazená a ťukli sme na ňu, skryjeme ju hneď
+            container.style.display = 'none';
+        }
+    }
+        
 </script>
 </body>
 </html>
