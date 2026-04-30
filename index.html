@@ -106,12 +106,10 @@
                 Otvoriť v prehliadači Safari
             </div>
             <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 8px;">
-                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">🎵 Janka</button>
-                <button onclick="openSpotify('4qt5UnxtUueWBN9kPVFIrO')" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">⭐ Obľúbené</button>
-                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">🔥 Rock</button>
-                
-                <!-- NOVÉ TLAČIDLO NA VYHĽADÁVANIE -->
-                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 16px; cursor: pointer;">🔍 Hľadať</button>
+                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">🎵</button>
+                <button onclick="openSpotify('4qt5UnxtUueWBN9kPVFIrO')" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">⭐</button>
+                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">🔥</button>
+                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer;">🔍</button>
             </div>
         </div>
         <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link"><i class="fa-brands fa-bluetooth-b"></i></a>
@@ -212,21 +210,29 @@
         else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
 
         try {
-            const finalUrl = `https://corsproxy.io/?${encodeURIComponent(api + "?cb=" + Date.now())}`;
+            // Zmenili sme proxy server na spoľahlivejší AllOrigins
+            const finalUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(api + "?cb=" + Date.now())}`;
             const response = await fetch(finalUrl);
-            const json = await response.json();
+            const data = await response.json();
+            
+            // AllOrigins nám vráti dáta zabalené v objekte 'contents', tak ich musíme rozbaliť
+            const json = JSON.parse(data.contents);
+            
             let track = "";
             if (currentActiveRadio === 'slovensko') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
             else if (currentActiveRadio === 'fun') {
                 const d = Array.isArray(json) ? json[0] : json;
                 track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
             } else if (currentActiveRadio === 'rock') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
+            
             document.getElementById('current-song').textContent = track || names[currentActiveRadio];
         } catch (e) {
+            // Ak by nastal problém, stále ukážeme len názov rádia
             document.getElementById('current-song').textContent = names[currentActiveRadio];
         }
     }
-    setInterval(updateMetadata, 20000);
+    // Načítava údaje každých 15 sekúnd (skrátené z 20s pre rýchlejšiu odozvu)
+    setInterval(updateMetadata, 15000);
 
     async function updateWeather() {
         try {
