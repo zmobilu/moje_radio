@@ -18,13 +18,13 @@
 
         /* ĽAVÁ STRANA: OnePlus Style Hodiny */
         .clock-section {
-            flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            border-right: 1px solid #222; padding: 10px; transition: all 0.5s ease-in-out;
+            flex: 1.5; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; 
+            border-right: 1px solid #222; padding-top: 2vh; transition: all 0.5s ease-in-out;
         }
         
         #time { 
-            font-size: 20vw; line-height: 0.85; letter-spacing: -4px; 
-            margin-bottom: 10px; display: flex; align-items: baseline;
+            font-size: 26vw; line-height: 0.8; letter-spacing: -4px; 
+            margin-bottom: -2vh; display: flex; align-items: baseline;
         }
         .hours-part { font-weight: 600; color: #ffffff; } 
         .minutes-part { font-weight: 400; color: #ffffff; margin-left: 15px; } 
@@ -42,16 +42,16 @@
             max-width: 90%; border: 1px solid #222;
         }
         #current-song { 
-            font-size: 3.8vw; display: block; white-space: nowrap; 
+            font-size: 2.5vw; display: block; white-space: nowrap; 
             overflow: hidden; text-overflow: ellipsis; max-width: 45vw; 
         }
 
-        /* REŽIM PRI PREHRÁVANÍ */
-        .is-playing #weather-temp, .is-playing #weather-icon { font-size: 4.5vw; }
-        .is-playing .weather-section { margin-bottom: 0; }
+       /* REŽIM PRI PREHRÁVANÍ - Počasie ostáva veľké, skladba je pod ním */
+        .is-playing #weather-temp, .is-playing #weather-icon { font-size: 8.5vw; /* Počasie ostane rovnako veľké ako v kľude */ }
+        .is-playing .weather-section { margin-bottom: 10px; }
         .is-playing #song-container { display: block; }
 
-        .bt-mini-link { margin-top: 20px; color: #007AFF; font-size: 28px; text-decoration: none; opacity: 0.15; }
+        .bt-mini-link { margin-top: 20px; color: #87CEEB; font-size: 28px; text-decoration: none; opacity: 0.4; }
 
         /* PRAVÁ STRANA: Tlačidlá */
         .buttons-section {
@@ -68,12 +68,13 @@
         .btn i { font-size: 28px; margin-bottom: 4px; }
         .btn span { font-size: 8px; text-transform: uppercase; opacity: 0.5; font-weight: 700; }
         
-        .vypni { background-color: #1a1a1a; grid-column: span 2; }
-        .vypni i { color: #eb0028; font-size: 32px; }
+        .vypni { background-color: #333; grid-column: span 2; }
+        .vypni i { color: #eb0028; font-size: 50px; }
         .rozhlas { background-color: #c46a1d; } 
         .fun { background-color: #b53a65; }
         .rock { background-color: #264a8a; }
         .spotify { background-color: #198c47; }
+        .spotify i { font-size: 60px; /* Logo Spotify bude teraz rovnako dominantné ako rádiá */ margin-bottom: 0px; }
         .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
     </style>
