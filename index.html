@@ -13,252 +13,156 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             height: 100vh; width: 100vw; overflow: hidden;
             -webkit-user-select: none; user-select: none;
-            position: relative; /* Nutné pre plynulé absolútne posuvy */
-        }
+            position: relative; }
 
-        /* ĽAVÁ STRANA: OnePlus Style Hodiny */
+        /* ĽAVÁ STRANA (HODINY A INFO) */
         .clock-section { 
             position: absolute; left: 0; top: 0; bottom: 0;
-            width: 55%; box-sizing: border-box;
-            display: flex; flex-direction: column; justify-content: flex-start; align-items: center; 
-            border-right: 1px solid #222; padding-top: 3vh; 
-            /* Extra plynulá animácia šírky a odsadenia */
+            width: 50%; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            border-right: 1px solid #222; 
             transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
-        }
+            z-index: 10; background: #000; }
         
-        #time { font-size: 26vw; line-height: 0.8; letter-spacing: -4px; 
-            margin-bottom: 0vh; display: flex; align-items: baseline; 
+        #time { font-size: min(22vw, 55vh); line-height: 0.8; letter-spacing: -4px; 
+            margin-bottom: 2vh; display: flex; align-items: baseline; 
             transition: all 0.8s ease; cursor: pointer; }
         .hours-part { font-weight: 600; color: #ffffff; } 
-        .minutes-part { font-weight: 300; color: #ffffff; margin-left: 15px; } 
+        .minutes-part { font-weight: 300; color: #ffffff; margin-left: 10px; } 
         .red-digit { color: #eb0028 !important; } 
         
-        /* POČASIE - v kľude obrovské */
         .weather-section { display: flex; align-items: center; gap: 15px; transition: all 0.8s ease; }
-        #weather-temp { font-size: 8.5vw; font-weight: 300; } 
-        #weather-icon { font-size: 8.5vw; color: #ffcc00; }
+        #weather-temp { font-size: 7vw; font-weight: 300; } 
+        #weather-icon { font-size: 7vw; color: #ffcc00; }
 
-        /* SKLADBA */
-        #song-container { margin-top: 15px; padding: 10px 20px; background: #0a0a0a; border-radius: 12px;
+        #song-container { margin-top: 10px; padding: 8px 15px; background: #0a0a0a; border-radius: 12px;
             text-align: center; color: #1db954; font-weight: 700; display: none; 
-            max-width: 90%; border: 1px solid #222; transition: opacity 0.5s; }
-        
-        #current-song { font-size: 2.5vw; display: block; white-space: nowrap; 
-            overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
-        
-        /* SPOTIFY KONTAJNER */
-        #spotify-player-container {  margin-top: 10px; width: 90%; border-radius: 12px; overflow: hidden;
-            border: 1px solid #1db954; background: #000; display: none; }
-        
-        /* REŽIM PRI PREHRÁVANÍ */
-        .is-playing #weather-temp, .is-playing #weather-icon { font-size: 8.5vw; }
-        .is-playing .weather-section { margin-bottom: 10px; }
-        .is-playing #song-container { display: block; }
+            max-width: 85%; border: 1px solid #222; }
+        #current-song { font-size: 2.2vw; display: block; white-space: nowrap; 
+            overflow: hidden; text-overflow: ellipsis; max-width: 40vw; }
 
-        .bt-mini-link { margin-top: 20px; color: #87CEEB; font-size: 30px; text-decoration: none; opacity: 0.5; transition: opacity 0.5s;}
-
-        /* PRAVÁ STRANA: Tlačidlá */
+        /* PRAVÁ STRANA (TLAČIDLÁ) */
         .buttons-section { 
             position: absolute; right: 0; top: 0; bottom: 0;
-            width: 45%; box-sizing: border-box;
-            display: grid; grid-template-columns: 1fr 1fr; 
-            grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; 
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); 
-        }
+            width: 50%; display: grid; grid-template-columns: 1fr 1fr; 
+            grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; 
+            background: #050505; box-sizing: border-box;
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); z-index: 5; }
+
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: none; background: #151515; color: white; border-radius: 18px; 
-            cursor: pointer; padding: 5px; -webkit-tap-highlight-color: transparent; }
-        .btn:active { background: #222; }
-        .btn img { max-height: 45%; max-width: 80%; width: auto; height: auto; object-fit: contain; margin-bottom: 4px; }
-        .btn i { font-size: 28px; margin-bottom: 4px; }
-        
+            border: none; background: #151515; color: white; border-radius: 18px; cursor: pointer; }
         .vypni { background-color: #333; grid-column: span 2; }
-        .vypni i { color: #eb0028; font-size: 70px; }
+        .vypni i { color: #eb0028; font-size: 60px; }
         .rozhlas { background-color: #007bc4; } 
         .fun { background-color: #b53a65; }
         .rock { background-color: #222222; }
         .spotify { background-color: #198c47; }
-        .spotify i { font-size: 60px; margin-bottom: 0px; }
+        .spotify i { font-size: 55px; }
+        .btn img { max-height: 45%; max-width: 80%; object-fit: contain; }
         .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
 
-        /* --- ŠETRIČ OBRAZOVKY (SCREENSAVER) --- */
-        body.screensaver-active .buttons-section { 
-            transform: translateX(100%); /* Hladko sa odsunie doprava von z obrazovky */
-            opacity: 0; 
-            pointer-events: none; 
-        }
-        body.screensaver-active .clock-section { 
-            width: 100%; /* Plynulo sa roztiahne na celý displej */
-            border-right-color: transparent; 
-            padding-top: 25vh; /* Plynulo posunie hodiny do stredu výšky */
-        }
-        body.screensaver-active #time { 
-            font-size: 33vw; 
-            margin-bottom: 3vh; 
-        }
-        body.screensaver-active .weather-section { 
-            transform: scale(1.3); /* Zväčšené počasie */
-        }
-        body.screensaver-active #song-container, 
-        body.screensaver-active #spotify-links-container, 
-        body.screensaver-active .bt-mini-link { 
-            opacity: 0; pointer-events: none; visibility: hidden; 
-        }
+        /* PREDPOVEĎ */
+        #forecast-container { display: none; position: absolute; top: 15%; left: 5%; width: 45%; 
+            background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; 
+            border: 1px solid #333; padding: 15px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+
+        /* SPOTIFY PANEL */
+        #spotify-links-container { display: none; margin-top: 10px; width: 90%; background: #0a0a0a; border-radius: 12px; padding: 15px 5px; }
+        .bt-mini-link { margin-top: 15px; color: #87CEEB; font-size: 25px; text-decoration: none; opacity: 0.4; }
+
+        /* ŠETRIČ REŽIM */
+        body.screensaver-active .buttons-section { transform: translateX(100%); opacity: 0; }
+        body.screensaver-active .clock-section { width: 100%; border-right: none; }
+        body.screensaver-active #time { font-size: min(35vw, 70vh); }
+        body.screensaver-active .weather-section { transform: scale(1.3); }
+        body.screensaver-active #song-container, body.screensaver-active #spotify-links-container, body.screensaver-active .bt-mini-link { opacity: 0; visibility: hidden; }
     </style>
 </head>
 <body id="mainBody">
-
     <audio id="audioPlayer" preload="none" playsinline></audio>
 
     <div class="clock-section">
-        <!-- Pridané onclick na manuálne uspanie rádia kliknutím na čas -->
         <div id="time" onclick="handleClockClick(event)">
             <span id="h-part" class="hours-part">00</span>
             <span id="m-part" class="minutes-part">00</span>
         </div>
-        
-        <!-- POČASIE -->
-        <div class="weather-section" onclick="toggleForecast()" style="cursor: pointer;">
+        <div class="weather-section" onclick="toggleForecast(event)" style="cursor: pointer;">
             <i id="weather-icon" class="fas fa-sun"></i>
             <span id="weather-temp">--°C</span>
         </div>
-
-        <!-- VYSKAKOVACIE OKNO PREDPOVEDE -->
-        <div id="forecast-container" style="display: none; position: absolute; top: 15%; left: 5%; width: 45%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid #333; padding: 15px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 12px;">
-                <span style="color: #ffcc00; font-weight: 700; font-size: 16px; text-transform: uppercase;">Predpoveď na pár dní</span>
-                <i class="fas fa-times" onclick="toggleForecast()" style="cursor: pointer; font-size: 22px; color: #eb0028;"></i>
-            </div>
-            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;">
-            </div>
+        <div id="forecast-container">
+            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
-        
-        <!-- INFO O SKLADBE RÁDIA -->
         <div id="song-container">
             <span id="current-song">Zisťujem...</span>
         </div>
-        
-        <!-- ODKAZY NA SPOTIFY PLAYLISTY -->
-        <div id="spotify-links-container" style="display: none; margin-top: 15px; width: 90%; background: #0a0a0a; border-radius: 12px; padding: 20px 5px;">
-            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
-                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">🎵Janka</button>
-                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;"> Domko🎸</button>
-                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;"> Rock🔥</button>
-                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">🔍Hladať </button>
+        <div id="spotify-links-container">
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 10px;">
+                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 20px;">🎵Janka</button>
+                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background: none; border: none; color: white; font-size: 20px;">Domko🎸</button>
+                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 20px;">Rock🔥</button>
+                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 20px;">🔍Hľadať</button>
             </div>
         </div>
-        
         <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link"><i class="fa-brands fa-bluetooth-b"></i></a>
     </div>
 
     <div class="buttons-section">
         <button onclick="stopRadio(event)" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas">
-            <div style="display: flex; align-items: center; font-size: 38px; font-weight: 800; letter-spacing: 1px;">
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-right: 8px;">
-                    <span style="width: 10px; height: 10px; background: white; border-radius: 50%;"></span>
-                    <span style="width: 10px; height: 10px; background: white; border-radius: 50%;"></span>
-                </div>
-                SRo
+            <div style="display: flex; align-items: center; font-size: 38px; font-weight: 800;">
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-right: 6px;">
+                    <span style="width: 8px; height: 8px; background: white; border-radius: 50%;"></span>
+                    <span style="width: 8px; height: 8px; background: white; border-radius: 50%;"></span>
+                </div>SRo
             </div>
         </button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun">
-            <img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" alt="Fun">
-        </button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock">
-            <img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo">
-        </button>
-        
-        <button onclick="showSpotify()" class="btn spotify">
-            <i class="fa-brands fa-spotify"></i>
-        </button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" alt="Fun"></button>
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock"><img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo"></button>
+        <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
     </div>
 
     <script>
-    function openSpotify(actionOrId) { 
-        let url = "";
-        if (actionOrId === 'search') { url = "https://open.spotify.com/search"; } 
-        else { url = `https://open.spotify.com/playlist/${actionOrId}`; }
-        window.open(url, '_blank'); 
-    }
-
     const audio = document.getElementById('audioPlayer');
-    const buttons = document.querySelectorAll('.btn');
     const body = document.getElementById('mainBody');
-    let currentActiveRadio = null;
-
-    const VOLUME_MAP = { 'slovensko': 0.4, 'fun': 1.0, 'rock': 0.5 };
+    let currentActiveRadio = null, idleTimer;
 
     function updateClock() {
-        const now = new Date();
-        let h = String(now.getHours()).padStart(2, '0');
-        let m = String(now.getMinutes()).padStart(2, '0');
+        const n = new Date();
+        const h = String(n.getHours()).padStart(2, '0');
+        const m = String(n.getMinutes()).padStart(2, '0');
         document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
         document.getElementById('m-part').textContent = m;
     }
     setInterval(updateClock, 1000); updateClock();
 
-    function showSpotify() {
-        stopRadio(); 
-        const container = document.getElementById('spotify-links-container');
-        container.style.display = 'block';
-        body.classList.add('is-playing'); 
-        document.querySelector('.spotify').classList.add('playing');
-    }
-
-    function playRadio(url, element, type) {
+    function playRadio(url, el, type) {
         document.getElementById('spotify-links-container').style.display = 'none';
         currentActiveRadio = type;
-        buttons.forEach(btn => btn.classList.remove('playing'));
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
         body.classList.add('is-playing');
-        audio.volume = VOLUME_MAP[type] || 1.0;
-        audio.pause(); audio.src = url; audio.load();
-        audio.play().then(_ => {
-            element.classList.add('playing');
-            updateMetadata(); 
-        });
+        audio.volume = ({'slovensko': 0.4, 'fun': 1.0, 'rock': 0.5})[type] || 1.0;
+        audio.src = url; audio.play().then(() => { el.classList.add('playing'); updateMetadata(); });
+        resetIdleTimer();
     }
 
-    function stopRadio(event) {
-        if(event) event.stopPropagation();
-        currentActiveRadio = null; 
-        audio.pause();
-        audio.src = "";
-        body.classList.remove('is-playing');
-        buttons.forEach(btn => btn.classList.remove('playing'));
+    function stopRadio(e) { if(e) e.stopPropagation(); currentActiveRadio = null; audio.pause(); audio.src = "";
+        body.classList.remove('is-playing'); document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
         document.getElementById('song-container').style.display = 'none';
         document.getElementById('spotify-links-container').style.display = 'none';
-        
-        // Zabezpečí, že rádio hneď nepadne do šetriča, ale naštartuje časovač znova od nuly
         resetIdleTimer();
     }
 
     async function updateMetadata() {
         if (!currentActiveRadio) return;
-        const names = { 'slovensko': 'Rádio Slovensko', 'fun': 'Fun Rádio', 'rock': 'Rádio Rock' };
-        let api = "";
-        if (currentActiveRadio === 'slovensko') api = "https://shoutcast.rtvs.sk/json/slovensko-current.json";
-        else if (currentActiveRadio === 'fun') api = "https://api.funradio.sk/playlist/current";
-        else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
-
+        const api = currentActiveRadio === 'slovensko' ? "https://shoutcast.rtvs.sk/json/slovensko-current.json" : (currentActiveRadio === 'fun' ? "https://api.funradio.sk/playlist/current" : "https://api.bauermedia.sk/v1/stations/rock/current-song");
         try {
-            const finalUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(api + "?cb=" + Date.now())}`;
-            const response = await fetch(finalUrl);
-            const data = await response.json();
-            const json = JSON.parse(data.contents);
-            
-            let track = "";
-            if (currentActiveRadio === 'slovensko') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-            else if (currentActiveRadio === 'fun') {
-                const d = Array.isArray(json) ? json[0] : json;
-                track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
-            } else if (currentActiveRadio === 'rock') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-            
-            document.getElementById('current-song').textContent = track || names[currentActiveRadio];
-        } catch (e) {
-            document.getElementById('current-song').textContent = names[currentActiveRadio];
-        }
+            const r = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(api + "?cb=" + Date.now())}`);
+            const d = await r.json(); const j = JSON.parse(d.contents);
+            let t = (currentActiveRadio === 'fun') ? ((Array.isArray(j) ? j[0] : j).artist ? `${(Array.isArray(j) ? j[0] : j).artist} - ${(Array.isArray(j) ? j[0] : j).title}` : "") : (j.artist ? `${j.artist} - ${j.title}` : "");
+            document.getElementById('current-song').textContent = t || currentActiveRadio;
+        } catch (e) {}
     }
     setInterval(updateMetadata, 15000);
 
@@ -266,97 +170,41 @@
         try {
             const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
             const d = await r.json();
-            
             document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
             const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
             document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
-
-            let forecastHTML = "";
-            const days = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
-            
+            let h = ""; const days = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
             for(let i=0; i<5; i++) {
-                let date = new Date(d.daily.time[i]);
-                let dayName = i === 0 ? "Dnes" : days[date.getDay()];
-                let maxT = Math.round(d.daily.temperature_2m_max[i]);
-                let minT = Math.round(d.daily.temperature_2m_min[i]);
-                let iconClass = codes[d.daily.weathercode[i]] || 'fa-cloud';
-                
-                forecastHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 30px; font-weight: 300;">
-                        <span style="width: 50px;">${dayName}</span>
-                        <i class="fas ${iconClass}" style="color: #ffcc00; font-size: 30px; width: 40px; text-align: center;"></i>
-                        <span><span style="color: #777; font-weight: 300;">${minT}°</span> / <b>${maxT}°</b></span>
-                    </div>
-                `;
+                let dt = new Date(d.daily.time[i]);
+                h += `<div style="display: flex; justify-content: space-between; align-items: center; font-size: 26px;">
+                        <span style="width: 50px;">${i===0?"Dnes":days[dt.getDay()]}</span>
+                        <i class="fas ${codes[d.daily.weathercode[i]]||'fa-cloud'}" style="color:#ffcc00; width:40px; text-align:center;"></i>
+                        <span>${Math.round(d.daily.temperature_2m_min[i])}°/<b>${Math.round(d.daily.temperature_2m_max[i])}°</b></span>
+                    </div>`;
             }
-            document.getElementById('forecast-days').innerHTML = forecastHTML;
-
+            document.getElementById('forecast-days').innerHTML = h;
         } catch (e) {}
     }
     updateWeather(); setInterval(updateWeather, 1800000);
 
-    let forecastTimeout;
-    function toggleForecast() {
-        const container = document.getElementById('forecast-container');
-        clearTimeout(forecastTimeout);
-
-        if (container.style.display === 'none' || container.style.display === '') {
-            container.style.display = 'block';
-            forecastTimeout = setTimeout(() => {
-                container.style.display = 'none';
-            }, 7000);
-        } else {
-            container.style.display = 'none';
-        }
+    function goToSleep() { body.classList.add('screensaver-active'); document.getElementById('forecast-container').style.display='none'; }
+    function wakeUp() { body.classList.remove('screensaver-active'); resetIdleTimer(); }
+    function resetIdleTimer() { clearTimeout(idleTimer); idleTimer = setTimeout(goToSleep, 30000); }
+    
+    function handleDocumentInteraction() { if (body.classList.contains('screensaver-active')) { wakeUp(); } else { resetIdleTimer(); } }
+    
+    function handleClockClick(e) { 
+        if (body.classList.contains('screensaver-active')) { wakeUp(); } 
+        else { e.stopPropagation(); goToSleep(); } 
     }
 
-    // --- LOGIKA ŠETRIČA OBRAZOVKY ---
-    let idleTimer;
-    const IDLE_TIMEOUT = 30000; // 30 sekúnd do uspania
+    function toggleForecast(e) { e.stopPropagation(); const c = document.getElementById('forecast-container'); c.style.display = c.style.display==='none'?'block':'none'; resetIdleTimer(); }
+    function showSpotify() { stopRadio(); document.getElementById('spotify-links-container').style.display = 'block'; body.classList.add('is-playing'); resetIdleTimer(); }
+    function openSpotify(id) { window.open(id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`, '_blank'); }
 
-    function goToSleep() {
-        document.body.classList.add('screensaver-active');
-        document.getElementById('forecast-container').style.display = 'none';
-    }
-
-    function wakeUp() {
-        document.body.classList.remove('screensaver-active');
-        resetIdleTimer();
-    }
-
-    function resetIdleTimer() {
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(goToSleep, IDLE_TIMEOUT);
-    }
-
-    // Reakcia na kliknutie hocikde na obrazovke
-    function handleDocumentInteraction(e) {
-        if (document.body.classList.contains('screensaver-active')) {
-            // Ak spí, zachyť prvý dotyk len na prebudenie (neklikni na nič iné)
-            e.stopPropagation();
-            e.preventDefault();
-            wakeUp();
-        } else {
-            // Ak je hore, len reštartuj časovač 30 sekúnd
-            resetIdleTimer();
-        }
-    }
-
-    // Manuálne uspanie pri kliknutí na hodiny
-    function handleClockClick(e) {
-        e.stopPropagation(); // Zabezpečí, že klik na hodiny nevyvolá klasický `handleDocumentInteraction`
-        if (!document.body.classList.contains('screensaver-active')) {
-            goToSleep();
-        }
-    }
-
-    // Pridávame 'capture: true', aby tento kód zachytil dotyk skôr než akékoľvek iné tlačidlo na stránke
-    document.addEventListener('click', handleDocumentInteraction, true);
-    document.addEventListener('touchstart', handleDocumentInteraction, {passive: false, capture: true});
-
-    // Uspi počiatočne
+    document.addEventListener('touchstart', handleDocumentInteraction);
+    document.addEventListener('click', handleDocumentInteraction);
     goToSleep();
-
 </script>
 </body>
 </html>
