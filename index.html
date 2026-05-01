@@ -68,6 +68,39 @@
         .spotify i { font-size: 60px; /* Veľká ikona pre ľahké ovládanie z gauča */ margin-bottom: 0px; }
         .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
+
+        /* Režim šetriča obrazovky */
+body.screensaver-mode .buttons-section {
+    display: none; /* Skryje pravý panel s tlačidlami */
+}
+
+body.screensaver-mode .clock-section {
+    flex: 1;
+    border: none;
+    justify-content: center; /* Vycentruje hodiny vertikálne */
+    padding-top: 0;
+}
+
+body.screensaver-mode #time {
+    font-size: 40vw; /* Ešte väčšie hodiny cez celú obrazovku */
+    transition: font-size 0.5s ease;
+}
+
+body.screensaver-mode .weather-section {
+    margin-top: 20px;
+}
+
+body.screensaver-mode #weather-temp, 
+body.screensaver-mode #weather-icon {
+    font-size: 10vw; /* Väčšie počasie pod hodinami */
+}
+
+/* Skrytie ostatných drobností v šetriči */
+body.screensaver-mode #song-container,
+body.screensaver-mode #spotify-links-container,
+body.screensaver-mode .bt-mini-link {
+    display: none !important;
+}
     </style>
 </head>
 <body id="mainBody">
@@ -300,6 +333,31 @@
             container.style.display = 'none';
         }
     }
+       let idleTimer;
+const idleTime = 30000; // 30 sekúnd v milisekundách
+
+function showScreensaver() {
+    document.body.classList.add('screensaver-mode');
+}
+
+function resetIdleTimer() {
+    // Ak je šetrič aktívny, odstránime ho
+    if (document.body.classList.contains('screensaver-mode')) {
+        document.body.classList.remove('screensaver-mode');
+    }
+    
+    // Zrušíme starý časovač a spustíme nový
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(showScreensaver, idleTime);
+}
+
+// Sledovanie interakcie (kliknutie alebo dotyk)
+// Na iPhone reaguje 'touchstart' okamžite
+document.addEventListener('touchstart', resetIdleTimer);
+document.addEventListener('mousedown', resetIdleTimer);
+
+// Spustenie časovača pri načítaní stránky
+resetIdleTimer(); 
         
 </script>
 </body>
