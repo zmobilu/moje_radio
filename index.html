@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Radio</title>
+    <title>Radio Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
@@ -14,7 +14,7 @@
             display: flex; height: 100vh; width: 100vw; overflow: hidden;
             -webkit-user-select: none; user-select: none; }
 
-        /* ĽAVÁ STRANA: OnePlus Style Hodiny */
+        /* ĽAVÁ STRANA: Hodiny a Počasie */
         .clock-section { flex: 1.5; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; 
             border-right: 1px solid #222; padding-top: 3vh; transition: all 0.5s ease-in-out; }
         
@@ -24,27 +24,12 @@
         .minutes-part { font-weight: 300; color: #ffffff; margin-left: 10px; } 
         .red-digit { color: #eb0028 !important; } 
         
-        /* POČASIE - v kľude obrovské */
         .weather-section { display: flex; align-items: center; gap: 15px; transition: all 0.5s ease; }
         #weather-temp { font-size: 8.5vw; font-weight: 300; } 
         #weather-icon { font-size: 8.5vw; color: #ffcc00; }
 
-        /* SKLADBA - veľká a čitateľná */
-        #song-container { margin-top: 15px; padding: 10px 20px; background: #0a0a0a; border-radius: 12px;
-            text-align: center; color: #1db954; font-weight: 700; display: none; 
-            max-width: 90%; border: 1px solid #222; }
-        
-        #current-song { font-size: 2.5vw; display: block; white-space: nowrap; 
-            overflow: hidden; text-overflow: ellipsis; max-width: 45vw; }
-        
-        /* NOVÝ ŠTÝL PRE SPOTIFY KONTAJNER */
-        #spotify-player-container {  margin-top: 10px; width: 90%; border-radius: 12px; overflow: hidden;
-            border: 1px solid #1db954; background: #000; display: none; }
-        
-        /* REŽIM PRI PREHRÁVANÍ - Počasie ostáva veľké, skladba je pod ním */
-        .is-playing #weather-temp, .is-playing #weather-icon { font-size: 8.5vw; /* Počasie ostane rovnako veľké ako v kľude */ }
-        .is-playing .weather-section { margin-bottom: 10px; }
-        .is-playing #song-container { display: block; }
+        /* SPOTIFY PLAYLISTY */
+        #spotify-links-container { display: none; margin-top: 15px; width: 90%; background: #0a0a0a; border-radius: 12px; padding: 20px 5px; }
 
         .bt-mini-link { margin-top: 20px; color: #87CEEB; font-size: 30px; text-decoration: none; opacity: 0.5; }
 
@@ -57,50 +42,23 @@
         .btn:active { background: #222; }
         .btn img { max-height: 45%; max-width: 80%; width: auto; height: auto; object-fit: contain; margin-bottom: 4px; }
         .btn i { font-size: 28px; margin-bottom: 4px; }
-        .btn span { font-size: 8px; text-transform: uppercase; opacity: 0.5; font-weight: 700; }
         
         .vypni { background-color: #333; grid-column: span 2; }
         .vypni i { color: #eb0028; font-size: 70px; }
         .rozhlas { background-color: #007bc4; } 
         .fun { background-color: #b53a65; }
         .rock { background-color: #222222; }
-        .spotify { background-color: #198c47; /* Pôvodná Spotify zelená */ }
-        .spotify i { font-size: 60px; /* Veľká ikona pre ľahké ovládanie z gauča */ margin-bottom: 0px; }
+        .spotify { background-color: #198c47; }
+        .spotify i { font-size: 60px; }
         .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
 
-        /* Režim šetriča obrazovky */
-body.screensaver-mode .buttons-section {
-    display: none; /* Skryje pravý panel s tlačidlami */
-}
-
-body.screensaver-mode .clock-section {
-    flex: 1;
-    border: none;
-    justify-content: center; /* Vycentruje hodiny vertikálne */
-    padding-top: 0;
-}
-
-body.screensaver-mode #time {
-    font-size: 40vw; /* Ešte väčšie hodiny cez celú obrazovku */
-    transition: font-size 0.5s ease;
-}
-
-body.screensaver-mode .weather-section {
-    margin-top: 20px;
-}
-
-body.screensaver-mode #weather-temp, 
-body.screensaver-mode #weather-icon {
-    font-size: 10vw; /* Väčšie počasie pod hodinami */
-}
-
-/* Skrytie ostatných drobností v šetriči */
-body.screensaver-mode #song-container,
-body.screensaver-mode #spotify-links-container,
-body.screensaver-mode .bt-mini-link {
-    display: none !important;
-}
+        /* REŽIM ŠETRIČA */
+        body.screensaver-mode .buttons-section { display: none; }
+        body.screensaver-mode .clock-section { flex: 1; border: none; justify-content: center; padding-top: 0; }
+        body.screensaver-mode #time { font-size: 40vw; transition: font-size 0.5s ease; }
+        body.screensaver-mode #weather-temp, body.screensaver-mode #weather-icon { font-size: 10vw; }
+        body.screensaver-mode #spotify-links-container, body.screensaver-mode .bt-mini-link { display: none !important; }
     </style>
 </head>
 <body id="mainBody">
@@ -109,39 +67,29 @@ body.screensaver-mode .bt-mini-link {
 
     <div class="clock-section">
         <div id="time">
-            <span id="h-part" class="hours-part">00</span>
+            <span id="h-part" class="hours-part">0</span>
             <span id="m-part" class="minutes-part">00</span>
         </div>
-        <!-- POČASIE - v kľude obrovské -->
         <div class="weather-section" onclick="toggleForecast()" style="cursor: pointer;">
             <i id="weather-icon" class="fas fa-sun"></i>
             <span id="weather-temp">--°C</span>
         </div>
 
-        <!-- VYSKAKOVACIE OKNO PREDPOVEDE -->
-        <div id="forecast-container" style="display: none; position: absolute; top: 15%; left: 5%; width: 45%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid #333; padding: 15px; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+        <!-- PREDPOVEĎ -->
+        <div id="forecast-container" style="display: none; position: absolute; top: 15%; left: 5%; width: 45%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid #333; padding: 15px; z-index: 100;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 12px;">
-                <span style="color: #ffcc00; font-weight: 700; font-size: 16px; text-transform: uppercase;">Predpoveď na pár dní</span>
+                <span style="color: #ffcc00; font-weight: 700; font-size: 16px; text-transform: uppercase;">Predpoveď</span>
                 <i class="fas fa-times" onclick="toggleForecast()" style="cursor: pointer; font-size: 22px; color: #eb0028;"></i>
             </div>
-            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- Tu sa automaticky načítajú dni -->
-            </div>
+            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;"></div>
         </div>
-        <!-- INFO O SKLADBE RÁDIA -->
-        <div id="song-container">
-            <span id="current-song">Zisťujem...</span>
-        </div>
-      
-        <!-- ODKAZY NA SPOTIFY PLAYLISTY -->
-        <div id="spotify-links-container" style="display: none; margin-top: 15px; width: 90%; background: #0a0a0a; border-radius: 12px; padding: 20px 5px;">
+
+        <div id="spotify-links-container">
             <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
-                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">🎵Janka</button>
-                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;"> Domko🎸</button>
-                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;"> Rock🔥</button>
-                
-                <!-- TLAČIDLO NA VYHĽADÁVANIE -->
-                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 22px; cursor: pointer;">🔍Hladať </button>
+                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🎵Janka</button>
+                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🎸</button>
+                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;"> 🔥</button>
+                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🔍Hladať</button>
             </div>
         </div>
         <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link"><i class="fa-brands fa-bluetooth-b"></i></a>
@@ -150,14 +98,7 @@ body.screensaver-mode .bt-mini-link {
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas">
-            <!-- Vlastné textové logo SRo s guličkami -->
-            <div style="display: flex; align-items: center; font-size: 38px; font-weight: 800; letter-spacing: 1px;">
-                <div style="display: flex; flex-direction: column; gap: 6px; margin-right: 8px;">
-                    <span style="width: 10px; height: 10px; background: white; border-radius: 50%;"></span>
-                    <span style="width: 10px; height: 10px; background: white; border-radius: 50%;"></span>
-                </div>
-                SRo
-            </div>
+            <div style="display: flex; align-items: center; font-size: 38px; font-weight: 800;">SRo</div>
         </button>
         <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun">
             <img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" alt="Fun">
@@ -165,200 +106,85 @@ body.screensaver-mode .bt-mini-link {
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock">
             <img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo">
         </button>
-        
-        <!-- ZMENENÉ SPOTIFY TLAČIDLO -->
-        <button onclick="showSpotify()" class="btn spotify">
-            <i class="fa-brands fa-spotify"></i>
-            
-        </button>
-       <!-- <a href="https://open.spotify.com/collection/tracks" class="btn spotify">
-        <i class="fa-brands fa-spotify"></i>
-        
-        </a> -->
+        <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
     </div>
 
     <script>
-    // Upravená funkcia pre otvorenie Safari s podporou vyhľadávania
-    function openSpotify(actionOrId) { let url = "";
-        // Ak tlačidlo poslalo slovo 'search', otvoríme hlavnú stránku vyhľadávania
-        if (actionOrId === 'search') { url = "https://open.spotify.com/search"; } 
-        // V opačnom prípade predpokladáme, že ide o ID playlistu
-        else { url = `https://open.spotify.com/playlist/${actionOrId}`; }
-        
-        // Otvorí SFSafariViewController (okno s tlačidlom "Hotovo")
-        window.open(url, '_blank'); }
+    function openSpotify(actionOrId) {
+        let url = actionOrId === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${actionOrId}`;
+        window.open(url, '_blank');
+    }
 
     const audio = document.getElementById('audioPlayer');
     const buttons = document.querySelectorAll('.btn');
     const body = document.getElementById('mainBody');
-    let currentActiveRadio = null;
-
-    // MAPA HLASITOSTÍ[cite: 1]
-    const VOLUME_MAP = {
-        'slovensko': 0.4,
-        'fun': 1.0,
-        'rock': 0.5
-    };
+    const VOLUME_MAP = { 'slovensko': 0.4, 'fun': 1.0, 'rock': 0.5 };
 
     function updateClock() {
         const now = new Date();
-        let h = String(now.getHours());
+        let h = String(now.getHours()); // Bez nuly na začiatku
         let m = String(now.getMinutes()).padStart(2, '0');
         document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
         document.getElementById('m-part').textContent = m;
     }
     setInterval(updateClock, 1000); updateClock();
 
-    function showSpotify() {
-        stopRadio(); 
-        const container = document.getElementById('spotify-links-container');
-        container.style.display = 'block';
-        body.classList.add('is-playing'); // Nechá zobrazené menšie počasie
-        document.querySelector('.spotify').classList.add('playing');
-    }
-
     function playRadio(url, element, type) {
         document.getElementById('spotify-links-container').style.display = 'none';
-        currentActiveRadio = type;
         buttons.forEach(btn => btn.classList.remove('playing'));
-        body.classList.add('is-playing');
         audio.volume = VOLUME_MAP[type] || 1.0;
-        audio.pause(); audio.src = url; audio.load();
-        audio.play().then(_ => {
-            element.classList.add('playing');
-            updateMetadata(); 
-        });
+        audio.src = url; audio.play();
+        element.classList.add('playing');
+        resetIdleTimer();
     }
 
     function stopRadio() {
-        currentActiveRadio = null; 
-        audio.pause();
-        audio.src = "";
-        body.classList.remove('is-playing');
+        audio.pause(); audio.src = "";
         buttons.forEach(btn => btn.classList.remove('playing'));
-        document.getElementById('song-container').style.display = 'none';
         document.getElementById('spotify-links-container').style.display = 'none';
+        resetIdleTimer();
     }
 
-    async function updateMetadata() {
-        if (!currentActiveRadio) return;
-        const names = { 'slovensko': 'Rádio Slovensko', 'fun': 'Fun Rádio', 'rock': 'Rádio Rock' };
-        let api = "";
-        if (currentActiveRadio === 'slovensko') api = "https://shoutcast.rtvs.sk/json/slovensko-current.json";
-        else if (currentActiveRadio === 'fun') api = "https://api.funradio.sk/playlist/current";
-        else if (currentActiveRadio === 'rock') api = "https://api.bauermedia.sk/v1/stations/rock/current-song";
-
-        try {
-            // Zmenili sme proxy server na spoľahlivejší AllOrigins
-            const finalUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(api + "?cb=" + Date.now())}`;
-            const response = await fetch(finalUrl);
-            const data = await response.json();
-            
-            // AllOrigins nám vráti dáta zabalené v objekte 'contents', tak ich musíme rozbaliť
-            const json = JSON.parse(data.contents);
-            
-            let track = "";
-            if (currentActiveRadio === 'slovensko') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-            else if (currentActiveRadio === 'fun') {
-                const d = Array.isArray(json) ? json[0] : json;
-                track = (d && d.artist) ? `${d.artist} - ${d.title}` : "";
-            } else if (currentActiveRadio === 'rock') track = (json.artist && json.title) ? `${json.artist} - ${json.title}` : "";
-            
-            document.getElementById('current-song').textContent = track || names[currentActiveRadio];
-        } catch (e) {
-            // Ak by nastal problém, stále ukážeme len názov rádia
-            document.getElementById('current-song').textContent = names[currentActiveRadio];
-        }
+    function showSpotify() {
+        stopRadio();
+        document.getElementById('spotify-links-container').style.display = 'block';
+        document.querySelector('.spotify').classList.add('playing');
     }
-    // Načítava údaje každých 15 sekúnd (skrátené z 20s pre rýchlejšiu odozvu)
-    setInterval(updateMetadata, 15000);
 
     async function updateWeather() {
         try {
-            // Zmenená URL - pridali sme stiahnutie predpovede na 5 dní (min/max teploty)
             const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
             const d = await r.json();
-            
-            // 1. Zobrazenie aktuálneho počasia na ploche
             document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
             const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
             document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
-
-            // 2. Vygenerovanie predpovede pre vyskakovacie okno
+            
             let forecastHTML = "";
             const days = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
-            
             for(let i=0; i<5; i++) {
                 let date = new Date(d.daily.time[i]);
-                let dayName = i === 0 ? "Dnes" : days[date.getDay()];
-                let maxT = Math.round(d.daily.temperature_2m_max[i]);
-                let minT = Math.round(d.daily.temperature_2m_min[i]);
-                let iconClass = codes[d.daily.weathercode[i]] || 'fa-cloud';
-                
-                forecastHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 30px; font-weight: 300;">
-                        <span style="width: 50px;">${dayName}</span>
-                        <i class="fas ${iconClass}" style="color: #ffcc00; font-size: 30px; width: 40px; text-align: center;"></i>
-                        <span><span style="color: #777; font-weight: 300;">${minT}°</span> / <b>${maxT}°</b></span>
-                    </div>
-                `;
+                forecastHTML += `<div style="display: flex; justify-content: space-between; font-size: 30px;"><span>${i===0?"Dnes":days[date.getDay()]}</span><i class="fas ${codes[d.daily.weathercode[i]]||'fa-cloud'}" style="color:#ffcc00"></i><span>${Math.round(d.daily.temperature_2m_min[i])}°/<b>${Math.round(d.daily.temperature_2m_max[i])}°</b></span></div>`;
             }
             document.getElementById('forecast-days').innerHTML = forecastHTML;
-
         } catch (e) {}
     }
     updateWeather(); setInterval(updateWeather, 1800000);
 
-    // Premenná na uloženie bežiaceho časovača
-    let forecastTimeout;
-
-    // Funkcia na zobrazenie a skrytie okna s predpoveďou
     function toggleForecast() {
-        const container = document.getElementById('forecast-container');
-        
-        // Vždy najprv zrušíme predchádzajúci časovač, ak sme na počasie ťukli viackrát po sebe
-        clearTimeout(forecastTimeout);
-
-        if (container.style.display === 'none' || container.style.display === '') {
-            // Zobrazíme predpoveď
-            container.style.display = 'block';
-            
-            // Nastavíme automatické skrytie po  sekundách (7000 milisekúnd)
-            forecastTimeout = setTimeout(() => {
-                container.style.display = 'none';
-            }, 7000);
-            
-        } else {
-            // Ak už bola predpoveď zobrazená a ťukli sme na ňu, skryjeme ju hneď
-            container.style.display = 'none';
-        }
+        const c = document.getElementById('forecast-container');
+        c.style.display = (c.style.display === 'none' || c.style.display === '') ? 'block' : 'none';
+        if(c.style.display === 'block') setTimeout(() => c.style.display = 'none', 7000);
     }
-       let idleTimer;
-const idleTime = 30000; // 30 sekúnd v milisekundách
 
-function showScreensaver() {
-    document.body.classList.add('screensaver-mode');
-}
-
-function resetIdleTimer() {
-    // Ak je šetrič aktívny, odstránime ho
-    if (document.body.classList.contains('screensaver-mode')) {
+    let idleTimer;
+    function resetIdleTimer() {
         document.body.classList.remove('screensaver-mode');
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 30000);
     }
-    
-    // Zrušíme starý časovač a spustíme nový
-    clearTimeout(idleTimer);
-    idleTimer = setTimeout(showScreensaver, idleTime);
-}
-
-// Sledovanie interakcie (kliknutie alebo dotyk)
-// Na iPhone reaguje 'touchstart' okamžite
-document.addEventListener('touchstart', resetIdleTimer);
-document.addEventListener('mousedown', resetIdleTimer);
-
-// Spustenie časovača pri načítaní stránky
-resetIdleTimer(); 
-        
+    document.addEventListener('touchstart', resetIdleTimer);
+    document.addEventListener('mousedown', resetIdleTimer);
+    resetIdleTimer();
 </script>
 </body>
 </html>
