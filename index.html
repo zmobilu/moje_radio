@@ -20,8 +20,8 @@
         
         #time { font-size: 26vw; line-height: 0.8; letter-spacing: -4px; 
             margin-bottom: 0vh; display: flex; align-items: baseline; }
-        .hours-part { font-weight: 600; color: #ffffff; } 
-        .minutes-part { font-weight: 300; color: #ffffff; margin-left: 10px; } 
+        .hours-part { font-weight: 500; color: #ffffff; } 
+        .minutes-part { font-weight: 200; color: #ffffff; margin-left: 10px; } 
         .red-digit { color: #eb0028 !important; } 
         
         .weather-section { display: flex; align-items: center; gap: 15px; transition: all 0.5s ease; }
@@ -124,7 +124,7 @@
 
     function updateClock() {
         const now = new Date();
-        let h = String(now.getHours()); // Bez nuly na začiatku
+        let h = String(now.getHours()).padStart(2, '0'); // na začiatku s nulou
         let m = String(now.getMinutes()).padStart(2, '0');
         document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
         document.getElementById('m-part').textContent = m;
