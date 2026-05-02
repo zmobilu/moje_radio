@@ -5,74 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Radio Panel</title>
+    <title>Moje_radio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
         body { margin: 0; padding: 0; background-color: #000; color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
             display: flex; height: 100vh; width: 100vw; overflow: hidden;
             -webkit-user-select: none; user-select: none; }
 
-        /* ĽAVÁ STRANA: Hodiny a Počasie */
-        .clock-section { flex: 1.5; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; 
-            border-right: 1px solid #222; padding-top: 3vh; transition: all 0.5s ease-in-out; }
+        /* --- REŽIM RÁDIO --- */
+        .clock-section { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            border-right: 1px solid #222; transition: all 0.5s ease-in-out; position: relative; }
         
-        #time { font-size: 26vw; line-height: 0.8; letter-spacing: -4px; 
-            margin-bottom: 0vh; display: flex; align-items: baseline; }
-        .hours-part { font-weight: 500; color: #ffffff; } 
-        .minutes-part { font-weight: 200; color: #ffffff; margin-left: 10px; } 
+        #time { font-size: 24vw; line-height: 0.8; letter-spacing: -4px; display: flex; align-items: baseline; 
+                  transform: scaleY(1.05); transform-origin: center; }
+        .hours-part { font-weight: 600; color: #ffffff; } 
+        .minutes-part { font-weight: 200; color: #ffffff; margin-left: 5px; } 
         .red-digit { color: #eb0028 !important; } 
         
-        .weather-section { display: flex; align-items: center; gap: 15px; transition: all 0.5s ease; }
-        #weather-temp { font-size: 8.5vw; font-weight: 300; } 
-        #weather-icon { font-size: 8.5vw; color: #ffcc00; }
+        #weather-temp-mini { font-size: 8vw; font-weight: 300; margin-top: 15px; } 
+        .ss-only { display: none !important; }
 
-       /* SPOTIFY PLAYLISTY - opravená verzia */
-#spotify-links-container { 
-    display: none; 
-    margin-top: 15px; 
-    width: 90%; 
-    background: #0a0a0a; 
-    border-radius: 12px; 
-    padding: 20px 5px; 
-}
+        #spotify-links-container { display: none; margin-top: 15px; width: 85%; background: #0a0a0a; border-radius: 12px; padding: 10px; border: 1px solid #222; }
+        .bt-mini-link { margin-top: 10px; color: #87CEEB; font-size: 32px; text-decoration: none; opacity: 0.6; }
 
-#spotify-links-container div { 
-    display: flex; 
-    justify-content: space-around; 
-    flex-wrap: wrap; 
-    gap: 25px; /* Väčšia medzera, ktorú si pridal */
-}
-
-        .bt-mini-link { margin-top: 20px; color: #87CEEB; font-size: 30px; text-decoration: none; opacity: 0.5; }
-
-        /* PRAVÁ STRANA: Tlačidlá */
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: none; background: #151515; color: white; border-radius: 18px; 
-            cursor: pointer; padding: 5px; -webkit-tap-highlight-color: transparent; }
-        .btn:active { background: #222; }
-        .btn img { max-height: 45%; max-width: 80%; width: auto; height: auto; object-fit: contain; margin-bottom: 4px; }
-        .btn i { font-size: 28px; margin-bottom: 4px; }
-        
+            border: none; background: #151515; color: white; border-radius: 18px; cursor: pointer; }
         .vypni { background-color: #333; grid-column: span 2; }
-        .vypni i { color: #eb0028; font-size: 70px; }
-        .rozhlas { background-color: #007bc4; } 
-        .fun { background-color: #b53a65; }
-        .rock { background-color: #222222; }
+        .vypni i { color: #eb0028; font-size: 65px; }
         .spotify { background-color: #198c47; }
         .spotify i { font-size: 60px; }
-        .white-logo { filter: brightness(0) invert(1); }
         .playing { border: 2px solid #fff !important; }
 
-        /* REŽIM ŠETRIČA */
+        /* --- ŠETRIČ (METEOSTANICA) --- */
         body.screensaver-mode .buttons-section { display: none; }
-        body.screensaver-mode .clock-section { flex: 1; border: none; justify-content: center; padding-top: 0; }
-        body.screensaver-mode #time { font-size: 40vw; transition: font-size 0.5s ease; }
-        body.screensaver-mode #weather-temp, body.screensaver-mode #weather-icon { font-size: 10vw; }
-        body.screensaver-mode #spotify-links-container, body.screensaver-mode .bt-mini-link { display: none !important; }
+        body.screensaver-mode .ss-hide { display: none !important; }
+        body.screensaver-mode .ss-only { display: flex !important; }
+
+        body.screensaver-mode .clock-section { 
+            flex: 1; border: none; display: grid; grid-template-columns: 1.3fr 0.7fr; align-items: stretch;
+        }
+
+        .ss-left-col { display: flex; flex-direction: column; justify-content: center; align-items: center; border-right: 1px solid #1a1a1a; padding-bottom: 2vh; }
+        body.screensaver-mode #time { font-size: 34vw; transform: scaleY(1.15); margin-bottom: 4vh; }
+        
+        #date-block { display: flex; align-items: center; justify-content: center; width: 100%; gap: 30px; margin-top: 2vh; }
+        .ss-moon { font-size: 8vw; color: #333; } /* Sivý nenápadný mesiac */
+        .ss-date-wrapper { display: flex; align-items: baseline; gap: 15px; }
+        .ss-date { font-size: 11vw; font-weight: 300; color: #fff; }
+        .ss-day { font-size: 8vw; font-weight: 200; color: #aaa; text-transform: uppercase; }
+
+        .ss-right-col { display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; gap: 6vh; }
+        .meteo-icon-large { font-size: 18vw; color: #ffcc00; }
+        
+        .temp-group { text-align: center; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+        .temp-val { font-size: 16vw; font-weight: 300; line-height: 0.9; color: #fff; }
+        .temp-hum { font-size: 7vw; color: #fff; font-weight: 200; opacity: 0.8; }
     </style>
 </head>
 <body id="mainBody">
@@ -80,125 +71,142 @@
     <audio id="audioPlayer" preload="none" playsinline></audio>
 
     <div class="clock-section">
-        <div id="time">
-            <span id="h-part" class="hours-part">0</span>
-            <span id="m-part" class="minutes-part">00</span>
-        </div>
-        <div class="weather-section" onclick="toggleForecast()" style="cursor: pointer;">
-            <i id="weather-icon" class="fas fa-sun"></i>
-            <span id="weather-temp">--°C</span>
+        <div class="ss-left-col">
+            <div id="time">
+                <span id="h-part" class="hours-part">00</span>
+                <span id="m-part" class="minutes-part">00</span>
+            </div>
+            
+            <div id="weather-temp-mini" class="ss-hide">--°C</div>
+            <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link ss-hide">
+                <i class="fa-brands fa-bluetooth-b"></i>
+            </a>
+
+            <div id="spotify-links-container" class="ss-hide">
+                <div style="display: flex; justify-content: space-around; gap: 10px;">
+                    <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:24px;">Jaja🎵</button>
+                    <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">🎸</button>
+                    <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">🔥</button>
+                    <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:24px;">🔍</button>
+                </div>
+            </div>
+
+            <div id="date-block" class="ss-only">
+                <i id="moon-icon" class="fas fa-circle ss-moon"></i>
+                <div class="ss-date-wrapper">
+                    <span id="date-display" class="ss-date">--.--.</span>
+                    <span id="day-display" class="ss-day">---</span>
+                </div>
+            </div>
         </div>
 
-        <!-- PREDPOVEĎ -->
-        <div id="forecast-container" style="display: none; position: absolute; top: 15%; left: 5%; width: 45%; background: rgba(15, 15, 15, 0.95); backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid #333; padding: 15px; z-index: 100;">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 12px;">
-                <span style="color: #ffcc00; font-weight: 700; font-size: 16px; text-transform: uppercase;">Predpoveď</span>
-                <i class="fas fa-times" onclick="toggleForecast()" style="cursor: pointer; font-size: 22px; color: #eb0028;"></i>
-            </div>
-            <div id="forecast-days" style="display: flex; flex-direction: column; gap: 12px;"></div>
-        </div>
-
-        <div id="spotify-links-container">
-            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 15px;">
-                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🎵Janka</button>
-                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🎸</button>
-                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;"> 🔥</button>
-                <button onclick="openSpotify('search')" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">🔍Hladať</button>
+        <div class="ss-right-col ss-only">
+            <div class="temp-group">
+                <i id="weather-icon-main" class="fas fa-sun meteo-icon-large"></i>
+                <div class="temp-val" id="outdoor-temp">--°C</div>
+                <div class="temp-hum" id="outdoor-hum">--%</div>
             </div>
         </div>
-        <a href="shortcuts://run-shortcut?name=PripojRepro" class="bt-mini-link"><i class="fa-brands fa-bluetooth-b"></i></a>
     </div>
 
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
-        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas">
-            <div style="display: flex; align-items: center; font-size: 38px; font-weight: 800;">SRo</div>
-        </button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun">
-            <img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" alt="Fun">
-        </button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock">
-            <img src="https://radiorock.sk/logo.svg" alt="Rock" class="white-logo">
-        </button>
+        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#007bc4; font-size:30px; font-weight:800;">SRo</button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#b53a65;"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" style="height:40%;"></button>
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
     </div>
 
     <script>
-    function openSpotify(actionOrId) {
-        let url = actionOrId === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${actionOrId}`;
-        window.open(url, '_blank');
-    }
-
-    const audio = document.getElementById('audioPlayer');
-    const buttons = document.querySelectorAll('.btn');
-    const body = document.getElementById('mainBody');
     const VOLUME_MAP = { 'slovensko': 0.4, 'fun': 1.0, 'rock': 0.5 };
 
     function updateClock() {
         const now = new Date();
-        let h = String(now.getHours()).padStart(2, '0'); // na začiatku s nulou
+        const daysShort = ['Ned', 'Pon', 'Uto', 'Str', 'Štv', 'Pia', 'Sob'];
+        
+        let h = String(now.getHours()).padStart(2, '0');
         let m = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('h-part').innerHTML = h.replace(/1/g, '<span class="red-digit">1</span>');
+        
+        // ČERVENÁ LEN PRVÁ CIFRA AK JE TO 1
+        let h_display = h;
+        if (h[0] === '1') {
+            h_display = `<span class="red-digit">1</span>${h.substring(1)}`;
+        }
+        
+        document.getElementById('h-part').innerHTML = h_display;
         document.getElementById('m-part').textContent = m;
+        
+        // DÁTUM A DEŇ
+        document.getElementById('date-display').textContent = `${now.getDate()}.${now.getMonth() + 1}.`;
+        document.getElementById('day-display').textContent = daysShort[now.getDay()];
+        
+        updateMoonPhase(now);
     }
     setInterval(updateClock, 1000); updateClock();
 
+    function updateMoonPhase(date) {
+        const lp = 2551443; 
+        const new_moon = new Date(1970, 0, 7, 20, 35, 0);
+        const phase = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
+        const res = Math.floor(phase / (24 * 3600));
+        let icon = res < 2 ? "fa-circle" : (res < 14 ? "fa-circle-half-stroke" : "fa-solid fa-circle");
+        document.getElementById('moon-icon').className = `fas ${icon} ss-moon`;
+    }
+
+    async function updateWeather() {
+        try {
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current=temperature_2m,relative_humidity_2m,weather_code&daily=weather_code&timezone=Europe%2FBratislava`);
+            const d = await r.json();
+            
+            document.getElementById('weather-temp-mini').textContent = Math.round(d.current.temperature_2m) + '°C';
+            document.getElementById('outdoor-temp').textContent = Math.round(d.current.temperature_2m) + '°C';
+            document.getElementById('outdoor-hum').textContent = Math.round(d.current.relative_humidity_2m) + '%';
+            
+            // LOGIKA PREDPOVEDE: dopoludnia dnes, popoludní zajtra
+            const hour = new Date().getHours();
+            const iconIndex = (hour < 12) ? 0 : 1;
+            const forecastCode = d.daily.weather_code[iconIndex];
+            
+            const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 3: 'fa-cloud', 61: 'fa-cloud-rain', 95: 'fa-bolt' };
+            document.getElementById('weather-icon-main').className = 'fas ' + (codes[forecastCode] || 'fa-cloud') + ' meteo-icon-large';
+        } catch (e) {}
+    }
+    updateWeather(); setInterval(updateWeather, 1800000);
+
+    const audio = document.getElementById('audioPlayer');
     function playRadio(url, element, type) {
         document.getElementById('spotify-links-container').style.display = 'none';
-        buttons.forEach(btn => btn.classList.remove('playing'));
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
         audio.volume = VOLUME_MAP[type] || 1.0;
         audio.src = url; audio.play();
         element.classList.add('playing');
         resetIdleTimer();
     }
-
     function stopRadio() {
         audio.pause(); audio.src = "";
-        buttons.forEach(btn => btn.classList.remove('playing'));
         document.getElementById('spotify-links-container').style.display = 'none';
+        document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
         resetIdleTimer();
     }
-
     function showSpotify() {
         stopRadio();
         document.getElementById('spotify-links-container').style.display = 'block';
         document.querySelector('.spotify').classList.add('playing');
+        resetIdleTimer();
     }
-
-    async function updateWeather() {
-        try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
-            const d = await r.json();
-            document.getElementById('weather-temp').textContent = Math.round(d.current_weather.temperature) + '°C';
-            const codes = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
-            document.getElementById('weather-icon').className = 'fas ' + (codes[d.current_weather.weathercode] || 'fa-cloud');
-            
-            let forecastHTML = "";
-            const days = ['Ne', 'Po', 'Ut', 'St', 'Št', 'Pi', 'So'];
-            for(let i=0; i<5; i++) {
-                let date = new Date(d.daily.time[i]);
-                forecastHTML += `<div style="display: flex; justify-content: space-between; font-size: 30px;"><span>${i===0?"Dnes":days[date.getDay()]}</span><i class="fas ${codes[d.daily.weathercode[i]]||'fa-cloud'}" style="color:#ffcc00"></i><span>${Math.round(d.daily.temperature_2m_min[i])}°/<b>${Math.round(d.daily.temperature_2m_max[i])}°</b></span></div>`;
-            }
-            document.getElementById('forecast-days').innerHTML = forecastHTML;
-        } catch (e) {}
-    }
-    updateWeather(); setInterval(updateWeather, 1800000);
-
-    function toggleForecast() {
-        const c = document.getElementById('forecast-container');
-        c.style.display = (c.style.display === 'none' || c.style.display === '') ? 'block' : 'none';
-        if(c.style.display === 'block') setTimeout(() => c.style.display = 'none', 15000);
+    function openSpotify(id) {
+        let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
+        window.open(url, '_blank');
     }
 
     let idleTimer;
     function resetIdleTimer() {
         document.body.classList.remove('screensaver-mode');
         clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 30000);
+        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 25000);
     }
     document.addEventListener('touchstart', resetIdleTimer);
-    document.addEventListener('mousedown', resetIdleTimer);
     resetIdleTimer();
-</script>
+    </script>
 </body>
 </html>
