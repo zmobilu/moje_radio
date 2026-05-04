@@ -196,7 +196,7 @@
             }
         } catch (e) {}
     }
-    updateWeather(); setInterval(updateWeather, 1800000); // Obnova každých 30 min
+    updateWeather(); setInterval(updateWeather, 600000); // Obnova každých 10 min
 
     const audio = document.getElementById('audioPlayer');
     function playRadio(url, element, type) {
@@ -228,7 +228,7 @@
     function resetIdleTimer() {
         document.body.classList.remove('screensaver-mode');
         clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 25000);
+        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
     }
     document.addEventListener('touchstart', resetIdleTimer);
     resetIdleTimer();
