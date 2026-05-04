@@ -155,6 +155,13 @@
     71: '#fff',   // Sneh - biela
     95: '#ffeb3b' // Búrka - jasná žltá
 	};
+	function getTempColor(t) {
+    	if (t < 0) return '#00bfff';    // Mrazivo (jasná modrá)
+    	if (t < 10) return '#87CEEB';   // Chladno (svetlomodrá)
+    	if (t < 22) return '#98FB98';   // Príjemne (jarná zelená)
+    	if (t < 28) return '#ffa500';   // Teplejšie (oranžová)
+    	return '#ff4500';                // Horúco (červená)
+	}
     function updateClock() {
         const now = new Date();
         const daysShort = ['Ned', 'Pon', 'Uto', 'Str', 'Štv', 'Pia', 'Sob'];
@@ -183,37 +190,44 @@
         const d = await r.json();
         
         // 1. AKTUÁLNE POČASIE
-        const currentTemp = Math.round(d.current.temperature_2m) + '°C';
+        const rawTemp = d.current.temperature_2m;
+        const currentTemp = Math.round(rawTemp) + '°C';
         const currentHum = Math.round(d.current.relative_humidity_2m) + '%';
         const currentCode = d.current.weather_code;
+        const tColor = getTempColor(rawTemp); // Získame farbu podľa teploty
         
-        // Nastavenie textov
-        document.getElementById('weather-temp-mini').textContent = currentTemp;
-        document.getElementById('outdoor-temp').textContent = currentTemp;
+        // Nastavenie textov a ich farieb
+        const miniTemp = document.getElementById('weather-temp-mini');
+        miniTemp.textContent = currentTemp;
+        miniTemp.style.color = tColor; // Malá teplota v rádio režime
+
+        const outdoorTemp = document.getElementById('outdoor-temp');
+        outdoorTemp.textContent = currentTemp;
+        outdoorTemp.style.color = tColor; // Veľká teplota v šetriči
+
         document.getElementById('outdoor-hum').textContent = currentHum;
 
-        // Nastavenie HLAVNEJ ikony a jej farby
+        // Nastavenie HLAVNEJ ikony
         const mainIconEl = document.getElementById('weather-icon-main');
-        const mainIconClass = WEATHER_CODES[currentCode] || 'fa-cloud';
-        mainIconEl.className = 'fas ' + mainIconClass + ' meteo-icon-large';
+        mainIconEl.className = 'fas ' + (WEATHER_CODES[currentCode] || 'fa-cloud') + ' meteo-icon-large';
         mainIconEl.style.color = WEATHER_COLORS[currentCode] || '#aaa';
 
         // 2. MINI PREDPOVEĎ NA 2 DNI
         for (let i = 0; i <= 1; i++) {
             const dayName = (i === 0) ? 'Dnes' : 'Zajtra';
             const code = d.daily.weather_code[i];
-            const max = Math.round(d.daily.temperature_2m_max[i]);
+            const max = d.daily.temperature_2m_max[i];
             const min = Math.round(d.daily.temperature_2m_min[i]);
             
             const iconEl = document.getElementById(`fc${i}-icon`);
-            const forecastIconClass = WEATHER_CODES[code] || 'fa-cloud';
+            const tempEl = document.getElementById(`fc${i}-temp`);
             
-            // Nastavenie dňa a teploty
             document.getElementById(`fc${i}-day`).textContent = dayName;
-            document.getElementById(`fc${i}-temp`).innerHTML = `${max}° <span style="color:#aaa; font-size:0.8em">/ ${min}°</span>`;
             
-            // Nastavenie IKONY a FARBY (iba raz a poriadne)
-            iconEl.className = 'fas ' + forecastIconClass + ' mini-icon';
+            // Nastavenie teploty v predpovedi s farebným maximom
+            tempEl.innerHTML = `<span style="color:${getTempColor(max)}">${Math.round(max)}°</span> <span style="color:#aaa; font-size:0.8em">/ ${min}°</span>`;
+            
+            iconEl.className = 'fas ' + (WEATHER_CODES[code] || 'fa-cloud') + ' mini-icon';
             iconEl.style.color = WEATHER_COLORS[code] || '#aaa';
         }
     } catch (e) {
