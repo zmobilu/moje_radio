@@ -65,17 +65,9 @@
         .current-weather-group { text-align: center; }
         .meteo-icon-large { font-size: 15vw; color: #ffcc00; margin-bottom: 5px; }
         .temp-val { font-size: 14vw; font-weight: 300; line-height: 0.9; color: #fff; }
-.hum-val { 
-    font-size: 5vw; 
-    font-weight: 200; 
-    color: #aaa; 
-    margin-top: -5px;         /* Pritiahne ju bližšie k teplote */
-    margin-bottom: 10px;      /* Medzera pred deliacou čiarou */
-    display: block;
-    transform: scaleX(1.4) scaleY(0.7); /* Kľúčové nastavenie: Široké a nízke */
-    letter-spacing: 2px;      /* Ešte viac ju opticky rozšíri */
-    opacity: 0.8;
-}
+	.hum-val { font-size: 5vw; font-weight: 200; color: #aaa; margin-top: -5px;    /* Pritiahne ju bližšie k teplote */
+	    margin-bottom: 10px; /* Medzera pred deliacou čiarou */ display: block; transform: scaleX(1.4) scaleY(0.7); /* Kľúčové nastavenie: Široké a nízke */
+	    letter-spacing: 2px; /* Ešte viac ju opticky rozšíri */ opacity: 0.8; }
 
         
         #mini-forecast-strip { display: flex; justify-content: space-around; width: 95%; border-top: 1px solid #222; padding-top: 2vh; }
@@ -128,14 +120,14 @@
 
             <div id="mini-forecast-strip">
                 <div class="mini-item">
-                    <span class="mini-day">Zajtra</span>
-                    <i id="fc1-icon" class="fas fa-cloud mini-icon"></i>
-                    <span id="fc1-temp" class="mini-temp">-- / --</span>
+                    <span id="fc0-day" class="mini-day">Dnes</span>
+                    <i id="fc0-icon" class="fas fa-cloud mini-icon"></i>
+                    <span id="fc0-temp" class="mini-temp">-- / --</span>
                 </div>
                 <div class="mini-item">
-                    <span class="mini-day">Pozajtra</span>
-                    <i id="fc2-icon" class="fas fa-cloud mini-icon"></i>
-                    <span id="fc2-temp" class="mini-temp">-- / --</span>
+                    <span id="fc1-day" class="mini-day">Zajtra</span>
+                    <i id="fc1-icon" class="fas fa-cloud mini-icon"></i>
+                    <span id="fc1-temp" class="mini-temp">-- / --</span>
                 </div>
             </div>
         </div>
@@ -192,10 +184,13 @@
             document.getElementById('weather-icon-main').className = 'fas ' + currentIcon + ' meteo-icon-large';
 
             // 2. MINI PREDPOVEĎ NA 2 DNI (Index 1=Zajtra, 2=Pozajtra)
-            for (let i = 1; i <= 2; i++) {
+            for (let i = 0; i <= 1; i++) {
+                const dayName = (i === 0) ? 'Dnes' : 'Zajtra'
                 const code = d.daily.weather_code[i];
                 const max = Math.round(d.daily.temperature_2m_max[i]);
                 const min = Math.round(d.daily.temperature_2m_min[i]);
+                
+                document.getElementById(`fc${i}-day`).textContent = dayName;
                 document.getElementById(`fc${i}-icon`).className = 'fas ' + (WEATHER_CODES[code] || 'fa-cloud') + ' mini-icon';
                 document.getElementById(`fc${i}-temp`).innerHTML = `${max}° <span style="color:#aaa; font-size:0.8em">/ ${min}°</span>`;
             }
