@@ -209,18 +209,41 @@
         return '#ff4500';
     }
 
-    // Premenná pre meniny (bez diakritiky v názve pre istotu)
-    let dnesneMeno = "Zisťujem...";
+    // Počiatočná hodnota je prázdna
+	let dnesneMeno = ""; 
 
-    async function updateNameday() {
-        try {
-            const response = await fetch('https://api.abalin.net/today?country=sk');
-            const data = await response.json();
-            dnesneMeno = data.data.namedays.sk; // Aktualizujeme globálnu premennú
-        } catch (e) {
-            dnesneMeno = "Florián"; // Záloha pre dnešok
+	async function updateNameday() {
+    try {
+   	     // Použijeme "raw" odkaz na tvoj GitHub súbor
+        const url = 'https://raw.githubusercontent.com/spacek/slovensky-kalendar-menin/master/sk-meniny.csv';
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Súbor nedostupný');
+        
+        const text = await response.text();
+        const lines = text.split('\n');
+        
+        // Získame dnešný mesiac a deň vo formáte MM-DD (ako je v CSV)
+        const now = new Date();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const targetDate = `${mm}-${dd}`;
+        
+        let found = "";
+        for (let line of lines) {
+            // Hľadáme riadok, ktorý obsahuje dnešný dátum
+            if (line.includes(targetDate)) {
+                // Rozdelíme riadok (podľa čiarky alebo bodkočiarky) a vezmeme poslednú časť (meno)
+                const parts = line.split(/[;,]/);
+                found = parts[parts.length - 1].trim();
+                break;
+            }
         }
+        dnesneMeno = found; // Ak sa našlo, priradí meno, inak zostane prázdne
+    } catch (e) {
+        console.log("Chyba pri načítaní menín:", e);
+        dnesneMeno = ""; // Pri akejkoľvek chybe vráti prázdny reťazec
     }
+}
 
     updateNameday();
     setInterval(updateNameday, 3600000);
