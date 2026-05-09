@@ -333,6 +333,7 @@
     function stopRadio() {
         audio.pause(); audio.src = "";
         document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('playing'));
+		document.getElementById('spotify-links-container').style.display = 'none';
         resetIdleTimer();
     }
     function showSpotify() {
