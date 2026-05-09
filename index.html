@@ -81,15 +81,20 @@
 
 		/* Meniny - Slovenské (vľavo dole, zelené) */
 		.ss-day { 
-		    font-size: 4.5vw; 
-		    font-weight: 400; 
-		    color: #87CEEB; 
-		    text-transform: uppercase; 
-		    text-align: left; 
-		    line-height: 1.1; 
-		    max-width: 35vw; 
-		    white-space: normal; 
-		}
+    font-size: 4.5vw; 
+    font-weight: 400; 
+    color: #ffffff; /* Biela farba */
+    text-transform: uppercase; 
+    text-align: left; 
+    line-height: 2.2; /* Zvýšené, aby sa riadky pri zalomení neprekrývali kvôli scaleY */
+    max-width: 35vw; 
+    white-space: normal; 
+
+    /* Natiahnutie písma na výšku */
+    display: inline-block; /* Potrebné pre fungovanie transformácie */
+    transform: scaleY(2); 
+    transform-origin: left bottom; /* Zabezpečí, že písmo rastie smerom nahor od spodnej hrany */
+}
 		/* PRAVÁ STRANA - Počasie a Predpoveď */
 		.ss-right-col { 
     		display: flex; 
