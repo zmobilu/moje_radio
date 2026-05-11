@@ -2,35 +2,17 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_radio</title>
+    <title>Hodiny</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        html, body { 
-    margin: 0; 
-    padding: 0; 
-    background-color: #000; 
-    color: #fff;
-    font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
-    
-    /* Tieto riadky sú kľúčové pre fixáciu */
-    position: fixed; 
-    top: 0; 
-    left: 0;
-    width: 100vw; 
-    height: 100vh; 
-    overflow: hidden; 
-    
-    /* Zabráni zmene veľkosti písma pri rotácii alebo návrate */
-    -webkit-text-size-adjust: 100%;
-    
-    display: flex;
-    -webkit-user-select: none; 
-    user-select: none; 
-}
+        body { margin: 0; padding: 0; background-color: #000; color: #fff;
+            font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex; height: 100vh; width: 100vw; overflow: hidden;
+            -webkit-user-select: none; user-select: none; }
 
         /* --- REŽIM RÁDIO --- */
         .clock-section { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -46,6 +28,7 @@
         .ss-only { display: none !important; }
 
         #spotify-links-container { display: none; margin-top: 15px; width: 85%; background: #0a0a0a; border-radius: 12px; padding: 10px; border: 1px solid #222; }
+
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -60,75 +43,30 @@
         body.screensaver-mode .buttons-section { display: none; }
         body.screensaver-mode .ss-hide { display: none !important; }
         body.screensaver-mode .ss-only { display: flex !important; }
-
         body.screensaver-mode .clock-section { flex: 1; border: none; display: grid; grid-template-columns: 1.3fr 0.7fr; align-items: stretch; }
 
-        .ss-left-col { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: flex-start !important; 
-            align-items: center; 
-            border-right: 1px solid #1a1a1a; 
-            padding: 0; 
-        }
-        body.screensaver-mode #time { 
-            font-size: 32vw; 
-            transform: scaleY(1.28); 
-            letter-spacing: -1vw; 
-            margin-top: 8vh; 
-        }
+        .ss-left-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; border-right: 1px solid #1a1a1a; padding: 0; }
+        body.screensaver-mode #time { font-size: 32vw; transform: scaleY(1.30); letter-spacing: -1vw; margin-top: 8vh; }
         
-        #date-block { 
-            display: flex; 
-            align-items: flex-end; 
-            justify-content: flex-start; 
-            width: 90%; 
-            gap: 15px; 
-            margin-top: auto; 
-            margin-bottom: 3.5vh; 
-            padding-left: 4vw; 
-        }
-        #date-display {
-            line-height: 1;
-            color: #ffffff;
-        }
-        .ss-date-wrapper { display: flex; align-items: baseline; gap: 10px; }
+        #date-block { display: flex; align-items: flex-end; justify-content: flex-start; width: 90%; gap: 15px; margin-top: auto; margin-bottom: 3.5vh; padding-left: 4vw; }
+        #date-display { line-height: 1; color: #ffffff; }
+          .ss-date-wrapper { display: flex; align-items: baseline; gap: 10px; }
         .ss-date { font-size: 14vw; font-weight: 300; color: #fff; }
 
-        .ss-day { font-size: 5.5vw; font-weight: 400; text-transform: uppercase; text-align: left; line-height: 1; max-width: 36vw; white-space: normal; display: inline-block; transform: scaleY(2); transform-origin: bottom; }
+        .ss-day { font-size: 4.5vw; font-weight: 400; text-transform: uppercase; text-align: left; line-height: 1; max-width: 35vw; white-space: normal; display: inline-block; transform: scaleY(2); transform-origin: bottom; }
 
-        .name-female { color: #FFB6C1 !important; } 
-        .name-male { color: #87CEEB !important; }
+        /* Farby pre meniny */
+        .name-female { color: #FFB6C1 !important; } /* Svetloružová */
+        .name-male { color: #87CEEB !important; }   /* Svetlomodrá */
 
-        .ss-right-col { 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between !important; 
-            align-items: center; 
-            background: #000; 
-            padding: 0; 
-        }
-        
-        .current-weather-group { 
-            margin-top: 4vh; 
-            text-align: center; 
-        }
+        .ss-right-col { display: flex; flex-direction: column; justify-content: space-between !important; align-items: center; background: #000; padding: 0; }
+        .current-weather-group { margin-top: 4vh; text-align: center; }
         .meteo-icon-large { font-size: 15vw; margin-bottom: 5px; }
         .sub-info-row { display: flex; justify-content: center; gap: 14px; width: 100%; transform: scaleX(1.2) scaleY(0.8); transform-origin: center; margin-top: -2px; }
         .temp-val { font-size: 14vw; font-weight: 300; line-height: 0.9; color: #fff; }
-        
         .hum-val { font-size: 6.5vw; font-weight: 200; color: #aaa; letter-spacing: 1px; opacity: 0.8; white-space: nowrap; }
 
-        #mini-forecast-strip { 
-            display: flex; 
-            flex-direction: row !important; 
-            flex-wrap: nowrap; 
-            justify-content: space-around; 
-            width: 100%; 
-            border-top: 1px solid #222; 
-            padding-top: 1vh; 
-            margin-bottom: 3.5vh; 
-        }
+        #mini-forecast-strip { display: flex; flex-direction: row !important; flex-wrap: nowrap; justify-content: space-around; width: 100%; border-top: 1px solid #222; padding-top: 1vh; margin-bottom: 3.5vh; }
         .mini-item { display: flex; flex-direction: column; align-items: center; width: 48%; }
         .mini-day { font-size: 1.8vw; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
         .mini-icon { font-size: 6vw; }
@@ -147,7 +85,7 @@
             </div>
             
             <div id="weather-temp-mini" class="ss-hide">--°C</div>
-
+            
             <div id="spotify-links-container" class="ss-hide">
                 <div style="display: flex; justify-content: space-around; gap: 10px;">
                     <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">Jaja🎵</button>
@@ -158,7 +96,7 @@
             </div>
 
             <div id="date-block" class="ss-only">
-                <div class="ss-date-wrapper">
+                    <div class="ss-date-wrapper">
                     <span id="date-display" class="ss-date">--.--.</span>
                     <span id="day-display" class="ss-day">---</span>
                 </div>
@@ -200,16 +138,6 @@
     </div>
 
     <script>
-        window.addEventListener('pageshow', function(event) {
-    // Force reset scrollu pri návrate
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-});
-
-// Poistka priamo po načítaní
-window.addEventListener('load', function() {
-    window.scrollTo(0, 0);
-});
     const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5 };
     const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
     const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
@@ -250,7 +178,7 @@ window.addEventListener('load', function() {
     updateNameday();
     setInterval(updateNameday, 3600000);
 
-   function updateClock() {
+    function updateClock() {
         const now = new Date();
         let h = String(now.getHours()).padStart(2, '0');
         let m = String(now.getMinutes()).padStart(2, '0');
@@ -260,6 +188,7 @@ window.addEventListener('load', function() {
         document.getElementById('m-part').textContent = m;
         document.getElementById('date-display').textContent = `${now.getDate()}.${now.getMonth() + 1}.`;
         
+        // --- LOGIKA PRE FARBU MENÍN ---
         const menoElement = document.getElementById('day-display');
         menoElement.textContent = dnesneMeno;
 
@@ -273,35 +202,27 @@ window.addEventListener('load', function() {
                 menoElement.classList.add('name-male');
             }
         }
-    } // Koniec funkcie updateClock
-
+        
+     }
     setInterval(updateClock, 1000); updateClock();
-
     async function updateWeather() {
         try {
             const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1486&longitude=17.1077&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
             const d = await r.json();
-            
             const rawTemp = d.current.temperature_2m;
             const rawApparent = d.current.apparent_temperature; 
             const currentTemp = Math.round(rawTemp) + '°C';
             const currentHum = Math.round(d.current.relative_humidity_2m) + '%';
             const currentCode = d.current.weather_code;
-            
             const tColor = getTempColor(rawTemp);
             const appColor = getTempColor(rawApparent);
 
             document.getElementById('weather-temp-mini').textContent = currentTemp;
             document.getElementById('weather-temp-mini').style.color = tColor;
-
-            const outdoorTemp = document.getElementById('outdoor-temp');
-            outdoorTemp.textContent = currentTemp;
-            outdoorTemp.style.color = tColor;
-
-            const appTempEl = document.getElementById('apparent-temp');
-            appTempEl.textContent = Math.round(rawApparent) + '°';
-            appTempEl.style.color = appColor; 
-
+            document.getElementById('outdoor-temp').textContent = currentTemp;
+            document.getElementById('outdoor-temp').style.color = tColor;
+            document.getElementById('apparent-temp').textContent = Math.round(rawApparent) + '°';
+            document.getElementById('apparent-temp').style.color = appColor; 
             document.getElementById('outdoor-hum').textContent = currentHum;
 
             const mainIconEl = document.getElementById('weather-icon-main');
@@ -342,9 +263,8 @@ window.addEventListener('load', function() {
         resetIdleTimer();
     }
     function openSpotify(id) {
-        // Opravené na ${id} pre správne vloženie premennej
         let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
-        window.open(url, '_blank');
+        window.location.href = url; 
     }
 
     let idleTimer;
