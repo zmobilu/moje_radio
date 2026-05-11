@@ -28,8 +28,6 @@
         .ss-only { display: none !important; }
 
         #spotify-links-container { display: none; margin-top: 15px; width: 85%; background: #0a0a0a; border-radius: 12px; padding: 10px; border: 1px solid #222; }
-        .bt-mini-link { margin-top: 10px; color: #87CEEB; font-size: 32px; text-decoration: none; opacity: 0.6; }
-
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -150,9 +148,6 @@
             </div>
             
             <div id="weather-temp-mini" class="ss-hide">--°C</div>
-            <a href="shortcuts://x-callback-url/run-shortcut?name=PripojRepro" class="bt-mini-link ss-hide">
-                <i class="fa-brands fa-bluetooth-b"></i>
-            </a>
 
             <div id="spotify-links-container" class="ss-hide">
                 <div style="display: flex; justify-content: space-around; gap: 10px;">
@@ -201,7 +196,7 @@
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#007bc4; font-size:30px; font-weight:800;">SRo</button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#b53a65;"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" style="height:40%;"></button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" style="height:40%;"></button>
         <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
     </div>
