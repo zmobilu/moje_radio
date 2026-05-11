@@ -2,17 +2,35 @@
 <html lang="sk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Moje_radio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
-        body { margin: 0; padding: 0; background-color: #000; color: #fff;
-            font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
-            display: flex; height: 100vh; width: 100vw; overflow: hidden;
-            -webkit-user-select: none; user-select: none; }
+        html, body { 
+    margin: 0; 
+    padding: 0; 
+    background-color: #000; 
+    color: #fff;
+    font-family: -apple-system-short-condensed, -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Tieto riadky sú kľúčové pre fixáciu */
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100vw; 
+    height: 100vh; 
+    overflow: hidden; 
+    
+    /* Zabráni zmene veľkosti písma pri rotácii alebo návrate */
+    -webkit-text-size-adjust: 100%;
+    
+    display: flex;
+    -webkit-user-select: none; 
+    user-select: none; 
+}
 
         /* --- REŽIM RÁDIO --- */
         .clock-section { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; 
@@ -182,6 +200,16 @@
     </div>
 
     <script>
+        window.addEventListener('pageshow', function(event) {
+    // Force reset scrollu pri návrate
+    window.scrollTo(0, 0);
+    document.body.scrollTop = 0;
+});
+
+// Poistka priamo po načítaní
+window.addEventListener('load', function() {
+    window.scrollTo(0, 0);
+});
     const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5 };
     const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
     const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
