@@ -77,7 +77,6 @@
     line-height: 1;
     color: #ffffff; /* Alebo tvoja pôvodná farba dátumu */
 }
-		.ss-moon { font-size: 8vw; color: #333; } 
 		.ss-date-wrapper { display: flex; align-items: baseline; gap: 10px; }
 		.ss-date { font-size: 14vw; font-weight: 300; color: #fff; }
 
@@ -159,7 +158,6 @@
             </div>
 
             <div id="date-block" class="ss-only">
-                <i id="moon-icon" class="fas fa-circle ss-moon"></i>
                 <div class="ss-date-wrapper">
                     <span id="date-display" class="ss-date">--.--.</span>
                     <span id="day-display" class="ss-day">---</span>
@@ -266,17 +264,8 @@
         // Zobrazíme meno uložené v premennej
         document.getElementById('day-display').textContent = dnesneMeno;
         
-        updateMoonPhase(now);
     }
     setInterval(updateClock, 1000); updateClock();
-
-    function updateMoonPhase(date) {
-        const lp = 2551443; const new_moon = new Date(1970, 0, 7, 20, 35, 0);
-        const phase = ((date.getTime() - new_moon.getTime()) / 1000) % lp;
-        const res = Math.floor(phase / (24 * 3600));
-        let icon = res < 2 ? "fa-circle" : (res < 14 ? "fa-circle-half-stroke" : "fa-solid fa-circle");
-        document.getElementById('moon-icon').className = `fas ${icon} ss-moon`;
-    }
 
     async function updateWeather() {
         try {
