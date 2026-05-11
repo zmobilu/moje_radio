@@ -250,7 +250,7 @@ window.addEventListener('load', function() {
     updateNameday();
     setInterval(updateNameday, 3600000);
 
-    function updateClock() {
+   function updateClock() {
         const now = new Date();
         let h = String(now.getHours()).padStart(2, '0');
         let m = String(now.getMinutes()).padStart(2, '0');
@@ -273,7 +273,8 @@ window.addEventListener('load', function() {
                 menoElement.classList.add('name-male');
             }
         }
-    }
+    } // Koniec funkcie updateClock
+
     setInterval(updateClock, 1000); updateClock();
 
     async function updateWeather() {
@@ -341,8 +342,9 @@ window.addEventListener('load', function() {
         resetIdleTimer();
     }
     function openSpotify(id) {
-        let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/$${id}`;
-        window.location.href = url; 
+        // Opravené na ${id} pre správne vloženie premennej
+        let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
+        window.open(url, '_blank');
     }
 
     let idleTimer;
