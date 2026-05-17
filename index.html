@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_Radio</title>
+    <title>Moje_Radio-vietor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
     <style>
@@ -25,7 +25,7 @@
         .red-digit { color: #eb0028 !important; } 
         /* Štýl pre info riadok v rádio režime */
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
-        .radio-info-wrapper .separator { color: #333; font-weight: 200; }
+        .radio-info-wrapper .separator { color: #000000; font-weight: 200; }
         
         #radio-name { font-weight: 400; text-transform: uppercase; }
         #weather-temp-mini { margin-top: 0 !important; }
@@ -53,22 +53,70 @@
         .ss-left-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; border-right: 1px solid #1a1a1a; padding: 0; }
         body.screensaver-mode #time { font-size: 32vw; transform: scaleY(1.30); letter-spacing: -1vw; margin-top: 8vh; }
         
-        #date-block { display: flex; align-items: flex-end; justify-content: flex-start; width: 90%; gap: 15px; margin-top: auto; margin-bottom: 3.5vh; padding-left: 2vw; }
-        #date-display { line-height: 1; color: #ffffff; }
-        .ss-date-wrapper { display: flex; align-items: baseline; gap: 10px; }
-        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; }
+        /* ÚPRAVA: Zmenšený pravý padding (padding-right: 2vw) pritlačí vietor k pravej hrane */
+#date-block { 
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: space-between; 
+    width: 100%; 
+    box-sizing: border-box; 
+    margin-top: auto; 
+    margin-bottom: 3.5vh; 
+    padding-left: 2vw; 
+    padding-right: 2vw; 
+}
 
-        .ss-day { font-size: 5.0vw; font-weight: 500; text-transform: uppercase; text-align: left; line-height: 1; max-width: 35vw; white-space: normal; display: inline-block; 
-                 transform: scaleY(2.2); transform-origin: bottom; }
+/* NOVÝ ŠTÝL: Decentný oddeľovač ladiaci s rádio režimom */
+.ss-separator {
+    color: #000000; 
+    font-size: 5.5vw;
+    font-weight: 200;
+    line-height: 1;
+    position: relative;
+    top: 0.5vw; /* Jemné výškové vyrovnanie k ostatným textom */
+}
+
+#date-display { 
+    line-height: 1; 
+    color: #ffffff;
+    position: relative;
+    top: 1.4vw; /* Ak by bol dátum stále o vlások vyššie než vietor, daj sem napr. 3px */
+}
+
+/* ÚPRAVA: Zarovnanie spodkov boxov pre dátum a meniny */
+.ss-date-wrapper { 
+    display: flex; 
+    align-items: flex-end; 
+    gap: 15px; 
+}
+
+.ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
+
+/* ÚPRAVA: transform-origin: bottom zaistí, že natiahnuté meno bude sedieť na spodnej linke */
+.ss-day { 
+    font-size: 5.0vw; 
+    font-weight: 500; 
+    text-transform: uppercase; 
+    text-align: left; 
+    line-height: 1; 
+    max-width: 35vw; 
+    white-space: normal; 
+    display: inline-block; 
+    transform: scaleY(2.2); 
+    transform-origin: bottom; 
+    
+    position: relative;
+    top: 0.6vw; /* Týmto vieš meno GIZELA posúvať dole/hore nezávisle od dátumu */
+}
 
         /* Farby pre meniny */
-        .name-female { color: #FFB6C1 !important; } /* Svetloružová */
-        .name-male { color: #87CEEB !important; }   /* Svetlomodrá */
+        .name-female { color: #FFB6C1 !important; } 
+        .name-male { color: #87CEEB !important; }   
         
-        .name-moje { color: #FFFF00 !important; }       /* Žltá */
-        .name-family { color: #FF8C00 !important; }     /* Oranžová pre rodinu */
-        .name-colleagues { color: #00CED1 !important; } /* Tyrkysová pre kolegov */
-        .name-classmates { color: #32CD32 !important; } /* Limetková pre spolužiakov */
+        .name-moje { color: #FFFF00 !important; }       
+        .name-family { color: #FF8C00 !important; }     
+        .name-colleagues { color: #00CED1 !important; } 
+        .name-classmates { color: #32CD32 !important; } 
         
         .ss-right-col { display: flex; flex-direction: column; justify-content: space-between !important; align-items: center; background: #000; padding: 0; }
         .current-weather-group { margin-top: 4vh; text-align: center; }
@@ -96,11 +144,11 @@
             <span id="m-part" class="minutes-part">00</span>
         </div>
         
-        <!-- Tento blok sa zobrazí v rádio režime -->
         <div class="radio-info-wrapper ss-hide">
             <span id="weather-temp-mini">--°C</span>
             <span class="separator">|</span>
             <span id="radio-date">--.--.</span>
+	<span class="separator">|</span>
             <span id="radio-name">---</span>
         </div>
         
@@ -113,12 +161,19 @@
             </div>
         </div>
 
-        <!-- Pôvodný date-block pre šetrič zostáva nezmenený -->
         <div id="date-block" class="ss-only">
-            <div class="ss-date-wrapper">
-                <span id="date-display" class="ss-date">--.--.</span>
-                <span id="day-display" class="ss-day">---</span>
-            </div>
+    <div class="ss-date-wrapper">
+        <span id="date-display" class="ss-date">--.--.</span>
+        <span id="day-display" class="ss-day">---</span>
+    </div>
+    
+    <span class="ss-separator">|</span>
+    
+    <div id="wind-block" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-bottom: 0.2vh;">
+        <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 3.0vw;"></i>
+        <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- m/s</span>
+    </div>
+</div>
         </div>
     </div>
 </div>
@@ -234,16 +289,14 @@ function updateClock() {
             el.style.color = '';
 
             const menoLower = dnesneMeno.toLowerCase();
-            
-            // OPRAVA: Teraz porovnávame presný reťazec (m.toLowerCase() === menoLower) namiesto nepresného .includes()
             const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase() === menoLower);
 
             let najdeneFarby = [];
 
-            if (skontroluj(RODINA)) najdeneFarby.push('#FF8C00');      // Oranžová
-            if (skontroluj(MOJE_MENA)) najdeneFarby.push('#FFFF00');    // Žltá
-            if (skontroluj(KOLEGOVIA)) najdeneFarby.push('#00CED1');   // Tyrkysová
-            if (skontroluj(SPOLUZIACI)) najdeneFarby.push('#32CD32');   // Limetková
+            if (skontroluj(RODINA)) najdeneFarby.push('#FF8C00');      
+            if (skontroluj(MOJE_MENA)) najdeneFarby.push('#FFFF00');    
+            if (skontroluj(KOLEGOVIA)) najdeneFarby.push('#00CED1');   
+            if (skontroluj(SPOLUZIACI)) najdeneFarby.push('#32CD32');   
 
             if (najdeneFarby.length === 0) {
                 const menoTrim = dnesneMeno.trim();
@@ -280,7 +333,7 @@ function updateClock() {
     setInterval(updateClock, 1000); updateClock();
     async function updateWeather() {
         try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava`);
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=ms`);
             const d = await r.json();
             const rawTemp = d.current.temperature_2m;
             const rawApparent = d.current.apparent_temperature; 
@@ -297,6 +350,11 @@ function updateClock() {
             document.getElementById('apparent-temp').textContent = Math.round(rawApparent) + '°';
             document.getElementById('apparent-temp').style.color = appColor; 
             document.getElementById('outdoor-hum').textContent = currentHum;
+
+            const windSpeed = Math.round(d.current.wind_speed_10m);
+            const windDir = d.current.wind_direction_10m;
+            document.getElementById('wind-speed').textContent = windSpeed + ' m/s';
+            document.getElementById('wind-icon').style.transform = `rotate(${windDir}deg)`;
 
             const mainIconEl = document.getElementById('weather-icon-main');
             mainIconEl.className = 'fas ' + (WEATHER_CODES[currentCode] || 'fa-cloud') + ' meteo-icon-large';
