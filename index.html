@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Moje_Radio-vietor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="data:,">
     
     <style>
         body { margin: 0; padding: 0; background-color: #000; color: #fff;
@@ -25,7 +27,7 @@
         .red-digit { color: #eb0028 !important; } 
         /* Štýl pre info riadok v rádio režime */
         .radio-info-wrapper { display: flex;  align-items: center;  gap: 12px; margin-top: 10px;  font-size: 3.5vw; font-weight: 300; color: #aaa;}
-        .radio-info-wrapper .separator { color: #000000; font-weight: 200; }
+        .radio-info-wrapper .separator { color: #222; font-weight: 200; }
         
         #radio-name { font-weight: 400; text-transform: uppercase; }
         #weather-temp-mini { margin-top: 0 !important; }
@@ -50,64 +52,60 @@
         body.screensaver-mode .ss-only { display: flex !important; }
         body.screensaver-mode .clock-section { flex: 1; border: none; display: grid; grid-template-columns: 1.3fr 0.7fr; align-items: stretch; }
 
-        .ss-left-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; border-right: 1px solid #1a1a1a; padding: 0; }
+        .ss-left-col { display: flex; flex-direction: column; justify-content: flex-start !important; align-items: center; border-right: 1px solid #1a1a1a; padding: 0; width: 100%; }
         body.screensaver-mode #time { font-size: 32vw; transform: scaleY(1.30); letter-spacing: -1vw; margin-top: 8vh; }
         
-        /* ÚPRAVA: Zmenšený pravý padding (padding-right: 2vw) pritlačí vietor k pravej hrane */
-#date-block { 
-    display: flex; 
-    align-items: flex-end; 
-    justify-content: space-between; 
-    width: 100%; 
-    box-sizing: border-box; 
-    margin-top: auto; 
-    margin-bottom: 3.5vh; 
-    padding-left: 2vw; 
-    padding-right: 2vw; 
-}
+        #date-block { 
+            display: flex; 
+            align-items: flex-end; 
+            justify-content: space-between; 
+            width: 100%; 
+            box-sizing: border-box; 
+            margin-top: auto; 
+            margin-bottom: 3.5vh; 
+            padding-left: 2vw; 
+            padding-right: 2vw; 
+        }
 
-/* NOVÝ ŠTÝL: Decentný oddeľovač ladiaci s rádio režimom */
-.ss-separator {
-    color: #000000; 
-    font-size: 5.5vw;
-    font-weight: 200;
-    line-height: 1;
-    position: relative;
-    top: 0.5vw; /* Jemné výškové vyrovnanie k ostatným textom */
-}
+        .ss-separator {
+            color: #222; 
+            font-size: 5.5vw;
+            font-weight: 200;
+            line-height: 1;
+            position: relative;
+            top: 0.5vw;
+        }
 
-#date-display { 
-    line-height: 1; 
-    color: #ffffff;
-    position: relative;
-    top: 1.4vw; /* Ak by bol dátum stále o vlások vyššie než vietor, daj sem napr. 3px */
-}
+        #date-display { 
+            line-height: 1; 
+            color: #ffffff;
+            position: relative;
+            top: 1.4vw;
+        }
 
-/* ÚPRAVA: Zarovnanie spodkov boxov pre dátum a meniny */
-.ss-date-wrapper { 
-    display: flex; 
-    align-items: flex-end; 
-    gap: 15px; 
-}
+        .ss-date-wrapper { 
+            display: flex; 
+            align-items: flex-end; 
+            gap: 15px; 
+        }
 
-.ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
+        .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
 
-/* ÚPRAVA: transform-origin: bottom zaistí, že natiahnuté meno bude sedieť na spodnej linke */
-.ss-day { 
-    font-size: 5.0vw; 
-    font-weight: 500; 
-    text-transform: uppercase; 
-    text-align: left; 
-    line-height: 1; 
-    max-width: 35vw; 
-    white-space: normal; 
-    display: inline-block; 
-    transform: scaleY(2.2); 
-    transform-origin: bottom; 
-    
-    position: relative;
-    top: 0.6vw; /* Týmto vieš meno GIZELA posúvať dole/hore nezávisle od dátumu */
-}
+        .ss-day { 
+            font-size: 5.0vw; 
+            font-weight: 500; 
+            text-transform: uppercase; 
+            text-align: left; 
+            line-height: 1; 
+            max-width: 35vw; 
+            white-space: normal; 
+            display: inline-block; 
+            transform: scaleY(2.2); 
+            transform: scaleY(2.2); 
+            transform-origin: bottom; 
+            position: relative;
+            top: 0.6vw;
+        }
 
         /* Farby pre meniny */
         .name-female { color: #FFB6C1 !important; } 
@@ -136,47 +134,45 @@
 
     <audio id="audioPlayer" preload="none" playsinline></audio>
 
-<div class="clock-section">
-    <div class="ss-left-col">
-        
-        <div id="time" ontouchstart="klikNaHodiny(event)" onclick="klikNaHodiny(event)" style="cursor: pointer;">
-            <span id="h-part" class="hours-part">00</span>
-            <span id="m-part" class="minutes-part">00</span>
-        </div>
-        
-        <div class="radio-info-wrapper ss-hide">
-            <span id="weather-temp-mini">--°C</span>
-            <span class="separator">|</span>
-            <span id="radio-date">--.--.</span>
-	<span class="separator">|</span>
-            <span id="radio-name">---</span>
-        </div>
-        
-        <div id="spotify-links-container" class="ss-hide">
-            <div style="display: flex; justify-content: space-around; gap: 10px;">
-                <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">Jaja🎵</button>
-                <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">🎸</button>
-                <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">🔥</button>
-                <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:26px;">🔍</button>
+    <div class="clock-section">
+        <div class="ss-left-col">
+            
+            <div id="time" ontouchstart="klikNaHodiny(event)" onclick="klikNaHodiny(event)" style="cursor: pointer;">
+                <span id="h-part" class="hours-part">00</span>
+                <span id="m-part" class="minutes-part">00</span>
+            </div>
+            
+            <div class="radio-info-wrapper ss-hide">
+                <span id="weather-temp-mini">--°C</span>
+                <span class="separator">|</span>
+                <span id="radio-date">--.--.</span>
+                <span class="separator">|</span>
+                <span id="radio-name">---</span>
+            </div>
+            
+            <div id="spotify-links-container" class="ss-hide">
+                <div style="display: flex; justify-content: space-around; gap: 10px;">
+                    <button onclick="openSpotify('67q2IYkPShkkWCbV14rRil')" style="background:none; border:none; color:white; font-size:26px;">Jaja🎵</button>
+                    <button onclick="openSpotify('63bq913mo2Dv0KIOnnUzam')" style="background:none; border:none; color:white; font-size:24px;">🎸</button>
+                    <button onclick="openSpotify('2xLrXn0HleL3pJvnRWnRcJ')" style="background:none; border:none; color:white; font-size:24px;">🔥</button>
+                    <button onclick="openSpotify('search')" style="background:none; border:none; color:white; font-size:26px;">🔍</button>
+                </div>
+            </div>
+
+            <div id="date-block" class="ss-only">
+                <div class="ss-date-wrapper">
+                    <span id="date-display" class="ss-date">--.--.</span>
+                    <span id="day-display" class="ss-day">---</span>
+                </div>
+                
+                <span class="ss-separator">|</span>
+                
+                <div id="wind-block" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-bottom: 0.2vh;">
+                    <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 3.0vw;"></i>
+                    <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- m/s</span>
+                </div>
             </div>
         </div>
-
-        <div id="date-block" class="ss-only">
-    <div class="ss-date-wrapper">
-        <span id="date-display" class="ss-date">--.--.</span>
-        <span id="day-display" class="ss-day">---</span>
-    </div>
-    
-    <span class="ss-separator">|</span>
-    
-    <div id="wind-block" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; margin-bottom: 0.2vh;">
-        <i id="wind-icon" class="fas fa-arrow-up" style="font-size: 5.5vw; color: #aaa; transition: transform 0.5s ease-in-out; transform-origin: center; margin-bottom: 3.0vw;"></i>
-        <span id="wind-speed" style="font-size: 4.5vw; font-weight: 400; color: #fff; white-space: nowrap; line-height: 1;">-- m/s</span>
-    </div>
-</div>
-        </div>
-    </div>
-</div>
 
         <div class="ss-right-col ss-only">
             <div class="current-weather-group">
@@ -188,7 +184,7 @@
                     <span id="outdoor-hum" class="hum-val">--%</span>
                 </div>
             </div>
-    
+        
             <div id="mini-forecast-strip">
                 <div class="mini-item">
                     <span id="fc0-day" class="mini-day">Dnes</span>
@@ -202,12 +198,13 @@
                 </div>
             </div>
         </div>
+    </div>
 
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#007bc4; font-size:30px; font-weight:800;">SRo</button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" style="height:40%;"></button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></button>
+        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://www.funradio.sk/img/vue/icons/funRadioLogo.svg" style="height:40%;"></img ></button>
+        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></img ></button>
         <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
     </div>
 
@@ -217,7 +214,7 @@
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
     const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
                         'Paula', 'Timothy', 'Maximilián','Adam', 'Milica','Alica', 'Linda', 'Róbert', 'Daniel','Laura', 'Lili', 'Oskar', 'Tomáš','Samuel','Maxim','Alex','Erik','Oliver'];
-    const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol', 'Peter']; 
+    const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol']; 
     const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
     const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
     
@@ -243,10 +240,13 @@
             const dd = String(now.getDate()).padStart(2, '0');
             const targetDate = `${mm}-${dd}`;
             let found = "";
+            
             for (let line of lines) {
                 if (line.includes(targetDate)) {
-                    const parts = line.split(/[;,]/);
-                    found = parts[parts.length - 1].trim();
+                    const parts = line.split(/[;,]/); // Rozdelí podľa bodkočiarky aj čiarky
+                    if (parts.length > 1) {
+                        found = parts[1].trim(); // Zvolí VŽDY PRVÉ meno na riadku (napr. Klaudia namiesto Klaudius)
+                    }
                     break;
                 }
             }
@@ -257,80 +257,68 @@
     updateNameday();
     setInterval(updateNameday, 3600000);
 
-function updateClock() {
-    const now = new Date();
-    let h = String(now.getHours()).padStart(2, '0');
-    let m = String(now.getMinutes()).padStart(2, '0');
-    let h_display = (h[0] === '1') ? `<span class="red-digit">1</span>${h.substring(1)}` : h;
-    
-    document.getElementById('h-part').innerHTML = h_display;
-    document.getElementById('m-part').textContent = m;
-    
-    const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.`;
-    document.getElementById('date-display').textContent = formattedDate;
-    document.getElementById('radio-date').textContent = formattedDate;
-    
-    const menoElementSS = document.getElementById('day-display');
-    const menoElementRadio = document.getElementById('radio-name');
-    
-    menoElementSS.textContent = dnesneMeno;
-    if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
-
-    if (dnesneMeno) {
-        const listyTried = [menoElementSS, menoElementRadio];
+    function updateClock() {
+        const now = new Date();
+        let h = String(now.getHours()).padStart(2, '0');
+        let m = String(now.getMinutes()).padStart(2, '0');
+        let h_display = (h[0] === '1') ? `<span class="red-digit">1</span>${h.substring(1)}` : h;
         
-        listyTried.forEach(el => {
-            if (!el) return;
-            
-            el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
-            el.style.backgroundImage = '';
-            el.style.webkitBackgroundClip = '';
-            el.style.webkitTextFillColor = '';
-            el.style.color = '';
+        document.getElementById('h-part').innerHTML = h_display;
+        document.getElementById('m-part').textContent = m;
+        
+        const formattedDate = `${now.getDate()}.${now.getMonth() + 1}.`;
+        document.getElementById('date-display').textContent = formattedDate;
+        document.getElementById('radio-date').textContent = formattedDate;
+        
+        const menoElementSS = document.getElementById('day-display');
+        const menoElementRadio = document.getElementById('radio-name');
+        
+        menoElementSS.textContent = dnesneMeno;
+        if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
 
-            const menoLower = dnesneMeno.toLowerCase();
-            const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase() === menoLower);
+        if (dnesneMeno) {
+            const listyTried = [menoElementSS, menoElementRadio];
+            const menoLower = dnesneMeno.toLowerCase().trim();
 
-            let najdeneFarby = [];
+            listyTried.forEach(el => {
+                if (!el) return;
+                
+                // Vyčistíme staré štýly a triedy
+                el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
+                el.style.color = '';
 
-            if (skontroluj(RODINA)) najdeneFarby.push('#FF8C00');      
-            if (skontroluj(MOJE_MENA)) najdeneFarby.push('#FFFF00');    
-            if (skontroluj(KOLEGOVIA)) najdeneFarby.push('#00CED1');   
-            if (skontroluj(SPOLUZIACI)) najdeneFarby.push('#32CD32');   
+                // Kontrola presnej zhody (Zabraňuje chybám typu Gizela -> Ela)
+                const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
 
-            if (najdeneFarby.length === 0) {
-                const menoTrim = dnesneMeno.trim();
-                const poslednePismeno = menoTrim.slice(-1).toLowerCase();
-                const vynimky = ['gejza', 'attila', 'boba'];
+                if (skontroluj(RODINA)) {
+                    el.classList.add('name-family');
+                } 
+                else if (skontroluj(MOJE_MENA)) {
+                    el.classList.add('name-moje');
+                } 
+                else if (skontroluj(KOLEGOVIA)) {
+                    el.classList.add('name-colleagues');
+                } 
+                else if (skontroluj(SPOLUZIACI)) {
+                    el.classList.add('name-classmates');
+                } 
+                else {
+                    // Základná logika pre neznáme mená podľa pohlavia
+                    const poslednePismeno = menoLower.slice(-1);
+                    const vynimky = ['gejza', 'attila', 'boba'];
 
-                if (poslednePismeno === 'a' && !vynimky.includes(menoTrim.toLowerCase())) {
-                    el.classList.add('name-female');
-                } else {
-                    el.classList.add('name-male');
+                    if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) {
+                        el.classList.add('name-female');
+                    } else {
+                        el.classList.add('name-male');
+                    }
                 }
-            } 
-            else if (najdeneFarby.length === 1) {
-                el.style.color = najdeneFarby[0];
-            } 
-            else {
-                let gradientCastice = [];
-                let krok = 100 / najdeneFarby.length;
-
-                najdeneFarby.forEach((farba, index) => {
-                    let startPercento = index * krok;
-                    let koniecPercento = (index + 1) * krok;
-                    gradientCastice.push(`${farba} ${startPercento}%`, `${farba} ${koniecPercento}%`);
-                });
-
-                el.style.backgroundImage = `linear-gradient(to right, ${gradientCastice.join(', ')})`;
-                el.style.webkitBackgroundClip = 'text';
-                el.style.webkitTextFillColor = 'transparent';
-                el.style.color = 'transparent';
-            }
-        });
+            });
+        }
     }
-}
+
     setInterval(updateClock, 1000); updateClock();
+    
     async function updateWeather() {
         try {
             const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=ms`);
