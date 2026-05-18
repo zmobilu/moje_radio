@@ -321,7 +321,7 @@
     
     async function updateWeather() {
         try {
-            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=ms`);
+            const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=48.1421&longitude=17.1964&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Europe%2FBratislava&wind_speed_unit=kmh`);
             const d = await r.json();
             const rawTemp = d.current.temperature_2m;
             const rawApparent = d.current.apparent_temperature; 
@@ -341,7 +341,7 @@
 
             const windSpeed = Math.round(d.current.wind_speed_10m);
             const windDir = d.current.wind_direction_10m;
-            document.getElementById('wind-speed').textContent = windSpeed + ' m/s';
+            document.getElementById('wind-speed').textContent = windSpeed + ' km/h';
             document.getElementById('wind-icon').style.transform = `rotate(${windDir}deg)`;
 
             const mainIconEl = document.getElementById('weather-icon-main');
