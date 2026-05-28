@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_Radio</title>
+    <title>Moje_Radio-vietor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -38,13 +38,22 @@
 
         .buttons-section { flex: 1.1; display: grid; grid-template-columns: 1fr 1fr; 
             grid-template-rows: 0.7fr 1fr 1fr; gap: 8px; padding: 10px; background: #050505; }
+        
+        /* Štýl na skrytie/zobrazenie konkrétnej strany rádií v gride */
+        .page-group { display: contents; }
+        .page-group.hidden { display: none !important; }
+
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border: none; background: #151515; color: white; border-radius: 18px; cursor: pointer; }
+            border: none; background: #151515; color: white; border-radius: 18px; cursor: pointer; font-size: 14px; }
         .vypni { background-color: #333; grid-column: span 2; }
         .vypni i { color: #eb0028; font-size: 65px; }
         .spotify { background-color: #198c47; }
         .spotify i { font-size: 60px; }
         .playing { border: 2px solid #fff !important; }
+
+        /* Navigačné tlačidlá stránky */
+        .btn-nav { background-color: #222; color: #ff9f0a; font-weight: bold; }
+        .btn-nav i { font-size: 30px; margin-bottom: 5px; color: #ff9f0a; }
 
         /* --- ŠETRIČ (METEOSTANICA) --- */
         body.screensaver-mode .buttons-section { display: none; }
@@ -101,7 +110,6 @@
             white-space: normal; 
             display: inline-block; 
             transform: scaleY(2.2); 
-            transform: scaleY(2.2); 
             transform-origin: bottom; 
             position: relative;
             top: 0.6vw;
@@ -146,6 +154,8 @@
                 <span id="weather-temp-mini">--°C</span>
                 <span class="separator">|</span>
                 <span id="radio-date">--.--.</span>
+                <span class="separator">|</span>
+                <span id="radio-label" style="color:#888;">Radio 1</span>
                 <span class="separator">|</span>
                 <span id="radio-name">---</span>
             </div>
@@ -202,14 +212,27 @@
 
     <div class="buttons-section">
         <button onclick="stopRadio()" class="btn vypni"><i class="fa-solid fa-power-off"></i></button>
-        <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#007bc4; font-size:30px; font-weight:800;">SRo</button>
-        <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://cdn.radia.sk/_radia/loga/nadpis/fun@2x.webp?v=1" style="height:40%;"></img ></button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></img ></button>
-        <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
+        
+        <div id="page-1" class="page-group">
+            <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#007bc4; font-size:30px; font-weight:800;">SRo</button>
+            <button onclick="playRadio('https://stream.funradio.sk/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://cdn.radia.sk/_radia/loga/nadpis/fun@2x.webp?v=1" style="height:40%;"></button>
+            <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#222;"><img src="https://radiorock.sk/logo.svg" class="white-logo" style="height:40%;"></button>
+            
+            <button onclick="changePage(2)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-right"></i>NEXT -></button>
+        </div>
+
+        <div id="page-2" class="page-group hidden">
+            <button onclick="playRadio('URL_RADIA_4', this, 'radio4')" class="btn" style="background:#111; font-size:24px; font-weight:700;">Rádio 4</button>
+            <button onclick="playRadio('URL_RADIA_5', this, 'radio5')" class="btn" style="background:#111; font-size:24px; font-weight:700;">Rádio 5</button>
+            
+            <button onclick="showSpotify()" class="btn spotify"><i class="fa-brands fa-spotify"></i></button>
+            
+            <button onclick="changePage(1)" class="btn btn-nav"><i class="fa-solid fa-circle-arrow-left"></i><- BACK</button>
+        </div>
     </div>
 
     <script>
-    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5 };
+    const VOLUME_MAP = { 'slovensko': 0.3, 'fun': 1.0, 'rock': 0.5, 'radio4': 0.7, 'radio5': 0.7 };
     const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
     const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
     const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
@@ -243,9 +266,9 @@
             
             for (let line of lines) {
                 if (line.includes(targetDate)) {
-                    const parts = line.split(/[;,]/); // Rozdelí podľa bodkočiarky aj čiarky
+                    const parts = line.split(/[;,]/);
                     if (parts.length > 1) {
-                        found = parts[1].trim(); // Zvolí VŽDY PRVÉ meno na riadku (napr. Klaudia namiesto Klaudius)
+                        found = parts[1].trim();
                     }
                     break;
                 }
@@ -283,11 +306,9 @@
             listyTried.forEach(el => {
                 if (!el) return;
                 
-                // Vyčistíme staré štýly a triedy
                 el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
                 el.style.color = '';
 
-                // Kontrola presnej zhody (Zabraňuje chybám typu Gizela -> Ela)
                 const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
 
                 if (skontroluj(RODINA)) {
@@ -303,7 +324,6 @@
                     el.classList.add('name-classmates');
                 } 
                 else {
-                    // Základná logika pre neznáme mená podľa pohlavia
                     const poslednePismeno = menoLower.slice(-1);
                     const vynimky = ['gejza', 'attila', 'boba'];
 
@@ -384,6 +404,22 @@
     function openSpotify(id) {
         let url = id === 'search' ? "https://open.spotify.com/search" : `https://open.spotify.com/playlist/${id}`;
         window.location.href = url; 
+    }
+
+    // --- FUNKCIA PRE PREPÍNANIE STRÁN RÁDIÍ ---
+    function changePage(pageNumber) {
+        if (pageNumber === 1) {
+            document.getElementById('page-1').classList.remove('hidden');
+            document.getElementById('page-2').classList.add('hidden');
+            document.getElementById('radio-label').textContent = 'Radio 1';
+        } else {
+            document.getElementById('page-1').classList.add('hidden');
+            document.getElementById('page-2').classList.remove('hidden');
+            document.getElementById('radio-label').textContent = 'Radio 2';
+        }
+        // Skryjeme spotify zoznam, ak bol otvorený, aby nezavadzal pri prepínaní stránok
+        document.getElementById('spotify-links-container').style.display = 'none';
+        resetIdleTimer();
     }
 
     let idleTimer;
