@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Hodiny</title>
+    <title>Moje_Radio-Hodiny</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -217,13 +217,7 @@ body.screensaver-mode #ss-radio-info { display: flex !important; }
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/litera_128.mp3', this, 'litera')" class="sub-btn"><img src="LogoRadioLitera.png"></button>
                 <button onclick="playRadio('https://icecast.stv.livebox.sk/regina-ba_128.mp3', this, 'regina')" class="sub-btn"><img src="LogoRadioReginaZ.png"></button>
             </div>
-            <!-- pre istotu
-            <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 20px; margin-top: 25px; width: 90%;">
-                <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="LogoFUNchill.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/czsk128.mp3', this, 'funczsk')" class="sub-btn"><img src="LogoFUNcz-sk.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/running128.mp3', this, 'funrunning')" class="sub-btn"><img src="LogoFUNrunning.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/8090_128.mp3', this, 'fun8090')" class="sub-btn"><img src="LogoFUN80-90.png"></button>
-            </div>-->
+           
             <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 20px; margin-top: 25px; width: 90%;">
                 <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="LogoFunChill.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn"><img src="LogoFunCZSK.png"></button>
@@ -511,7 +505,7 @@ const VOLUME_MAP = {
         }
     }
     // Ak hrá hlavné Fun Rádio alebo ktorékoľvek z jeho nových pod-rádií
-    else if (['fun', 'funchill', 'funczsk', 'funrunning', 'fun8090', 'milenialky'].includes(type)) {
+    else if (['fun', 'funchill', 'funczsk', 'fundance', 'fun8090', 'milenialky'].includes(type)) {
         funContainer.style.display = 'flex';
         slovenskoContainer.style.display = 'none';
         if (element.classList.contains('btn')) {
