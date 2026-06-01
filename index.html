@@ -379,9 +379,9 @@ const VOLUME_MAP = {
         // JEDNA SPOLOČNÁ PODMIENKA PRE OBIDVE CIFRY
         let h_display = h;
         if (h[0] === '1') {
-            h_display = `<span class="red-digit">1</span>${h.substring(1)}`;
+            h_display = `<span class="blue-digit">1</span>${h.substring(1)}`;
         } else if (h[0] === '2') {
-            h_display = `<span class="blue-digit">2</span>${h.substring(1)}`;
+            h_display = `<span class="red-digit">2</span>${h.substring(1)}`;
         }
         
         document.getElementById('h-part').innerHTML = h_display;
