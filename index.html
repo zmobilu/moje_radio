@@ -197,7 +197,7 @@
     <div class="clock-section">
         <div class="ss-left-col">
             
-            <div id="time" ontouchstart="klikNaHodiny(event)" onclick="klikNaHodiny(event)" style="cursor: pointer;">
+            <div id="time" style="cursor: pointer;">
                 <span id="h-part" class="hours-part">00</span>
                 <span id="m-part" class="minutes-part">00</span>
             </div>
@@ -223,7 +223,6 @@
             <div id="fun-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
                 <button onclick="playRadio('https://stream.funradio.sk/chill128.mp3', this, 'funchill')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunChill.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/cs128.mp3', this, 'funczsk')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunCZSK.png"></button>
-                <button onclick="playRadio('https://stream.funradio.sk/dance128.mp3', this, 'fundance')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunDance.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/80-90-128.mp3', this, 'fun8090')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun8090.png"></button>
                 <button onclick="playRadio('https://stream.funradio.sk/milenialky128.mp3', this, 'milenialky')" class="sub-btn"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun2000.png"></button>
             </div>
@@ -257,9 +256,9 @@
             </div>
         </div>
         
-        <div class="ss-right-col ss-only">
-            <div onclick="otvorPocasie(event, 'screensaver')" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
-                <div class="current-weather-group">
+       <div class="ss-right-col ss-only">
+    <div id="ss-weather-trigger" style="cursor: pointer; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+        <div class="current-weather-group">
                 <i id="weather-icon-main" class="fas fa-sun meteo-icon-large"></i>
                     <div class="temp-val" id="outdoor-temp">--°C</div>
             
@@ -310,7 +309,7 @@
     <div id="weather-details-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999; padding: 20px; box-sizing: border-box; flex-direction: column; justify-content: space-between;">
         
         <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; height: 6vh;">
-            <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 5px 20px; border-radius: 12px; font-size: 4vw; font-weight: bold; cursor: pointer;">X</button>
+            <button onclick="zatvorPocasie(event)" style="background: #222; color: #ff9f0a; border: 2px solid #ff9f0a; padding: 5px 20px; border-radius: 12px; font-size: 4vw; font-weight: bold; cursor: pointer;">Zatvor</button>
         </div>
 
         <div style="background: #000; height: 52vh; width: 100%; display: flex; align-items: flex-end;">
@@ -324,7 +323,7 @@
     // GLOBÁLNA MAPA HLASITOSTÍ
     const VOLUME_MAP = { 
         'slovensko': 0.3, 'fm': 0.3, 'devin': 0.5, 'litera': 0.5, 'regina': 0.3,
-        'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fundance': 0.4, 'fun8090': 0.5, 'milenialky': 0.5,
+        'fun': 1.0, 'funchill': 0.5, 'funczsk': 0.5, 'fun8090': 0.5, 'milenialky': 0.5,
         'expres': 0.5, 'europa2': 0.5, 'melody': 0.5, 'vlna': 0.5,
     };
     
@@ -515,9 +514,10 @@
 
                 const dayBox = document.createElement('div');
                 // Pridaná trieda a dátový atribút pre ľahšie hľadanie v skripte
-                dayBox.className = 'forecast-day-box';
+               dayBox.className = 'forecast-day-box';
                 dayBox.setAttribute('data-index', i);
-                dayBox.setAttribute('onclick', `prepniDenGrafu(event, ${i})`);
+                // ZMENENÉ NA onpointerdown pre bleskovú reakciu
+                dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
                 dayBox.style.cssText = `background: #050505; border: 1px solid #111; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 10px 0; cursor: pointer; transition: all 0.2s;`;
                 
                 dayBox.ontouchstart = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#151515'; };
@@ -603,29 +603,29 @@
     }
 
     function prepniDenGrafu(e, dayIndex) {
-        if (e) {
-            e.stopPropagation();
-            if (e.cancelable) e.preventDefault();
-        }
-        
-        // Vykreslí vybraný deň
-        vykresliGraf(dayIndex);
-        
-        // ODSTRÁNI obrubu zo všetkých dní a PRIDÁ ju len kliknutému dňu
-        document.querySelectorAll('.forecast-day-box').forEach(box => {
-            box.classList.remove('day-box-active');
-        });
-        const aktivnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
-        if (aktivnyBox) {
-            aktivnyBox.classList.add('day-box-active');
-        }
-        
-        clearTimeout(pocasieTimer);
-        pocasieTimer = setTimeout(() => {
-            zatvorPocasie(); // Zavolá upravené zatváranie s kontrolou šetriča
-        }, 30000);
+    if (e) {
+        e.stopPropagation();
+        if (e.cancelable) e.preventDefault();
     }
-
+    
+    // Vykreslí vybraný deň
+    vykresliGraf(dayIndex);
+    
+    // ODSTRÁNI obrubu zo všetkých dní a PRIDÁ ju len kliknutému dňu
+    document.querySelectorAll('.forecast-day-box').forEach(box => {
+        box.classList.remove('day-box-active');
+    });
+    const aktivnyBox = document.querySelector(`.forecast-day-box[data-index="${dayIndex}"]`);
+    if (aktivnyBox) {
+        aktivnyBox.classList.add('day-box-active');
+    }
+    
+    // OPRAVENÝ TIMER: Odovzdávame event 'e' do zatvorPocasie, aby iPhone vedel dotyk stopnúť
+    clearTimeout(pocasieTimer);
+    pocasieTimer = setTimeout(() => {
+        zatvorPocasie(e); 
+    }, 30000);
+}
 
     // --- AUDIO LOGIKA PREHRÁVANIA ---
     const audio = document.getElementById('audioPlayer');
@@ -645,7 +645,7 @@
             const hlavnyRozhlas = document.querySelector('.rozhlas');
             if (hlavnyRozhlas) hlavnyRozhlas.classList.add('playing');
         }
-        if (['funchill', 'funczsk', 'fundance', 'fun8090', 'milenialky'].includes(type)) {
+        if (['funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type)) {
             const hlavnyFun = document.querySelector('.btn.fun');
             if (hlavnyFun) hlavnyFun.classList.add('playing');
         }
@@ -673,7 +673,7 @@
         const spotifyContainer = document.getElementById('spotify-links-container');
 
         slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(type) ? 'flex' : 'none';
-        funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fundance', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
+        funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
         komerceContainer.style.display = ['jazz', 'expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
         spotifyContainer.style.display = (type === 'spotify') ? 'flex' : 'none';
     }
@@ -731,7 +731,7 @@
                 // Obnovíme svietenie hlavného tlačidla na Page 1
                 if (['slovensko', 'fm', 'devin', 'litera', 'regina'].includes(currentPlayingType)) {
                     document.querySelector('.rozhlas').classList.add('playing');
-                } else if (['fun', 'funchill', 'funczsk', 'fundance', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
+                } else if (['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(currentPlayingType)) {
                     document.querySelector('.btn.fun').classList.add('playing');
                 } else if (['rock'].includes(currentPlayingType)) {
                     document.querySelector('.btn.rock').classList.add('playing');
@@ -763,21 +763,37 @@
         resetIdleTimer();
     }
 
-    // --- REŽIM ŠETRIČA OBRAZOVKY ---
+    // --- REŽIM ŠETRIČA OBRAZOVKY A OŠETRENIE DOTYKOV ---
     let idleTimer;
+
     function resetIdleTimer() {
         document.body.classList.remove('screensaver-mode');
         clearTimeout(idleTimer);
         idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
     }
-    document.addEventListener('touchstart', resetIdleTimer);
-    resetIdleTimer();
 
+    // Globálny listener upravený tak, aby ignoroval dotyky na hodiny, šetrič počasia a modal,
+    // čím sa zabráni nechcenému vypínaniu šetriča na iPhone
+    document.addEventListener('touchstart', function(e) {
+        if (e.target.closest('#time') || 
+            e.target.closest('#ss-weather-trigger') || 
+            e.target.closest('#weather-details-modal')) {
+            return; // Ak klikáme na tieto prvky, globálny reset timeru sa nespustí
+        }
+        resetIdleTimer();
+    }, { passive: true });
+
+    // Prvotné spustenie časovača
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
+
+    // Správne ošetrená funkcia pre kliknutie na hodiny
     function klikNaHodiny(e) {
         if (e) {
             e.stopPropagation();
-            if (e.cancelable) e.preventDefault(); 
+            e.preventDefault();
         }
+        
         if (document.body.classList.contains('screensaver-mode')) {
             resetIdleTimer();
         } else {
@@ -785,6 +801,25 @@
             document.body.classList.add('screensaver-mode');
         }
     }
+
+    // Naviazanie eventov po načítaní stránky - ošetrené proti "double-tap" na iPhone
+    document.addEventListener('DOMContentLoaded', () => {
+        const timeEl = document.getElementById('time');
+        const weatherEl = document.getElementById('ss-weather-trigger');
+
+        if (timeEl) {
+            // Použijeme pointerdown, ktorý funguje spoľahlivo a okamžite na PC aj iPhone
+            timeEl.addEventListener('pointerdown', (e) => {
+                klikNaHodiny(e);
+            });
+        }
+
+        if (weatherEl) {
+            weatherEl.addEventListener('pointerdown', (e) => {
+                otvorPocasie(e, 'screensaver');
+            });
+        }
+    });
 
 
     // --- OVLÁDANIE OKNA POČASIA S AUTOMATICKÝM ČASOVAČOM (30 SEKÚND) ---
