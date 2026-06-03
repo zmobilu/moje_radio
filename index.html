@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_Radio-Hodiny</title>
+    <title>Moje_radio-Hodiny</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -106,7 +106,7 @@
             box-sizing: border-box; 
             margin-top: auto; 
             margin-bottom: 3.5vh; 
-            padding-left: 2vw; 
+            padding-left: 0.5vw; 
             padding-right: 2vw; 
         }
 
@@ -124,12 +124,13 @@
             color: #ffffff;
             position: relative;
             top: 1.4vw;
+            margin-right: 2px; /* Poistka pre vizuálne natlačenie textu bližšie k sebe */
         }
 
         .ss-date-wrapper { 
             display: flex; 
             align-items: flex-end; 
-            gap: 15px; 
+            gap: 5px; 
         }
 
         .ss-date { font-size: 14vw; font-weight: 300; color: #fff; line-height: 1; }
@@ -503,36 +504,47 @@
             const dniVTyzdni = ['Ned', 'Pon', 'Ut', 'Str', 'Štv', 'Pia', 'Sob'];
             const dnes = new Date();
 
-            for (let i = 1; i <= 5; i++) {
-                const code = d.daily.weather_code[i];
-                const max = d.daily.temperature_2m_max[i];
-                const min = Math.round(d.daily.temperature_2m_min[i]);
-                
-                const buduciDen = new Date(dnes);
-                buduciDen.setDate(dnes.getDate() + i);
-                const nazovDna = dniVTyzdni[buduciDen.getDay()];
+            // ZMENENÉ: Cyklus teraz začína od 0 (Dnes) a ide do 4 (+4 dni)
+for (let i = 0; i <= 4; i++) {
+    const code = d.daily.weather_code[i];
+    const max = d.daily.temperature_2m_max[i];
+    const min = Math.round(d.daily.temperature_2m_min[i]);
+    
+    const buduciDen = new Date(dnes);
+    buduciDen.setDate(dnes.getDate() + i);
+    
+    // Logika pre názvy: 0 = Dnes, 1 = Zajtra, ostatné = skratka dňa
+    let nazovDna = "";
+    if (i === 0) {
+        nazovDna = "Dnes";
+    } else if (i === 1) {
+        nazovDna = "Zajtra";
+    } else {
+        nazovDna = dniVTyzdni[buduciDen.getDay()];
+    }
 
-                const dayBox = document.createElement('div');
-                // Pridaná trieda a dátový atribút pre ľahšie hľadanie v skripte
-               dayBox.className = 'forecast-day-box';
-                dayBox.setAttribute('data-index', i);
-                // ZMENENÉ NA onpointerdown pre bleskovú reakciu
-                dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
-                dayBox.style.cssText = `background: #050505; border: 1px solid #111; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 10px 0; cursor: pointer; transition: all 0.2s;`;
-                
-                dayBox.ontouchstart = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#151515'; };
-                dayBox.ontouchend = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#050505'; };
+    const dayBox = document.createElement('div');
+    dayBox.className = 'forecast-day-box';
+    // Ak je to Dnes (i === 0), rovno mu pridáme aktívnu obrubu, keďže graf štartuje s aktuálnym dňom
+    if (i === 0) dayBox.classList.add('day-box-active');
+    
+    dayBox.setAttribute('data-index', i);
+    dayBox.setAttribute('onpointerdown', `prepniDenGrafu(event, ${i})`);
+    dayBox.style.cssText = `background: #050505; border: 1px solid #111; border-radius: 12px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 10px 0; cursor: pointer; transition: all 0.2s;`;
+    
+    dayBox.ontouchstart = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#151515'; };
+    dayBox.ontouchend = () => { if(!dayBox.classList.contains('day-box-active')) dayBox.style.background = '#050505'; };
 
-                dayBox.innerHTML = `
-                    <span style="font-size: 3vw; font-weight: 500; text-transform: uppercase; color: #aaa; transform: scaleY(1.1);">${nazovDna}</span>
-                    <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 5px 0;"></i>
-                    <div style="font-size: 3.2vw; font-weight: 400; white-space: nowrap;">
-                        <span style="color:${getTempColor(max)}">${Math.round(max)}°</span>
-                        <span style="color:#444; font-size:0.85em">/ ${min}°</span>
-                    </div>
-                `;
-                extendedContainer.appendChild(dayBox);
-            }
+    dayBox.innerHTML = `
+        <span style="font-size: 3vw; font-weight: 500; text-transform: uppercase; color: #aaa; transform: scaleY(1.1);">${nazovDna}</span>
+        <i class="fas ${WEATHER_CODES[code] || 'fa-cloud'}" style="font-size: 7vw; color: ${WEATHER_COLORS[code] || '#aaa'}; margin: 5px 0;"></i>
+        <div style="font-size: 3.2vw; font-weight: 400; white-space: nowrap;">
+            <span style="color:${getTempColor(max)}">${Math.round(max)}°</span>
+            <span style="color:#444; font-size:0.85em">/ ${min}°</span>
+        </div>
+    `;
+    extendedContainer.appendChild(dayBox);
+}
 
         } catch (e) { console.log("Chyba počasia:", e); }
     }
