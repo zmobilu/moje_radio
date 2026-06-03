@@ -189,6 +189,20 @@
         .mini-temp { font-size: 4.5vw; font-weight: 300; color: #fff; white-space: nowrap; }
         /* Označenie aktívneho dňa v predpovedi počasia */
         .day-box-active { border: 1px solid #ff9f0a !important; background: #111 !important; }
+        /* Pridaný chýbajúci štýl pre boxy rozšírenej predpovede */
+        .forecast-day-box {
+            background: #050505;
+            border: 1px solid #111;
+            border-radius: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
     </style>
 </head>
 <body id="mainBody">
@@ -556,26 +570,60 @@ for (let i = 0; i <= 4; i++) {
     }
     // Nová logika spúšťania počasia
 function inicializujPocasie() {
+    // Ak bežíme na HTTP (nie HTTPS) a nie sme na localhoste, iOS polohu rovno zablokuje.
+    // V tom prípade rovno načítame predvolenú polohu a nečakáme na chybu.
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        console.log("Nezabezpečené pripojenie HTTP na mobile. Používam predvolenú polohu.");
+        updateWeather(); 
+        setInterval(updateWeather, 600000);
+        return;
+    }
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                // Používateľ polohu povolil -> načítame počasie pre jeho súradnice
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 updateWeather(lat, lon);
-                
-                // Nastavíme interval, aby každých 10 minút aktualizoval polohu aj počasie
                 setInterval(() => updateWeather(lat, lon), 600000);
             },
             (error) => {
-                console.log("Poloha nepovolená, načítavam predvolenú:", error.message);
-                // Používateľ polohu zakázal -> načítame predvolenú polohu (Bratislava)
+                console.log("Poloha nedostupná, načítavam predvolenú:", error.message);
                 updateWeather(); 
                 setInterval(updateWeather, 600000);
-            }
+            },
+            { enableHighAccuracy: false, timeout: 3000, maximumAge: 60000 } // Timeout 3 sekundy pre rýchly fallback
         );
     } else {
-        // Prehliadač nepodporuje Geolocation -> fallback na predvolenú polohu
+        updateWeather();
+        setInterval(updateWeather, 600000);
+    }
+}function inicializujPocasie() {
+    // Ak bežíme na HTTP (nie HTTPS) a nie sme na localhoste, iOS polohu rovno zablokuje.
+    // V tom prípade rovno načítame predvolenú polohu a nečakáme na chybu.
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        console.log("Nezabezpečené pripojenie HTTP na mobile. Používam predvolenú polohu.");
+        updateWeather(); 
+        setInterval(updateWeather, 600000);
+        return;
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                updateWeather(lat, lon);
+                setInterval(() => updateWeather(lat, lon), 600000);
+            },
+            (error) => {
+                console.log("Poloha nedostupná, načítavam predvolenú:", error.message);
+                updateWeather(); 
+                setInterval(updateWeather, 600000);
+            },
+            { enableHighAccuracy: false, timeout: 3000, maximumAge: 60000 } // Timeout 3 sekundy pre rýchly fallback
+        );
+    } else {
         updateWeather();
         setInterval(updateWeather, 600000);
     }
