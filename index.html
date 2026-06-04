@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Moje_radio</title>
+    <title>Moje_radio Hodiny </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
@@ -454,7 +454,7 @@
                 const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
                 document.getElementById('weather-location').textContent = nazovMesta;
             } else {
-                document.getElementById('weather-location').textContent = "Bratislava";
+                document.getElementById('weather-location').textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
             }
 
             const rawTemp = d.current.temperature_2m;
