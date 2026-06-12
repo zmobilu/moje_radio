@@ -480,7 +480,7 @@ function aktualizujTitulokStranky() {
 
     let radioText = "📻";
     if (currentPlayingType !== "" && currentPlayingType !== "none") {
-        radioText = "🔊 HRÁ: " + currentPlayingType.toUpperCase();
+        radioText = "🔊" + currentPlayingType.toUpperCase();
     } else {
         // AK RÁDIO NEHRÁ: Zistíme názov mesta z elementu na stránke
         const cityEl = document.getElementById('weather-location-main');
