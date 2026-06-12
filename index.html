@@ -428,27 +428,6 @@ let weatherDataBackup = null;
 let currentPlayingType = ""; 
 let weatherOpenedFrom = ""; 
         
-function aktualizujTitulokStranky() {
-    const tempText = document.getElementById('weather-temp-mini').textContent || '--°C';
-    // Vyčistíme ikonku počasia podľa kódu, ak ho máme, alebo dáme univerzálne meteo emoji
-    let weatherEmoji = "🌤️"; 
-    if (weatherDataBackup && weatherDataBackup.current) {
-        const code = weatherDataBackup.current.weather_code;
-        if (code === 0) weatherEmoji = "☀️";
-        else if (code === 1 || code === 2) weatherEmoji = "🌤️";
-        else if (code === 3) weatherEmoji = "☁️";
-        else if ([51, 61].includes(code)) weatherEmoji = "🌧️";
-        else if (code === 95) weatherEmoji = "⛈️";
-    }
-
-    let radioText = "Hodiny testujeme";
-    if (currentPlayingType !== "" && currentPlayingType !== "none") {
-        radioText = "🔊 HRÁ: " + currentPlayingType.toUpperCase();
-    }
-
-    document.title = `${weatherEmoji} ${tempText} | ${radioText}`;
-}
-        
 async function updateNameday() {
     const now = new Date();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -486,6 +465,26 @@ async function updateNameday() {
     }
 }
 
+function aktualizujTitulokStranky() {
+    const tempText = document.getElementById('weather-temp-mini').textContent || '--°C';
+    // Vyčistíme ikonku počasia podľa kódu, ak ho máme, alebo dáme univerzálne meteo emoji
+    let weatherEmoji = "🌤️"; 
+    if (weatherDataBackup && weatherDataBackup.current) {
+        const code = weatherDataBackup.current.weather_code;
+        if (code === 0) weatherEmoji = "☀️";
+        else if (code === 1 || code === 2) weatherEmoji = "🌤️";
+        else if (code === 3) weatherEmoji = "☁️";
+        else if ([51, 61].includes(code)) weatherEmoji = "🌧️";
+        else if (code === 95) weatherEmoji = "⛈️";
+    }
+
+    let radioText = "Moje_Radio";
+    if (currentPlayingType !== "" && currentPlayingType !== "none") {
+        radioText = "🔊 HRÁ: " + currentPlayingType.toUpperCase();
+    }
+
+    document.title = `${weatherEmoji} ${tempText} | ${radioText}`;
+}
 function updateClock() {
     const now = new Date();
     let h = String(now.getHours()).padStart(2, '0');
