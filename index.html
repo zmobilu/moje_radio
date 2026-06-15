@@ -551,14 +551,28 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
 
         const locationMainEl = document.getElementById('weather-location-main');
         if (locationMainEl) {
+            let zobrazovanyNazov = "";
             if (window.customCityName) {
-                locationMainEl.innerHTML = `${window.customCityName.toUpperCase()}`;
+                zobrazovanyNazov = window.customCityName.toUpperCase();
             } else if (d.timezone && d.timezone.includes('/')) {
-                const nazovMesta = d.timezone.split('/')[1].replace(/_/g, ' ');
-                locationMainEl.innerHTML = `${nazovMesta.toUpperCase()}`;
+                zobrazovanyNazov = d.timezone.split('/')[1].replace(/_/g, ' ').toUpperCase();
             } else {
-                locationMainEl.innerHTML = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
+                zobrazovanyNazov = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
             }
+            
+            // Vygenerovanie aktuálneho času vo formáte RRRR-MM-DDTHH00 pre parameter mapy
+            const teraz = new Date();
+            const rrrr = teraz.getFullYear();
+            const mm = String(teraz.getMonth() + 1).padStart(2, '0');
+            const dd = String(teraz.getDate()).padStart(2, '0');
+            const hh = String(teraz.getHours()).padStart(2, '0');
+            const casovyParam = `${rrrr}-${mm}-${dd}T${hh}00`;
+
+            // SPRÁVNA MAPOVÁ URL pre tablety a notebooky (vrátane tieňovania hôr, terénu a vody)
+            const mapaUrl = `https://maps.open-meteo.com/?time=${casovyParam}&hillshade=true&terrain=true&grid=false&arrows=false&clip_water=true#10.75/${lat.toFixed(4)}/${lon.toFixed(4)}`;
+            
+            // OŠETRENIE DOTYKU: pointerdown otvorí okno a kompletne zabije akúkoľvek inú akciu widgetu
+            locationMainEl.innerHTML = `<span onpointerdown="event.stopPropagation(); event.preventDefault(); window.open('${mapaUrl}', '_blank');" style="color: #ff9f0a; text-decoration: none; border-bottom: 1px dashed #ff9f0a; font-weight: 600; cursor: pointer; display: inline-block; position: relative; z-index: 9999;">${zobrazovanyNazov}</span>`;
         }
 
         const topLocationEl = document.getElementById('weather-location-topbar');
