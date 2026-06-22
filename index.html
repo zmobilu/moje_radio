@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
     
-    <style>
+     <style>
         /* Riadenie viditeľnosti pre Inline režim počasia */
         body:not(.weather-details-mode) .weather-details-only { display: none !important; }
         body.weather-details-mode .weather-details-hide { display: none !important; }
@@ -172,6 +172,7 @@
             justify-content: center;
             align-items: center;
             pointer-events: none;
+            z-index: 9999 !important;
         }
         body.screensaver-mode #ss-radio-info { display: flex !important; }
         body.weather-details-mode #ss-radio-info { display: none !important; }
@@ -277,14 +278,13 @@
         </div>
         
         <div class="ss-right-col">
-        
+            <div id="ss-radio-info" class="weather-details-hide" onpointerdown="event.stopPropagation(); event.preventDefault(); stopRadio();" style="pointer-events: auto !important; cursor: pointer; z-index: 9999 !important;"></div>
+            
             <div id="time" class="weather-details-hide">
                 <span id="h-part" class="hours-part">00</span>
                 <span id="m-part" class="minutes-part">00</span> 
             </div>
             
-            <div id="ss-radio-info" class="weather-details-hide"></div>
-
             <div id="weather-details-top-inline" class="weather-details-only" style="display: none; flex-direction: column; width: 100%; height: 68vh; padding: 10px 10px 0 10px; box-sizing: border-box; justify-content: space-between;">
                 <div id="weather-search-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; height: 5vh; gap: 10px;">
  
@@ -828,12 +828,12 @@ const audio = document.getElementById('audioPlayer');
     audio.volume = VOLUME_MAP[type] || 1.0;
     audio.src = url; 
     audio.play();
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
-        radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.7; text-transform: none; margin-right: 8px;">hrá:</small>${type.toUpperCase()}`;
-    }
+    radioInfoEl.innerHTML = `${type.toUpperCase()} <i class="fa-solid fa-power-off" style="color: #eb0028; font-size: 0.8em; margin-left: 12px;"></i>`;
+}
     aktualizujTitulokStranky();
 }
 
@@ -868,10 +868,10 @@ function stopRadio() {
     if (frame) frame.src = "";
     
     aktualizujSubPanely("none");
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     
     const radioInfoEl = document.getElementById('ss-radio-info');
-    if (radioInfoEl) radioInfoEl.textContent = "";
+    if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;"></small>📻<i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;
     aktualizujTitulokStranky();
     }
     // AK RÁDIO NEHRÁ: skontrolujeme, či máme v pamäti predchádzajúce rádio a znova ho zapneme
@@ -897,7 +897,7 @@ function showSpotify() {
     const spotifyBtn = document.querySelector('.spotify');
     if (spotifyBtn) spotifyBtn.classList.add('playing');
     
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
     aktualizujTitulokStranky();
 }
 
@@ -948,9 +948,8 @@ function playIntegratedSpotify(target, element) {
 
 // --- ŠETRIČ A DOTYKY ---
 let idleTimer;
-
-function resetIdleTimer() {
-    document.body.classList.remove('screensaver-mode');
+function resetIdleTimer(wakingUp = true) {
+    if (wakingUp) document.body.classList.remove('screensaver-mode');
     clearTimeout(idleTimer);
     idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
 }
@@ -959,13 +958,13 @@ document.addEventListener('touchstart', function(e) {
     if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
         return; 
     }
-    resetIdleTimer();
+    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
 }, { passive: true });
 
 function klikNaHodiny(e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
     if (document.body.classList.contains('screensaver-mode')) { resetIdleTimer(); } 
-    else { clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
+    else {clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
 }
 
 // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
