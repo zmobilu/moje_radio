@@ -544,6 +544,7 @@ function updateClock() {
             }
         });
     }
+    aktualizujTitulokStranky();
 }
 
 async function updateWeather(lat = 48.1421, lon = 17.1964) {
@@ -703,6 +704,7 @@ function inicializujPocasie() {
         const aktualnyLat = window.customLat || 48.1421;
         const aktualnyLon = window.customLon || 17.1964;
         updateWeather(aktualnyLat, aktualnyLon);
+        aktualizujTitulokStranky();
     }, 600000);
 }
 
