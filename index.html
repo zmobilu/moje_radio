@@ -871,7 +871,7 @@ const audio = document.getElementById('audioPlayer');
     audio.volume = VOLUME_MAP[type] || 1.0;
     audio.src = url; 
     audio.play();
-    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
+    resetIdleTimer(false);
     
     const radioInfoEl = document.getElementById('ss-radio-info');
     if (radioInfoEl) {
@@ -912,7 +912,7 @@ function stopRadio() {
         if (frame) frame.src = "";
         
         aktualizujSubPanely("none");
-        resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
+        resetIdleTimer(false);
         
         const radioInfoEl = document.getElementById('ss-radio-info');
         if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
@@ -957,7 +957,7 @@ function showSpotify() {
     const spotifyBtn = document.querySelector('.spotify');
     if (spotifyBtn) spotifyBtn.classList.add('playing');
     
-    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
+    resetIdleTimer(false);
     aktualizujTitulokStranky();
 }
 
@@ -1006,25 +1006,29 @@ function playIntegratedSpotify(target, element) {
     }
 }
 
-// --- ŠETRIČ A DOTYKY ---
+// --- ŠETRIČ A DOTYKY (UPRAVENÉ PRE MANUÁLNE OVLÁDANIE) ---
 let idleTimer;
 function resetIdleTimer(wakingUp = true) {
     if (wakingUp) document.body.classList.remove('screensaver-mode');
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
 }
 
 document.addEventListener('touchstart', function(e) {
     if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
         return; 
     }
-    resetIdleTimer(!document.body.classList.contains('screensaver-mode'));
+    // Automatický časovač kompletne vymazaný
 }, { passive: true });
 
 function klikNaHodiny(e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
-    if (document.body.classList.contains('screensaver-mode')) { resetIdleTimer(); } 
-    else {clearTimeout(idleTimer); document.body.classList.add('screensaver-mode'); }
+    
+    // Prepínanie stavu (Toggle)
+    if (document.body.classList.contains('screensaver-mode')) {
+        document.body.classList.remove('screensaver-mode');
+    } else {
+        document.body.classList.add('screensaver-mode');
+    }
 }
 
 // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
@@ -1067,11 +1071,12 @@ function zatvorPocasie(e) {
     document.body.classList.remove('weather-details-mode');
     document.querySelectorAll('.mini-item').forEach(box => box.classList.remove('day-box-active'));
 
+    // Návrat presne do režimu, z ktorého bolo počasie otvorené
     if (weatherOpenedFrom === 'screensaver') {
         document.body.classList.add('screensaver-mode');
-        clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => document.body.classList.add('screensaver-mode'), 20000);
-    } else { resetIdleTimer(); }
+    } else { 
+        document.body.classList.remove('screensaver-mode');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
