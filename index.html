@@ -9,8 +9,8 @@
     <title>📻</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:,">
-         
-     <style>
+     
+    <style>
         /* Riadenie viditeľnosti pre Inline režim počasia */
         body:not(.weather-details-mode) .weather-details-only { display: none !important; }
         body.weather-details-mode .weather-details-hide { display: none !important; }
@@ -323,7 +323,10 @@
                 </div>
             </div>
                         
-            <div class="radio-info-wrapper ss-hide">
+          <div class="radio-info-wrapper ss-hide">
+                <!-- Pridaný span pre jednoslovné mesto (bude sa farbiť dynamicky) -->
+                <span id="weather-city-mini" style="font-weight: 500; text-transform: uppercase;">---</span>
+                <span class="separator">|</span>
                 <span id="weather-temp-mini">--°C</span>
                 <span class="separator">|</span>
                 <span id="radio-date">--.--.</span>
@@ -585,6 +588,20 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
                 topLocationEl.textContent = `${lat.toFixed(2)}°N, ${lon.toFixed(2)}°E`;
             }
         }
+        // 1. Zobrazenie jednoslovného názvu mesta v rádio režime
+        const miniCityEl = document.getElementById('weather-city-mini');
+        if (miniCityEl) {
+            let plnyNazov = "---";
+            if (window.customCityName) {
+                plnyNazov = window.customCityName;
+            } else if (d.timezone && d.timezone.includes('/')) {
+                plnyNazov = d.timezone.split('/')[1].replace(/_/g, ' ');
+            }
+            
+            // Osekáme názov iba na prvé slovo
+            const jednoslovnyNazov = plnyNazov.trim().split(' ')[0];
+            miniCityEl.textContent = jednoslovnyNazov;
+        }
 
         const rawTemp = d.current.temperature_2m;
         const rawApparent = d.current.apparent_temperature; 
@@ -596,6 +613,11 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
 
         document.getElementById('weather-temp-mini').textContent = currentTemp;
         document.getElementById('weather-temp-mini').style.color = tColor;
+        
+        // 2. Pridané: Prefarbenie mini názvu mesta podľa teploty
+        const miniCityElColor = document.getElementById('weather-city-mini');
+        if (miniCityElColor) miniCityElColor.style.color = tColor;
+        
         document.getElementById('outdoor-temp').textContent = currentTemp;
         document.getElementById('outdoor-temp').style.color = tColor;
         document.getElementById('apparent-temp').textContent = Math.round(rawApparent) + '°';
@@ -896,7 +918,7 @@ function stopRadio() {
         if (radioInfoEl) radioInfoEl.innerHTML = `<small style="font-size: 0.6em; opacity: 0.5; text-transform: none;">zapni</small> <i class="fa-solid fa-power-off" style="color: #555; font-size: 0.8em; margin-left: 10px;"></i>`;   
         aktualizujTitulokStranky();
     }
-    // AK RÁDIO NEHRÁ: Najprv skúsime vytiahnuť rádio z localStorage (včerajšie rádio)
+   // AK RÁDIO NEHRÁ: Najprv skúsime vytiahnuť rádio z localStorage (včerajšie rádio)
     else {
         const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
         const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
@@ -904,12 +926,19 @@ function stopRadio() {
         if (savedRadioUrl && savedRadioType) {
             playRadio(savedRadioUrl, null, savedRadioType);
         } 
-        // Ak by bola pamäť náhodou prázdna, použije staré záložné premenné v RAM
         else if (lastRadioUrl !== "") {
             playRadio(lastRadioUrl, lastRadioElement, lastRadioType);
         }
+        // ÚPLNÁ ZÁLOHA: Ak je kiosk spustený prvýkrát a pamäť je úplne prázdna
+       else {
+            const prveTlacitko = document.querySelector('.buttons-section .btn:not(.vypni):not(.spotify)');
+            if (prveTlacitko) {
+                // Simuluje kliknutie na prvé rádio v poradí (Slovensko)
+                prveTlacitko.click();
+            }
+        }
     }
-}
+} // <-- TÁTO ZÁTORKA TU CHÝBALA A UZATVÁRA FUNKCIU stopRadio()
     
 function showSpotify() {
     // Vypne bežné rádio, no neodstráni vizuálny panel
