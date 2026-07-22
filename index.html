@@ -288,6 +288,44 @@ body.full-night-mode #night-bottom-info {
     text-align: center !important;
 }
     .color-picker-dot.active-color { border-color: #fff !important; transform: scale(1.1); }
+/* --- GLOBÁLNA RUČIČKA A VIZUÁLNA ODOZVA PRE TABLETY --- */
+        button,
+        a,
+        [onclick],
+        [onpointerdown],
+        .btn,
+        .sub-btn,
+        .mini-item,
+        .forecast-day-box,
+        .color-picker-dot,
+        #time,
+        #ss-weather-trigger {
+            cursor: pointer !important;
+        }
+
+        /* Reakcia na dotyk prsta pre tablety a dotykové displeje */
+        .btn:active,
+        .sub-btn:active,
+        .mini-item:active,
+        .forecast-day-box:active,
+        #time:active,
+        #weather-location-main:active {
+            transform: scale(0.96) !important;
+            opacity: 0.8 !important;
+            transition: transform 0.1s ease, opacity 0.1s ease;
+        }
+
+        /* Zvýraznenie klikateľného mesta v šetriči obrazovky */
+        #weather-location-main span {
+            background: rgba(255, 159, 10, 0.15) !important;
+            border: 1px dashed #ff9f0a !important;
+            padding: 4px 12px !important;
+            border-radius: 8px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 8px !important;
+            transition: background 0.2s, transform 0.1s;
+        }
          
     </style>
 </head>
@@ -839,8 +877,16 @@ async function updateWeather(lat = 48.1421, lon = 17.1964) {
             // SPRÁVNA MAPOVÁ URL pre tablety a notebooky (vrátane tieňovania hôr, terénu a vody)
             const mapaUrl = `https://maps.open-meteo.com/?time=${casovyParam}&hillshade=true&terrain=true&grid=false&arrows=false&clip_water=true#10.75/${lat.toFixed(4)}/${lon.toFixed(4)}`;
             
-            // OŠETRENIE DOTYKU: pointerdown otvorí okno a kompletne zabije akúkoľvek inú akciu widgetu
-            locationMainEl.innerHTML = `<span onpointerdown="event.stopPropagation(); event.preventDefault(); window.open('${mapaUrl}', '_blank');" style="color: #ff9f0a; text-decoration: none; border-bottom: 1px dashed #ff9f0a; font-weight: 600; cursor: pointer; display: inline-block; position: relative; z-index: 9999;">${zobrazovanyNazov}</span>`;
+            // ODKAZ NA WINDY.COM PRE TABLET AJ PC S MAPOVOU IKONOU
+            const windyUrl = `https://www.windy.com/?temp,${lat.toFixed(4)},${lon.toFixed(4)},10`;
+            
+            locationMainEl.innerHTML = `
+                <span onpointerdown="event.stopPropagation(); event.preventDefault(); window.open('${windyUrl}', '_blank');" 
+                      title="Otvoriť mapu Windy" 
+                      style="color: #ff9f0a; text-decoration: none; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; position: relative; z-index: 9999;">
+                    <i class="fa-solid fa-map-location-dot" style="font-size: 0.85em; color: #ff9f0a;"></i>
+                    <span>${zobrazovanyNazov}</span>
+                </span>`;
         }
 
         const topLocationEl = document.getElementById('weather-location-topbar');
