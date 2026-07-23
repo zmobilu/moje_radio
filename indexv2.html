@@ -1179,9 +1179,17 @@
                         </div>
                         <div id="weather-history-buttons" style="display: flex; gap: 4px; margin-top: 2px; justify-content: center; width: 100%;"></div>
                     </div>
+                    
+                    <!-- Tlačidlo Sprievodca (Tour) -->
                     <div class="settings-night-row">
                         <i class="fa-solid fa-circle-info label-icon" title="Sprievodca"></i>
                         <button onclick="spustiTourZnova(); event.stopPropagation();" style="width: 100%;">▶ Spustiť sprievodcu (Tour)</button>
+                    </div>
+                    
+                    <!-- Tlačidlo Návrat na Verziu 1 -->
+                    <div class="settings-night-row">
+                        <i class="fa-solid fa-circle-arrow-left label-icon" title="Verzia 1"></i>
+                        <button onclick="prejdiNaVerziu1(); event.stopPropagation();" style="width: 100%;">Návrat na verziu 1</button>
                     </div>
                 </div>
             </div>
@@ -1272,6 +1280,14 @@
             73: 'Mierny sneženie', 75: 'Husté sneženie', 80: 'Slabé prehánky', 81: 'Mierne prehánky',
             82: 'Silné prehánky', 95: 'Búrka', 96: 'Búrka s krupobitím'
         };
+	
+        function prejdiNaVerziu1() {
+            // Zmeníme nastavenú verziu v pamäti na v1
+            localStorage.setItem('dashboard_version', 'v1');
+            
+            // Presmerujeme na index.html
+            window.location.href = 'index.html';
+        }
 
         function getWeatherText(wCode) { return WEATHER_TEXTS_SK[wCode] || 'Premenlivé'; }
 
