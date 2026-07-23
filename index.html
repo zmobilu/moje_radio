@@ -1626,6 +1626,36 @@ if (ua.includes('iPhone') && ua.includes('OS 16_')) {
     }
 }
 
+        // --- AUTOMATICKÉ OBNOVENIE O 3:00 RÁNO A PRI PREBUDENÍ DISPLEJA ---
+        let poslednyCasAktivity = Date.now();
+        
+        // 1. Kontrola každých 30 sekúnd: Ak je presne 03:00 ráno, spraví reload
+        setInterval(() => {
+            const teraz = new Date();
+            if (teraz.getHours() === 3 && teraz.getMinutes() === 0 && teraz.getSeconds() < 30) {
+                // Nespraví reload, ak práve hrá rádio
+                if (!currentPlayingType || currentPlayingType === "" || currentPlayingType === "none" || currentPlayingType === "settings") {
+                    window.location.reload(true);
+                }
+            }
+        }, 30000);
+        
+        // 2. Detekcia prebudenia zo spánku / otvorenia z plochy iPhonu/Androidu
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const teraz = Date.now();
+                // Ak bol displej zhasnutý alebo aplikácia neaktívna viac ako 15 minút (900 000 ms)
+                if (teraz - poslednyCasAktivity > 900000) {
+                    if (!currentPlayingType || currentPlayingType === "" || currentPlayingType === "none" || currentPlayingType === "settings") {
+                        window.location.reload(true);
+                    }
+                }
+                poslednyCasAktivity = teraz;
+            } else {
+                poslednyCasAktivity = Date.now();
+            }
+        });
+        
 updateNameday();
 setInterval(updateNameday, 3600000);
 
