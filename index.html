@@ -46,7 +46,8 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-		 /* Nenápadný štýl po navštívení (Sivá raketka v čiernom kruhu so sivým okrajom) */
+
+		/* Nenápadný štýl po navštívení (Sivá raketka v čiernom kruhu so sivým okrajom) */
 		.v2-banner-btn.is-seen {
 		    animation: none;
 		    background-color: #000000;
@@ -66,7 +67,6 @@
 		.v2-banner-btn.is-seen .v2-text {
 		    display: none; /* Schová text "V2 dostupná" */
 		}
-
         /* Riadenie viditeľnosti pre Inline režim počasia */
         body:not(.weather-details-mode) .weather-details-only { display: none !important; }
         body.weather-details-mode .weather-details-hide { display: none !important; }
@@ -279,68 +279,68 @@
             line-height: 1.0 !important;
         }
        /* --- CELOOBRAZOVKOVÝ NOČNÝ REŽIM (CENTRÁLNE RIADENÁ FARBA) --- */
-:root {
-    --night-color: #ffff00; /* !!! TU NASTAVUJEŠ FARBU PRE CELÚ NOC (teraz Žltá) !!! */
-}
-
-body.full-night-mode .buttons-section,
-body.full-night-mode .ss-left-col,
-body.full-night-mode #ss-radio-info,
-body.full-night-mode .radio-info-wrapper,
-body.full-night-mode #integrated-spotify-container,
-body.full-night-mode #settings-container { display: none !important; }
-body.full-night-mode [id$="-links-container"], /* TENTO RIADOK skryje všetky sub-tlačidlá rádií */
-body.full-night-mode #date-block {
-    display: none !important;
-}
-
-body.full-night-mode .clock-section {
-    width: 100vw !important;
-    height: 100vh !important;
-    border: none !important;
-    background-color: #000 !important;
-    display: flex !important;
-    flex-direction: column !important; /* Prvky pod sebou */
-    justify-content: center !important;
-    align-items: center !important;
-    position: relative !important;
-}
-
-body.full-night-mode #time {
-    font-size: 35vw !important;
-    transform: scaleY(1.20) !important;
-    letter-spacing: -0.5vw !important; /* Jemne upravené pre verziu bez dvojbodky */
-    margin: 0 !important;
-    padding: 0 !important;
-    pointer-events: auto !important;
-    display: flex !important;
-    gap: 0 !important; /* Čas bez dvojbodky a medzery */
-}
-
-/* Použitie centrálnej farby pre všetky časti hodín */
-body.full-night-mode .hours-part,
-body.full-night-mode .minutes-part,
-body.full-night-mode .red-digit,
-body.full-night-mode .blue-digit {
-    color: var(--night-color) !important;
-}
-
-/* Štýl pre nový spodný informačný riadok */
-body.full-night-mode #night-bottom-info {
-    display: block !important;
-    position: absolute !important;
-    bottom: 6vh !important; /* Umiestnenie pri spodnom okraji */
-    font-size: 3.2vw !important;
-    font-weight: 300 !important;
-    letter-spacing: 1px !important;
-    color: var(--night-color) !important; /* Rovnaká farba ako čas */
-    opacity: 0.85 !important;
-    text-transform: none !important; /* Text zostane prirodzený */
-    font-family: inherit !important;
-    text-align: center !important;
-}
-    .color-picker-dot.active-color { border-color: #fff !important; transform: scale(1.1); }
-/* --- GLOBÁLNA RUČIČKA A VIZUÁLNA ODOZVA PRE TABLETY --- */
+		:root {
+		    --night-color: #ffff00; /* !!! TU NASTAVUJEŠ FARBU PRE CELÚ NOC (teraz Žltá) !!! */
+		}
+		
+		body.full-night-mode .buttons-section,
+		body.full-night-mode .ss-left-col,
+		body.full-night-mode #ss-radio-info,
+		body.full-night-mode .radio-info-wrapper,
+		body.full-night-mode #integrated-spotify-container,
+		body.full-night-mode #settings-container { display: none !important; }
+		body.full-night-mode [id$="-links-container"], /* TENTO RIADOK skryje všetky sub-tlačidlá rádií */
+		body.full-night-mode #date-block {
+		    display: none !important;
+		}
+		
+		body.full-night-mode .clock-section {
+		    width: 100vw !important;
+		    height: 100vh !important;
+		    border: none !important;
+		    background-color: #000 !important;
+		    display: flex !important;
+		    flex-direction: column !important; /* Prvky pod sebou */
+		    justify-content: center !important;
+		    align-items: center !important;
+		    position: relative !important;
+		}
+		
+		body.full-night-mode #time {
+		    font-size: 35vw !important;
+		    transform: scaleY(1.20) !important;
+		    letter-spacing: -0.5vw !important; /* Jemne upravené pre verziu bez dvojbodky */
+		    margin: 0 !important;
+		    padding: 0 !important;
+		    pointer-events: auto !important;
+		    display: flex !important;
+		    gap: 0 !important; /* Čas bez dvojbodky a medzery */
+		}
+		
+		/* Použitie centrálnej farby pre všetky časti hodín */
+		body.full-night-mode .hours-part,
+		body.full-night-mode .minutes-part,
+		body.full-night-mode .red-digit,
+		body.full-night-mode .blue-digit {
+		    color: var(--night-color) !important;
+		}
+		
+		/* Štýl pre nový spodný informačný riadok */
+		body.full-night-mode #night-bottom-info {
+		    display: block !important;
+		    position: absolute !important;
+		    bottom: 6vh !important; /* Umiestnenie pri spodnom okraji */
+		    font-size: 3.2vw !important;
+		    font-weight: 300 !important;
+		    letter-spacing: 1px !important;
+		    color: var(--night-color) !important; /* Rovnaká farba ako čas */
+		    opacity: 0.85 !important;
+		    text-transform: none !important; /* Text zostane prirodzený */
+		    font-family: inherit !important;
+		    text-align: center !important;
+		}
+		    .color-picker-dot.active-color { border-color: #fff !important; transform: scale(1.1); }
+		/* --- GLOBÁLNA RUČIČKA A VIZUÁLNA ODOZVA PRE TABLETY --- */
         button,
         a,
         [onclick],
@@ -398,7 +398,7 @@ body.full-night-mode #night-bottom-info {
     
     <div class="clock-section">
         <!-- Tlačidlo prechod na V2 -->
-        <button id="v2-btn" class="v2-banner-btn ss-hide" onclick="switchToV2()">
+		<button id="v2-btn" class="v2-banner-btn ss-hide" onclick="switchToV2()">
 		    <i class="fa-solid fa-rocket rocket-icon"></i>
     		    <span class="v2-text">V2 dostupná</span>
 		</button>
@@ -602,7 +602,10 @@ body.full-night-mode #night-bottom-info {
         let cfgSnoozeMin = parseInt(localStorage.getItem('cfg_snooze_min') || "1");
         let cfgFarbaNoci = localStorage.getItem('cfg_night_color') || "#ffff00";
 
-        function switchToV2() {
+        // Verzia buildu V2 (pri vydaní veľkých zmien zmeňte napr. na '2.1' a banner sa znova zvýrazní)
+		const CURRENT_V2_BUILD = '2.0';
+		
+		function switchToV2() {
 		    // Zapamätáme si, že používateľ túto verziu otvoril/videl
 		    localStorage.setItem('v2_seen_build', CURRENT_V2_BUILD);
 		    localStorage.setItem('dashboard_version', 'v2');
@@ -620,6 +623,7 @@ body.full-night-mode #night-bottom-info {
 		        btn.classList.add('is-seen');
 		    }
 		}
+
         function inicializujPlochuNastaveni() {
             if(document.getElementById('set-night-from')) document.getElementById('set-night-from').textContent = cfgNocOd;
             if(document.getElementById('set-night-to')) document.getElementById('set-night-to').textContent = cfgNocDo;
@@ -632,89 +636,89 @@ body.full-night-mode #night-bottom-info {
                 }
             });
         }
-function prepniNastavenia() {
-    audio.pause(); audio.src = "";
-    const settingsBox = document.getElementById('settings-container');
-    const spotifyFrame = document.getElementById('spotify-player-frame');
-    const isVisible = settingsBox.style.display === 'block';
-    
-    const hodinyEl = document.getElementById('time');
-    const infoRiadokEl = document.querySelector('.radio-info-wrapper');
-    const spotifyContainer = document.getElementById('spotify-links-container');
-    
-    if (spotifyFrame) spotifyFrame.src = "";
-    document.querySelectorAll('#spotify-links-container .sub-btn').forEach(btn => btn.classList.remove('playing'));
-    
-    if (isVisible) {
-        settingsBox.style.display = 'none';
-        if (hodinyEl) hodinyEl.style.display = 'flex';
-        if (infoRiadokEl) infoRiadokEl.style.display = 'flex';
-        if (spotifyContainer) spotifyContainer.style.display = 'flex'; // Vráti lištu playlistov
-        currentPlayingType = "spotify";
-    } else {
-        document.body.classList.remove('weather-details-mode');
-        settingsBox.style.display = 'block';
-        if (hodinyEl) hodinyEl.style.display = 'none';
-        if (infoRiadokEl) infoRiadokEl.style.display = 'none';
-        if (spotifyContainer) spotifyContainer.style.display = 'none'; // ÚPLNE schová lištu playlistov s kolieskom
-        currentPlayingType = "settings";
-    }
-    aktualizujTitulokStranky();
-}
-        
-function zmenNastavenieCasu(typ) {
-    let povodny = (typ === 'od') ? cfgNocOd : cfgNocDo;
-    let novy = prompt(`Zadaj čas pre ${typ === 'od' ? 'ZAČIATOK' : 'KONIEC'} noci (HH:MM):`, povodny);
-    if (novy && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(novy)) {
-        if (novy.length === 4 && novy.indexOf(':') === 1) novy = "0" + novy;
-        if (typ === 'od') { cfgNocOd = novy; localStorage.setItem('cfg_night_from', novy); } 
-        else { cfgNocDo = novy; localStorage.setItem('cfg_night_to', novy); }
-        inicializujPlochuNastaveni();
-        updateClock();
-    }
-}
-
-function zmenDobuOdkladu() {
-    let novaDoba = prompt("Zadaj dobu prebudenia hodín v minútach:", cfgSnoozeMin);
-    if (novaDoba && !isNaN(novaDoba) && parseInt(novaDoba) > 0) {
-        cfgSnoozeMin = parseInt(novaDoba);
-        localStorage.setItem('cfg_snooze_min', cfgSnoozeMin);
-        inicializujPlochuNastaveni();
-    }
-}
-
-function nastavFarbuNoci(hexFarba, element) {
-    cfgFarbaNoci = hexFarba;
-    localStorage.setItem('cfg_night_color', hexFarba);
-    document.querySelectorAll('.color-picker-dot').forEach(dot => dot.classList.remove('active-color'));
-    if(element) element.classList.add('active-color');
-    document.documentElement.style.setProperty('--night-color', hexFarba);
-    updateClock();
-}
-        
-function getTempColor(t) {
-    if (t < 0) return '#00bfff';
-    if (t < 10) return '#87CEEB';
-    if (t < 22) return '#98FB98';
-    if (t < 28) return '#ffa500';
-    return '#ff4500';
-}
-
-const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
-const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
-const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
-                    'Paula', 'Timothy', 'Maximilián','Adam', 'Milica','Alica', 'Linda', 'Róbert', 'Daniel','Laura', 'Lili', 'Oskar', 'Tomáš','Samuel','Maxim','Alex','Erik','Oliver'];
-const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol']; 
-const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
-const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
-
-let dnesneMeno = ""; 
-let poslednyDatumMenin = "";
-let weatherDataBackup = null; 
-let currentPlayingType = ""; 
-let weatherOpenedFrom = ""; 
-        
-async function updateNameday() {
+	function prepniNastavenia() {
+	    audio.pause(); audio.src = "";
+	    const settingsBox = document.getElementById('settings-container');
+	    const spotifyFrame = document.getElementById('spotify-player-frame');
+	    const isVisible = settingsBox.style.display === 'block';
+	    
+	    const hodinyEl = document.getElementById('time');
+	    const infoRiadokEl = document.querySelector('.radio-info-wrapper');
+	    const spotifyContainer = document.getElementById('spotify-links-container');
+	    
+	    if (spotifyFrame) spotifyFrame.src = "";
+	    document.querySelectorAll('#spotify-links-container .sub-btn').forEach(btn => btn.classList.remove('playing'));
+	    
+	    if (isVisible) {
+	        settingsBox.style.display = 'none';
+	        if (hodinyEl) hodinyEl.style.display = 'flex';
+	        if (infoRiadokEl) infoRiadokEl.style.display = 'flex';
+	        if (spotifyContainer) spotifyContainer.style.display = 'flex'; // Vráti lištu playlistov
+	        currentPlayingType = "spotify";
+	    } else {
+	        document.body.classList.remove('weather-details-mode');
+	        settingsBox.style.display = 'block';
+	        if (hodinyEl) hodinyEl.style.display = 'none';
+	        if (infoRiadokEl) infoRiadokEl.style.display = 'none';
+	        if (spotifyContainer) spotifyContainer.style.display = 'none'; // ÚPLNE schová lištu playlistov s kolieskom
+	        currentPlayingType = "settings";
+	    }
+	    aktualizujTitulokStranky();
+	}
+	        
+	function zmenNastavenieCasu(typ) {
+	    let povodny = (typ === 'od') ? cfgNocOd : cfgNocDo;
+	    let novy = prompt(`Zadaj čas pre ${typ === 'od' ? 'ZAČIATOK' : 'KONIEC'} noci (HH:MM):`, povodny);
+	    if (novy && /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(novy)) {
+	        if (novy.length === 4 && novy.indexOf(':') === 1) novy = "0" + novy;
+	        if (typ === 'od') { cfgNocOd = novy; localStorage.setItem('cfg_night_from', novy); } 
+	        else { cfgNocDo = novy; localStorage.setItem('cfg_night_to', novy); }
+	        inicializujPlochuNastaveni();
+	        updateClock();
+	    }
+	}
+	
+	function zmenDobuOdkladu() {
+	    let novaDoba = prompt("Zadaj dobu prebudenia hodín v minútach:", cfgSnoozeMin);
+	    if (novaDoba && !isNaN(novaDoba) && parseInt(novaDoba) > 0) {
+	        cfgSnoozeMin = parseInt(novaDoba);
+	        localStorage.setItem('cfg_snooze_min', cfgSnoozeMin);
+	        inicializujPlochuNastaveni();
+	    }
+	}
+	
+	function nastavFarbuNoci(hexFarba, element) {
+	    cfgFarbaNoci = hexFarba;
+	    localStorage.setItem('cfg_night_color', hexFarba);
+	    document.querySelectorAll('.color-picker-dot').forEach(dot => dot.classList.remove('active-color'));
+	    if(element) element.classList.add('active-color');
+	    document.documentElement.style.setProperty('--night-color', hexFarba);
+	    updateClock();
+	}
+	        
+	function getTempColor(t) {
+	    if (t < 0) return '#00bfff';
+	    if (t < 10) return '#87CEEB';
+	    if (t < 22) return '#98FB98';
+	    if (t < 28) return '#ffa500';
+	    return '#ff4500';
+	}
+	
+	const RODINA = ['Dominik', 'Janka', 'Patrik', 'Martin', 'Andrea', 'Roman', 'Emília', 'Ján', 'Mária', 'Juraj', 'Tatiana', 'Rastislav', 'Viktor', 'Adela', 'Linda', 'Michal', 'Ondrej', 'Jana', 'Viliam', 'Nataša', 'Kristína', 'Tibor', 'Ema'];
+	const KOLEGOVIA = ['Ivana', 'Mária', 'Iveta', 'Nina', 'Adriana', 'Jaroslava', 'Eva', 'Jana', 'Judita', 'Martin', 'Jozef', 'Marcel', 'Karol', 'Anna', 'Petra', 'Dominika'];
+	const SPOLUZIACI = ['Claudia', 'Bibiana','Zuzana', 'Kristína','Hana', 'Amanda','Viktória', 'Karin','Alexandra', 'Vanesa','Tamara', 'Zoe','Ela', 'Ema','Sebastian', 'Barbora','Jakub', 
+	                    'Paula', 'Timothy', 'Maximilián','Adam', 'Milica','Alica', 'Linda', 'Róbert', 'Daniel','Laura', 'Lili', 'Oskar', 'Tomáš','Samuel','Maxim','Alex','Erik','Oliver'];
+	const MOJE_MENA = ['Peter', 'Lenka', 'Daniel', 'Hana', 'Lucia', 'Katarína', 'Andrej', 'Zuzana', 'Radoslav', 'Martina', 'Róbert', 'Milan', 'Juraj', 'Ladislav', 'Pavol']; 
+	const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
+	const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
+	
+	let dnesneMeno = ""; 
+	let poslednyDatumMenin = "";
+	let weatherDataBackup = null; 
+	let currentPlayingType = ""; 
+	let weatherOpenedFrom = ""; 
+	        
+	async function updateNameday() {
     const now = new Date();
     const mm = String(now.getMonth() + 1).padStart(2, '0');
     const dd = String(now.getDate()).padStart(2, '0');
@@ -1659,7 +1663,7 @@ if (ua.includes('iPhone') && ua.includes('OS 16_')) {
     }
 }
 
-        // --- INTELIGENTNÁ NOČNÁ AKTUALIZÁCIA SO ZNOVU-SPUSTENÍM RÁDIA ---
+			// --- INTELIGENTNÁ NOČNÁ AKTUALIZÁCIA SO ZNOVU-SPUSTENÍM RÁDIA ---
 
 			let poslednaNocnaKontrolaDen = localStorage.getItem('poslednaNocnaAktualizacia');
 			
@@ -1737,7 +1741,8 @@ if (ua.includes('iPhone') && ua.includes('OS 16_')) {
 			        skontrolujNochnuAktualizaciu();
 			    }
 			});
-        
+            
+
 updateNameday();
 setInterval(updateNameday, 3600000);
 
@@ -1746,6 +1751,9 @@ updateClock();
 
 inicializujPocasie();
 inicializujPlochuNastaveni();
+// Pri načítaní preveríme, či už bola V2 navštívená
+skontrolujV2Tlacidlo();
+
 </script>
 </body>
 </html>
