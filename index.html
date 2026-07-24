@@ -1426,14 +1426,17 @@ let idleTimer;
 function resetIdleTimer(wakingUp = true) {
     if (wakingUp) document.body.classList.remove('screensaver-mode');
     clearTimeout(idleTimer);
-}
 
-document.addEventListener('touchstart', function(e) {
-    if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
-        return; 
+    // Ak nie sú otvorené nastavenia, po 60 sekundách nečinnosti preklopí displej na šetrič
+    const settingsBox = document.getElementById('settings-container');
+    const nastaveniaSuOtvorene = settingsBox && settingsBox.style.display === 'block';
+
+    if (!nastaveniaSuOtvorene) {
+        idleTimer = setTimeout(() => {
+            document.body.classList.add('screensaver-mode');
+        }, 60000); // 60000 ms = 60 sekúnd
     }
-    // Automatický časovač kompletne vymazaný
-}, { passive: true });
+}
 
 function klikNaHodiny(e) {
     if (e) { e.stopPropagation(); e.preventDefault(); }
@@ -1461,7 +1464,13 @@ function klikNaHodiny(e) {
         document.body.classList.add('screensaver-mode'); 
     }
 }
-
+document.addEventListener('touchstart', function(e) {
+    if (e.target.closest('#time') || e.target.closest('#ss-weather-trigger') || e.target.closest('#weather-details-top-inline') || e.target.closest('#extended-forecast-container')) {
+        return; 
+    }
+    resetIdleTimer(false); // Vynuluje a znova spustí 60-sekundový odpočet
+}, { passive: true });
+		
 // --- OVLÁDANIE AUTOMATICKÉHO ČASOVAČA ---
 let pocasieTimer;
         
