@@ -2639,11 +2639,15 @@
 			    try {
 			        const res = await fetch('index.html?t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
 			        if (res.ok) {
-			            // 1. Uložíme dnešný deň do pamäte
-			            localStorage.setItem('poslednaNocnaAktualizacia', new Date().getDate().toString());
+			            const dnesnyDen = new Date().getDate().toString();
+			            localStorage.setItem('poslednaNocnaAktualizacia', dnesnyDen);
+			            poslednaNocnaKontrolaDen = dnesnyDen;
 			            
-			            // 2. Ak práve hrá rádio alebo hudba, uložíme príznak, že sa má po reloade auto-spustiť
-			            if (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "settings") {
+			            // 2. Kontrola, či audio REÁLNE hrá (nie je paused a má aktívny stream)
+			            const isAudioPlaying = typeof audio !== 'undefined' && audio && !audio.paused && audio.currentTime > 0 && audio.readyState > 2;
+			            const hasValidType = currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "settings";
+			
+			            if (isAudioPlaying && hasValidType) {
 			                localStorage.setItem('kiosk_autorestart_radio', 'true');
 			            } else {
 			                localStorage.removeItem('kiosk_autorestart_radio');
@@ -2672,9 +2676,12 @@
 			
 			function skontrolujAutoStartRadiaPoReloadu() {
 			    const chcelAutoStart = localStorage.getItem('kiosk_autorestart_radio');
+			    
+			    // IHNEĎ zmažeme príznak z pamäte! 
+			    // Ak by prišiel akýkoľvek iný/náhodný refresh, rádio už zbytočne nezačne hrať.
+			    localStorage.removeItem('kiosk_autorestart_radio');
+			
 			    if (chcelAutoStart === 'true') {
-			        localStorage.removeItem('kiosk_autorestart_radio');
-			        
 			        const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
 			        const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
 			        
@@ -2684,11 +2691,13 @@
 			                playRadio(savedRadioUrl, null, savedRadioType);
 			                
 			                // Ošetrenie pre iOS (ak prehliadač zablokuje autoplay po reloadu)
-			                const playPromise = audio.play();
-			                if (playPromise !== undefined) {
-			                    playPromise.catch(error => {
-			                        console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
-			                    });
+			                if (typeof audio !== 'undefined' && audio) {
+			                    const playPromise = audio.play();
+			                    if (playPromise !== undefined) {
+			                        playPromise.catch(error => {
+			                            console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
+			                        });
+			                    }
 			                }
 			            }, 800);
 			        }
