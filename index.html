@@ -1684,8 +1684,93 @@ inicializujPlochuNastaveni();
 // Pri načítaní preveríme, či už bola V2 navštívená
 skontrolujV2Tlacidlo();
 		
-localStorage.removeItem('kiosk_autorestart_radio');
-localStorage.removeItem('poslednaNocnaAktualizacia');
+		// --- INTELIGENTNÁ NOČNÁ AKTUALIZÁCIA SO ZNOVU-SPUSTENÍM RÁDIA ---
+		
+		let poslednaNocnaKontrolaDen = localStorage.getItem('poslednaNocnaAktualizacia');
+		
+		async function spravAktualizaciu() {
+		    console.log("Sťahujem najnovšiu verziu kódu...");
+		    try {
+		        const res = await fetch('index.html?t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
+		        if (res.ok) {
+		            const dnesnyDen = new Date().getDate().toString();
+		            localStorage.setItem('poslednaNocnaAktualizacia', dnesnyDen);
+		            poslednaNocnaKontrolaDen = dnesnyDen;
+		            
+		            // Overíme, či rádio REÁLNE hrá (audio hrá, nie je paused a typ nie je prázdny ani settings)
+		            const isAudioPlaying = typeof audio !== 'undefined' && audio && !audio.paused && audio.currentTime > 0 && audio.readyState > 2;
+		            const hasValidType = currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "settings";
+		
+		            if (isAudioPlaying && hasValidType) {
+		                localStorage.setItem('kiosk_autorestart_radio', 'true');
+		            } else {
+		                localStorage.removeItem('kiosk_autorestart_radio');
+		            }
+		
+		            // Vykonáme reload stránky
+		            window.location.reload(true);
+		        }
+		    } catch (e) {
+		        console.log("Aktualizácia zlyhala (offline):", e);
+		    }
+		}
+		
+		async function skontrolujNochnuAktualizaciu() {
+		    const teraz = new Date();
+		    const aktualnyDen = teraz.getDate().toString();
+		    const hodina = teraz.getHours();
+		
+		    // Čas na aktualizáciu: presne o 3:00 ráno ALEBO ráno po 6:00 (ak bol kiosk v noci vypnutý)
+		    const jeCasNaAktualizaciu = (hodina === 3) || (hodina >= 6 && poslednaNocnaKontrolaDen !== aktualnyDen);
+		
+		    if (jeCasNaAktualizaciu && poslednaNocnaKontrolaDen !== aktualnyDen) {
+		        await spravAktualizaciu();
+		    }
+		}
+		
+		function skontrolujAutoStartRadiaPoReloadu() {
+		    const chcelAutoStart = localStorage.getItem('kiosk_autorestart_radio');
+		    
+		    // DÔLEŽITÉ: IHNEĎ zmažeme príznak z pamäte! 
+		    // Pri akomkoľvek inom refreshi alebo ručnom reštarte rádio hrať nezačne.
+		    localStorage.removeItem('kiosk_autorestart_radio');
+		
+		    if (chcelAutoStart === 'true') {
+		        const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
+		        const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
+		        
+		        if (savedRadioUrl && savedRadioType) {
+		            setTimeout(() => {
+		                // Pokus o reštart rádia
+		                playRadio(savedRadioUrl, null, savedRadioType);
+		                
+		                // Ošetrenie pre iOS (ak prehliadač zablokuje autoplay po reloadu)
+		                if (typeof audio !== 'undefined' && audio) {
+		                    const playPromise = audio.play();
+		                    if (playPromise !== undefined) {
+		                        playPromise.catch(error => {
+		                            console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
+		                        });
+		                    }
+		                }
+		            }, 800);
+		        }
+		    }
+		}
+		
+		// 1. Spustenie kontroly pri načítaní stránky
+		skontrolujNochnuAktualizaciu();
+		skontrolujAutoStartRadiaPoReloadu();
+		
+		// 2. Pravidelná kontrola každú minútu
+		setInterval(skontrolujNochnuAktualizaciu, 60000);
+		
+		// 3. Kontrola pri prebudení displeja
+		document.addEventListener('visibilitychange', () => {
+		    if (document.visibilityState === 'visible') {
+		        skontrolujNochnuAktualizaciu();
+		    }
+		});
 		
 </script>
 </body>
