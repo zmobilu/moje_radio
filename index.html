@@ -719,41 +719,46 @@
 	let weatherOpenedFrom = ""; 
 	        
 	async function updateNameday() {
-    const now = new Date();
-    const mm = String(now.getMonth() + 1).padStart(2, '0');
-    const dd = String(now.getDate()).padStart(2, '0');
-    const targetDate = `${mm}-${dd}`;
-    const dnesnyFormatnyDatum = `${now.getDate()}.${now.getMonth() + 1}.`;
-
-    if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
-        return; 
-    }
-    try {
-        const url = 'https://raw.githubusercontent.com/spacek/slovensky-kalendar-menin/master/sk-meniny.csv';
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Súbor nedostupný');
-        const text = await response.text();
-        const lines = text.split('\n');
-        let found = "";
-        
-        for (let line of lines) {
-            if (line.includes(targetDate)) {
-                const parts = line.split(/[;,]/);
-                if (parts.length > 1) {
-                    found = parts[1].trim();
-                }
-                break;
-            }
-        }
-        dnesneMeno = found;
-        if (dnesneMeno !== "") {
-            poslednyDatumMenin = dnesnyFormatnyDatum;
-        }
-    } catch (e) { 
-        console.log("Chyba menín:", e); 
-        dnesneMeno = ""; 
-    }
-}
+	    const now = new Date();
+	    const currentMonth = String(now.getMonth() + 1);
+	    const currentDay = String(now.getDate());
+	    const dnesnyFormatnyDatum = `${currentDay}.${currentMonth}.`;
+	
+	    if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
+	        return; 
+	    }
+	    try {
+	        const response = await fetch('./meniny.csv');
+	        if (!response.ok) throw new Error('Súbor meniny.csv nedostupný');
+	        const text = await response.text();
+	        const lines = text.split('\n');
+	        let found = "";
+	        
+	        for (let line of lines) {
+	            const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+	            if (parts.length >= 3) {
+	                const month = parts[0].trim();
+	                const day = parts[1].trim();
+	                
+	                if (month === currentMonth && day === currentDay) {
+	                    // Odstránenie úvodoviek a nahradenie čiarok medzerami
+	                    found = parts[2]
+	                        .replace(/"/g, '')
+	                        .replace(/,\s*/g, ' ')
+	                        .trim();
+	                    break;
+	                }
+	            }
+	        }
+	        dnesneMeno = found;
+	        if (dnesneMeno !== "") {
+	            poslednyDatumMenin = dnesnyFormatnyDatum;
+	        }
+	    } catch (e) { 
+	        console.log("Chyba menín:", e); 
+	        dnesneMeno = ""; 
+	    }
+	}
         
     // Globálna premenná pre aktuálne stiahnutú skladbu
     window.currentSongTitle = "";
