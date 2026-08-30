@@ -2,8 +2,11 @@
 <html lang="sk">
 <head>
     <script>
-      // Ak si používateľ zvolil V2, automaticky ho presmerujeme
-      if (localStorage.getItem('dashboard_version') === 'v2') {
+      // Zistenie zvolenej verzie pred vykreslením stránky
+      var savedVer = localStorage.getItem('dashboard_version');
+      if (savedVer === 'v3') {
+        window.location.replace('indexv3.html');
+      } else if (savedVer === 'v2') {
         window.location.replace('indexv2.html');
       }
     </script>
@@ -12,8 +15,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#000000">
     <title>📻</title>
+	<link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📻</text></svg>">
     <!-- Pre veľkú ikonu pri ukladaní v prehliadači a na plochu iPhonu -->
@@ -288,6 +291,7 @@
 		body.full-night-mode .ss-left-col,
 		body.full-night-mode #ss-radio-info,
 		body.full-night-mode .radio-info-wrapper,
+		body.full-night-mode #radio-nameday-line, /* PRIDANÉ: Skryje riadok mien v noci */
 		body.full-night-mode #integrated-spotify-container,
 		body.full-night-mode #settings-container { display: none !important; }
 		body.full-night-mode [id$="-links-container"], /* TENTO RIADOK skryje všetky sub-tlačidlá rádií */
@@ -390,8 +394,8 @@
     <div class="buttons-section">
         <button onpointerdown="stopRadio()" class="btn vypni" style="padding: 20px 0; min-height: 90px; width: 100%;"><i class="fa-solid fa-power-off"></i></button>
         <button onclick="playRadio('https://icecast.stv.livebox.sk/slovensko_128.mp3', this, 'slovensko')" class="btn rozhlas" style="background:#00547E;" data-type="slovensko"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSRo.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://funradio-proxy.zmobilu.workers.dev/fun192.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;" data-type="fun"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
-        <button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;" data-type="rock"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
+        <button onclick="playRadio('https://funradio-proxy.zmobilu.workers.dev/fun128.mp3', this, 'fun')" class="btn fun" style="background:#ffffff;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunRadio.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
+		<button onclick="playRadio('https://stream.bauermedia.sk/rock-hi.mp3', this, 'rock')" class="btn rock" style="background:#000000;" data-type="rock"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png" style="max-width:70%; max-height:60%; object-fit:contain;"></button>
         <button onclick="playRadio('https://ice.abradio.cz/blanikcz128.mp3', this, 'blanik')" class="btn blanik" style="background:#005ea6;" data-type="blanik"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png" style="max-width:80%; max-height:70%; object-fit:contain;"></button>
         <button onclick="playRadio('https://stream.sunshine-live.de/techno/mp3-192/', this, 'S-techno')" class="btn cro" style="background:#000000; color:#307CEB;" data-type="S-techno"><i class="fa-solid fa-bolt" style="font-size:60px;"></i></button>
         <button onclick="showSpotify()" class="btn spotify" style="background:#21D844;"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoSpotifySET.png" style="max-width:75%; max-height:70%; object-fit:contain;"></button>
@@ -478,19 +482,18 @@
                     <div id="hourly-chart-container" style="display: flex; justify-content: space-around; align-items: flex-end; height: 100%; width: 100%;"></div>
                 </div>
             </div>
-                        
-          <div class="radio-info-wrapper ss-hide">
-                <!-- Pridaný span pre jednoslovné mesto (bude sa farbiť dynamicky) -->
+         
+                <!-- Riadok 1: Mesto | Teplota | Dátum (vyčistené od pomlčiek a starého názvu rádia) -->
+            <div class="radio-info-wrapper ss-hide">
                 <span id="weather-city-mini" style="font-weight: 500; text-transform: uppercase;">---</span>
                 <span class="separator">|</span>
                 <span id="weather-temp-mini">--°C</span>
                 <span class="separator">|</span>
                 <span id="radio-date">--.--.</span>
-                <span class="separator">|</span>
-                <span id="radio-label" style="color:#888;">Radio 1</span>
-                <span class="separator">|</span>
-                <span id="radio-name">---</span>
             </div>
+
+            <!-- Riadok 2: Samostatné meniny pod hodinami (rovnaká veľkosť 3.5vw a font ako riadok vyššie) -->
+            <div id="radio-nameday-line" class="ss-hide" style="margin-top: 2px; font-size: 3.5vw; font-weight: 400; text-transform: uppercase; text-align: center; letter-spacing: 1px;"></div>
 
             <div id="integrated-spotify-container" class="ss-hide" style="display: none; width: 100%; margin-top: 15px; padding: 0 10px; box-sizing: border-box;">
                 <iframe id="spotify-player-frame" src="" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 12px; border: none;"></iframe>
@@ -645,6 +648,7 @@
 	    
 	    const hodinyEl = document.getElementById('time');
 	    const infoRiadokEl = document.querySelector('.radio-info-wrapper');
+		const namedayLineEl = document.getElementById('radio-nameday-line');
 	    const spotifyContainer = document.getElementById('spotify-links-container');
 	    
 	    if (spotifyFrame) spotifyFrame.src = "";
@@ -654,6 +658,7 @@
 	        settingsBox.style.display = 'none';
 	        if (hodinyEl) hodinyEl.style.display = 'flex';
 	        if (infoRiadokEl) infoRiadokEl.style.display = 'flex';
+			if (namedayLineEl) namedayLineEl.style.display = 'block'; // Znova zobrazí riadok mien
 	        if (spotifyContainer) spotifyContainer.style.display = 'flex'; // Vráti lištu playlistov
 	        currentPlayingType = "spotify";
 	    } else {
@@ -661,6 +666,7 @@
 	        settingsBox.style.display = 'block';
 	        if (hodinyEl) hodinyEl.style.display = 'none';
 	        if (infoRiadokEl) infoRiadokEl.style.display = 'none';
+			if (namedayLineEl) namedayLineEl.style.display = 'none'; // Schová riadok mien v nastaveniach
 	        if (spotifyContainer) spotifyContainer.style.display = 'none'; // ÚPLNE schová lištu playlistov s kolieskom
 	        currentPlayingType = "settings";
 	    }
@@ -713,53 +719,59 @@
 	const WEATHER_CODES = { 0: 'fa-sun', 1: 'fa-cloud-sun', 2: 'fa-cloud-sun', 3: 'fa-cloud', 45: 'fa-smog', 48: 'fa-smog', 51: 'fa-cloud-rain', 61: 'fa-cloud-showers-heavy', 71: 'fa-snowflake', 95: 'fa-bolt' };
 	const WEATHER_COLORS = { 0: '#ffcc00', 1: '#ffdb58', 2: '#aaa', 3: '#888', 45: '#777', 51: '#4dabff', 61: '#007bff', 71: '#fff', 95: '#ffeb3b' };
 	
-	let dnesneMeno = ""; 
+	let dnesneMenoPrve = "";
+	let dnesneMenaVsetky = "";
 	let poslednyDatumMenin = "";
 	let weatherDataBackup = null; 
 	let currentPlayingType = ""; 
 	let weatherOpenedFrom = ""; 
 	        
 	async function updateNameday() {
-	    const now = new Date();
-	    const currentMonth = String(now.getMonth() + 1);
-	    const currentDay = String(now.getDate());
-	    const dnesnyFormatnyDatum = `${currentDay}.${currentMonth}.`;
-	
-	    if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMeno !== "") {
-	        return; 
-	    }
-	    try {
-	        const response = await fetch('./meniny.csv');
-	        if (!response.ok) throw new Error('Súbor meniny.csv nedostupný');
-	        const text = await response.text();
-	        const lines = text.split('\n');
-	        let found = "";
-	        
-	        for (let line of lines) {
-	            const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-	            if (parts.length >= 3) {
-	                const month = parts[0].trim();
-	                const day = parts[1].trim();
-	                
-	                if (month === currentMonth && day === currentDay) {
-	                    // Odstránenie úvodoviek a nahradenie čiarok medzerami
-	                    found = parts[2]
-	                        .replace(/"/g, '')
-	                        .replace(/,\s*/g, ' ')
-	                        .trim();
-	                    break;
-	                }
-	            }
-	        }
-	        dnesneMeno = found;
-	        if (dnesneMeno !== "") {
-	            poslednyDatumMenin = dnesnyFormatnyDatum;
-	        }
-	    } catch (e) { 
-	        console.log("Chyba menín:", e); 
-	        dnesneMeno = ""; 
-	    }
-	}
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentDay = now.getDate();
+    const dnesnyFormatnyDatum = `${currentDay}.${currentMonth}.`;
+
+    if (poslednyDatumMenin === dnesnyFormatnyDatum && dnesneMenoPrve !== "") {
+        return; 
+    }
+
+    try {
+        // Načítanie lokálneho súboru meniny.csv z rovnakého adresára ako index.html
+        const response = await fetch('meniny.csv?t=' + Date.now());
+        if (!response.ok) throw new Error('Súbor meniny.csv nedostupný');
+        const text = await response.text();
+        const lines = text.split('\n');
+
+        let foundNames = "";
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line || line.startsWith('Month')) continue;
+
+            // Spracovanie CSV riadku (podpora pre úvodzovky v "Alexandra,Sandra,Karina")
+            const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+            if (parts && parts.length >= 3) {
+                const m = parseInt(parts[0].replace(/"/g, ''), 10);
+                const d = parseInt(parts[1].replace(/"/g, ''), 10);
+
+                if (m === currentMonth && d === currentDay) {
+                    foundNames = parts[2].replace(/"/g, '').trim();
+                    break;
+                }
+            }
+        }
+
+        if (foundNames) {
+            dnesneMenaVsetky = foundNames;
+            // Prvé meno zo zoznamu pre šetrič
+            dnesneMenoPrve = foundNames.split(',')[0].trim();
+            poslednyDatumMenin = dnesnyFormatnyDatum;
+        }
+    } catch (e) { 
+        console.log("Chyba načítania menín:", e); 
+    }
+}
         
     // Globálna premenná pre aktuálne stiahnutú skladbu
     window.currentSongTitle = "";
@@ -839,7 +851,24 @@ function aktualizujTitulokStranky() {
     document.title = `${weatherEmoji} ${tempText} | ${radioText}`;
 }
 let nocnyRezimSnoozeDo = 0;
+// --- POMOCNÁ FUNKCIA PRE URČENIE TIEEDY FARBY MENA ---
+    function dajFarbuMena(meno) {
+        if (!meno) return '';
+        const menoLower = meno.toLowerCase().trim();
+        const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
 
+        if (skontroluj(RODINA)) return 'name-family';
+        if (skontroluj(MOJE_MENA)) return 'name-moje';
+        if (skontroluj(KOLEGOVIA)) return 'name-colleagues';
+        if (skontroluj(SPOLUZIACI)) return 'name-classmates';
+
+        const poslednePismeno = menoLower.slice(-1);
+        const vynimky = ['gejza', 'attila', 'boba'];
+        if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) {
+            return 'name-female';
+        }
+        return 'name-male';
+    }
 function updateClock() {
     const now = new Date();
     let h = String(now.getHours()).padStart(2, '0');
@@ -904,32 +933,24 @@ function updateClock() {
     document.getElementById('date-display').textContent = formattedDate;
     document.getElementById('radio-date').textContent = formattedDate;
     
+    // --- ZOBRAZENIE A VYFARBENIE MENÍN ---
     const menoElementSS = document.getElementById('day-display');
-    const menoElementRadio = document.getElementById('radio-name');
-    
-    if (menoElementSS) menoElementSS.textContent = dnesneMeno;
-    if (menoElementRadio) menoElementRadio.textContent = dnesneMeno;
+    const menoElementRiadok = document.getElementById('radio-nameday-line');
 
-    if (dnesneMeno) {
-        const listyTried = [menoElementSS, menoElementRadio];
-        const menoLower = dnesneMeno.toLowerCase().trim();
-
-        listyTried.forEach(el => {
-            if (!el) return;
-            el.classList.remove('name-female', 'name-male', 'name-moje', 'name-family', 'name-colleagues', 'name-classmates');
-            el.style.color = '';
-            const skontroluj = (zoznam) => zoznam.some(m => m.toLowerCase().trim() === menoLower);
-            if (skontroluj(RODINA)) { el.classList.add('name-family'); } 
-            else if (skontroluj(MOJE_MENA)) { el.classList.add('name-moje'); } 
-            else if (skontroluj(KOLEGOVIA)) { el.classList.add('name-colleagues'); } 
-            else if (skontroluj(SPOLUZIACI)) { el.classList.add('name-classmates'); } 
-            else {
-                const poslednePismeno = menoLower.slice(-1);
-                const vynimky = ['gejza', 'attila', 'boba'];
-                if (poslednePismeno === 'a' && !vynimky.includes(menoLower)) { el.classList.add('name-female'); } else { el.classList.add('name-male'); }
-            }
-        });
+    // 1. Šetrič obrazovky: Zobrazí iba PRVÉ meno zo zoznamu
+    if (menoElementSS && dnesneMenoPrve) {
+        menoElementSS.textContent = dnesneMenoPrve;
+        menoElementSS.className = 'ss-day ' + dajFarbuMena(dnesneMenoPrve);
     }
+
+    // 2. Samostatný riadok pod mestom/teplotou: Zobrazí VŠETKY mená a KAŽDÉ vyfarbí osobitne
+    if (menoElementRiadok && dnesneMenaVsetky) {
+        const menaArray = dnesneMenaVsetky.split(',').map(m => m.trim());
+        menoElementRiadok.innerHTML = menaArray
+            .map(m => `<span class="${dajFarbuMena(m)}">${m.toUpperCase()}</span>`)
+            .join('<span style="color:#555; margin: 0 4px;">,</span> ');
+    }
+
     aktualizujTitulokStranky();
 }
 
