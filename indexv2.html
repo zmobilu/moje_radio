@@ -842,7 +842,7 @@
             
             /* Pridanie jemnej ikony grafu k popisu počasia */
             #mainWeatherDesc::after {
-                content: " \f201"; /* FontAwesome ikona grafu */
+                content: " \f7c0"; /* FontAwesome ikona fa-satellite-dish */
                 font-family: "Font Awesome 6 Free";
                 font-weight: 900;
                 font-size: 0.75em;
@@ -1192,6 +1192,11 @@
                         <i class="fa-solid fa-circle-arrow-left label-icon" title="Verzia 1"></i>
                         <button onclick="prejdiNaVerziu1(); event.stopPropagation();" style="width: 100%;">Návrat na verziu 1</button>
                     </div>
+					<!-- Tlačidlo Návrat na Verziu 3 -->
+                    <div class="settings-night-row">
+                        <i class="fa-solid fa-circle-arrow-left label-icon" title="Verzia 3"></i>
+                        <button onclick="prejdiNaVerziu3(); event.stopPropagation();" style="width: 100%;">Prechod na verziu 3</button>
+                    </div>
                 </div>
             </div>
          </main>
@@ -1289,6 +1294,14 @@
             // Presmerujeme na index.html
             window.location.href = 'index.html';
         }
+	
+		function prejdiNaVerziu3() {
+		    // Zmeníme nastavenú verziu v pamäti na v3
+		    localStorage.setItem('dashboard_version', 'v3');
+		            
+		    // Presmerujeme na indexv3.html
+		    window.location.href = 'indexv3.html';
+	    }
 
         function getWeatherText(wCode) { return WEATHER_TEXTS_SK[wCode] || 'Premenlivé'; }
 
@@ -1310,7 +1323,7 @@
             { id: "fun8090", name: "Fun 80-90", url: "https://funradio-proxy.zmobilu.workers.dev/80-90-128.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun8090.png", style: "background:#111;", category: "Fun Kontajner" },
             { id: "funczsk", name: "Fun CZ-SK", url: "https://funradio-proxy.zmobilu.workers.dev/cs128.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoFunCZSK.png", style: "background:#111;", category: "Fun Kontajner" },
             { id: "milenialky", name: "Milenialky", url: "https://funradio-proxy.zmobilu.workers.dev/milenialky128.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoFun2000.png", style: "background:#111;", category: "Fun Kontajner" },
-           
+            
             { id: "rock", name: "Radio rock", url: "https://stream.bauermedia.sk/rock-hi.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoAntenaROCK.png", style: "background:#000000;", category: "Komerčné & Ostatné" },
             { id: "blanik", name: "Blaník", url: "https://ice.abradio.cz/blanikcz128.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoBlanik.png", style: "background:#005ea6;", category: "Komerčné & Ostatné" },
             { id: "expres", name: "Expres", url: "https://stream.bauermedia.sk/expres-hi.mp3", img: "https://raw.githubusercontent.com/zmobilu/assets/main/LogoExpress.png", style: "background:#111;", category: "Komerčné & Ostatné" },
@@ -1887,6 +1900,14 @@
                 }
             }
         }
+		// Spustí tvoju funkciu toggleFullscreenMode pri prvom dotyku IBA na mobilných zariadeniach
+		document.addEventListener('click', function() {
+		    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window);
+		    
+		    if (isMobile && !document.fullscreenElement && !document.webkitFullscreenElement) {
+		        toggleFullscreenMode();
+		    }
+		}, { once: true });
         
         function toggleSettingsMode() {
             isSettingsModeActive = !isSettingsModeActive;
@@ -2639,11 +2660,15 @@
 			    try {
 			        const res = await fetch('index.html?t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
 			        if (res.ok) {
-			            // 1. Uložíme dnešný deň do pamäte
-			            localStorage.setItem('poslednaNocnaAktualizacia', new Date().getDate().toString());
+			            const dnesnyDen = new Date().getDate().toString();
+			            localStorage.setItem('poslednaNocnaAktualizacia', dnesnyDen);
+			            poslednaNocnaKontrolaDen = dnesnyDen;
 			            
-			            // 2. Ak práve hrá rádio alebo hudba, uložíme príznak, že sa má po reloade auto-spustiť
-			            if (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "settings") {
+			            // 2. Kontrola, či audio REÁLNE hrá (nie je paused a má aktívny stream)
+			            const isAudioPlaying = typeof audio !== 'undefined' && audio && !audio.paused && audio.currentTime > 0 && audio.readyState > 2;
+			            const hasValidType = currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "settings";
+			
+			            if (isAudioPlaying && hasValidType) {
 			                localStorage.setItem('kiosk_autorestart_radio', 'true');
 			            } else {
 			                localStorage.removeItem('kiosk_autorestart_radio');
@@ -2672,9 +2697,12 @@
 			
 			function skontrolujAutoStartRadiaPoReloadu() {
 			    const chcelAutoStart = localStorage.getItem('kiosk_autorestart_radio');
+			    
+			    // IHNEĎ zmažeme príznak z pamäte! 
+			    // Ak by prišiel akýkoľvek iný/náhodný refresh, rádio už zbytočne nezačne hrať.
+			    localStorage.removeItem('kiosk_autorestart_radio');
+			
 			    if (chcelAutoStart === 'true') {
-			        localStorage.removeItem('kiosk_autorestart_radio');
-			        
 			        const savedRadioUrl = localStorage.getItem('kiosk_last_radio_url');
 			        const savedRadioType = localStorage.getItem('kiosk_last_radio_type');
 			        
@@ -2684,11 +2712,13 @@
 			                playRadio(savedRadioUrl, null, savedRadioType);
 			                
 			                // Ošetrenie pre iOS (ak prehliadač zablokuje autoplay po reloadu)
-			                const playPromise = audio.play();
-			                if (playPromise !== undefined) {
-			                    playPromise.catch(error => {
-			                        console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
-			                    });
+			                if (typeof audio !== 'undefined' && audio) {
+			                    const playPromise = audio.play();
+			                    if (playPromise !== undefined) {
+			                        playPromise.catch(error => {
+			                            console.log("Autoplay bol prehliadačom blokovaný, vyžaduje sa dotyk:", error);
+			                        });
+			                    }
 			                }
 			            }, 800);
 			        }
