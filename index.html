@@ -559,10 +559,7 @@
             </div>
 
             <div id="komerce-links-container" class="ss-hide" style="display: none; flex-direction: row; justify-content: center; gap: 12px; margin-top: 25px; width: 100%;">
-                <button onclick="playRadio('https://stream.bauermedia.sk/expres-hi.mp3', this, 'expres')" class="sub-btn" data-type="expres"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoExpress.png"></button>
-                <button onclick="playRadio('https://stream.bauermedia.sk/europa2-hi.mp3', this, 'europa2')" class="sub-btn" data-type="europa2"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoEuropa2.png"></button>
-                <button onclick="playRadio('https://stream.bauermedia.sk/melody-hi.mp3', this, 'melody')" class="sub-btn" data-type="melody"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoMelody.png"></button>
-                <button onclick="playRadio('https://stream.radiovlna.sk/vlna-hi.mp3', this, 'vlna')" class="sub-btn" data-type="vlna"><img src="https://raw.githubusercontent.com/zmobilu/assets/main/LogoVlna.png"></button>
+                
             </div>
 
            <div id="cro-links-container" class="ss-hide">
@@ -1273,11 +1270,11 @@ const audio = document.getElementById('audioPlayer');
         const hlavnyFun = document.querySelector('.btn.fun');
         if (hlavnyFun) hlavnyFun.classList.add('playing');
     }
-   if (['expres', 'europa2', 'melody', 'vlna', 'blanik', 'topolcany'].includes(type)) {
+   if (['rock', 'expres', 'europa2', 'melody', 'vlna'].includes(type)) {
         const hlavnyRock = document.querySelector('.btn.rock');
         if (hlavnyRock) hlavnyRock.classList.add('playing');
     }
-    if (['expres', 'europa2', 'melody', 'vlna', 'blanik', 'topolcany'].includes(type)) {
+    if (['blanik', 'topolcany'].includes(type)) {
         const hlavnyBlanik = document.querySelector('.btn.blanik');
         if (hlavnyBlanik) hlavnyBlanik.classList.add('playing');
     }
@@ -1310,9 +1307,9 @@ function aktualizujSubPanely(type) {
 
     if (slovenskoContainer) slovenskoContainer.style.display = ['slovensko', 'fm', 'devin', 'litera', 'junior', 'regina'].includes(type) ? 'flex' : 'none';
     if (funContainer) funContainer.style.display = ['fun', 'funchill', 'funczsk', 'fun8090', 'milenialky'].includes(type) ? 'flex' : 'none';
-    if (komerceContainer) komerceContainer.style.display = ['blanik', 'expres', 'europa2', 'melody', 'vlna', 'topolcany'].includes(type) ? 'flex' : 'none';
+    if (komerceContainer) komerceContainer.style.display = ['blanik',  'topolcany'].includes(type) ? 'flex' : 'none';
     if (spotifyContainer) spotifyContainer.style.display = (type === 'spotify' || type === 'settings') ? 'flex' : 'none';
-    if (rockContainer) rockContainer.style.display = ['rockrepublika', 'beat', 'casrock'].includes(type) ? 'flex' : 'none';
+    if (rockContainer) rockContainer.style.display = ['expres', 'europa2', 'melody', 'vlna'].includes(type) ? 'flex' : 'none';
     if (croContainer) croContainer.style.display = ['S-techno', 'schranz', 'melodic', 'h-techno', 'Drumcode'].includes(type) ? 'flex' : 'none';
 }
     
