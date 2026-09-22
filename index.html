@@ -78,24 +78,24 @@
         .volume-panel-container {
             position: absolute !important;
             top: 65px !important; /* Pozícia presne pod tlačidlom V2 */
-            right: 17px !important;
+            right: 15px !important;
             z-index: 999999 !important;
             display: none; /* <--- Zmenené z flex na none */
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            width: 44px;
+            gap: 12px;
+            width: 56px;
         }
 
-        /* Tlačidlá + a - */
+        /* Zväčšené tlačidlá + a - */
         .vol-btn {
-            width: 40px;
-            height: 40px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: #111;
-            border: 1px solid #222;
-            color: #666;
-            font-size: 20px;
+            background: #151515;
+            border: 2px solid #333;
+            color: #ff9f0a; /* Výraznejšia oranžová pre lepšiu viditeľnosť */
+            font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             display: flex;
@@ -103,27 +103,29 @@
             justify-content: center;
             transition: color 0.2s, background 0.2s, border-color 0.2s;
             padding: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
 
         .vol-btn:active {
-            color: #ff9f0a;
+            color: #fff;
             border-color: #ff9f0a;
-            background: #1a1a1a;
+            background: #ff9f0a;
         }
 
+        /* Predĺžený obal pre slider */
         .volume-slider-wrapper {
-            height: 100px; /* Dĺžka slidera */
+            height: 180px; /* Natiahnuté do výšky smerom dole */
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 2px 0;
+            margin: 4px 0;
         }
 
-        /* Vertikálny slider */
+        /* Hrubší a väčší vertikálny slider */
         #mainVolumeSlider {
             -webkit-appearance: slider-vertical;
             appearance: slider-vertical;
-            width: 6px;
+            width: 12px; /* Hrubšia čiara pre ľahší dotyk */
             height: 100%;
             accent-color: #ff9f0a;
             cursor: pointer;
