@@ -459,7 +459,7 @@
 
 		/* Sivý vzhľad panela pri zastavenom rádiu (STOP) */
 		.night-player-container.stopped-state {
-		  
+		    display: flex !important;
 		    color: #555555 !important;
 		    opacity: 0.65;
 		}
@@ -520,31 +520,22 @@
     
         #nightBottomInfo { display: none; }
 
-       /* --- INTEGROVANÝ PREHRÁVAČ --- */
-		.night-player-container {
-		    display: none !important;
-		    flex-direction: column;
-		    align-items: center;
-		    justify-content: center;
-		    width: 100%;
-		    color: var(--night-color);
-		    margin-top: 1.5vh;
-		}
-		
-		/* 1. Zobrazenie v NOČNOM režime (vždy) */
-		body.full-night-mode .night-player-container {
-		    display: flex !important;
-		}
-		
-		/* 2. Zobrazenie v DENNOM režime pri SKRYTOM sidebare (vždy - biely aj sivý STOP stav) */
-		body:not(.full-night-mode).sidebar-hidden .night-player-container {
-		    display: flex !important;
-		}
-		
-		/* 3. V DENNOM režime pri VIDITEĽNOM sidebare sa prehrávač NEZOBRAZUJE */
-		body:not(.full-night-mode):not(.sidebar-hidden) .night-player-container {
-		    display: none !important;
-		}
+       /* --- INTEGROVANÝ NOČNÝ PREHRÁVAČ --- */
+        .night-player-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            color: var(--night-color);
+            margin-top: 1.5vh;
+        }
+
+        /* Zobrazenie v noci ALEBO cez deň pri schovanom paneli */
+        body.full-night-mode .night-player-container.active-playing,
+        body.sidebar-hidden .night-player-container.active-playing {
+            display: flex !important;
+        }
 
         /* V dennom režime: biela farba a zmenšenie písma pre denné rozloženie */
         body:not(.full-night-mode).sidebar-hidden .night-player-container {
@@ -614,7 +605,7 @@
 
             /* 1. Definícia prechodov (transition) pre plynulý fade-in / fade-out */
             body .placeholder-view,
-            /* body #player-now-playing,*/
+            body #player-now-playing,
             body #nightBottomInfo,
             body .night-player-container {
                 transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out !important;
@@ -658,7 +649,7 @@
             body.full-night-mode .big-clock-hours, 
             body.full-night-mode .big-clock-minutes, 
             body.full-night-mode #nightBottomInfo, 
-           /* body.full-night-mode #player-now-playing { */
+            body.full-night-mode #player-now-playing { 
                 color: var(--night-color) !important; 
             }
             
@@ -1205,10 +1196,10 @@
             border-color: var(--night-color) !important;
             color: var(--night-color) !important;
         }
-        /*#player-now-playing {
+        #player-now-playing {
             font-size: clamp(12px, 2.2vh, 18px) !important;
             margin-top: 0.5vh !important; 
-            margin-bottom: 0 !important;*/
+            margin-bottom: 0 !important;
         
             /* Zabezpečí, že prvok drží výšku jedného riadku aj vtedy, keď je úplne prázdny */
             display: block !important; 
@@ -1432,7 +1423,7 @@
             .big-clock-date-wrapper, 
             .main-weather-container, 
             #nightBottomInfo, 
-            /*#player-now-playing,*/
+            #player-now-playing,
             #settingsToggleBtn {
                 transition: opacity 1.5s ease-in-out, background-color 1.5s ease-in-out, color 1.5s ease-in-out, transform 1.5s ease-in-out !important;
             }
@@ -1471,7 +1462,7 @@
         		margin-bottom: 0.5vh !important;
 			}
 			
-			/*body:not(.full-night-mode).sidebar-hidden #player-now-playing { order: 4 !important; }*/
+			body:not(.full-night-mode).sidebar-hidden #player-now-playing { order: 4 !important; }
 			body:not(.full-night-mode).sidebar-hidden .main-weather-container { order: 5 !important; }
 			        
     </style>
@@ -1499,7 +1490,7 @@
                     <span class="big-clock-nameday" id="bigNameday">---</span>
                 </div>
 
-               <!-- <div id="player-now-playing" style="color: #fff; text-align: center;"></div> -->
+                <div id="player-now-playing" style="color: #fff; text-align: center;"></div>
                 
 				<!-- Skrytý Spotify prehrávač, ktorý pri aktivácii prekryje počasie -->
 				<div id="spotifyPlayerContainer" style="display: none; width: 100%; height: 352px; margin-top: 1vh; border-radius: 12px; overflow: hidden; position: relative; z-index: 50;">
@@ -1937,7 +1928,7 @@
 					
 					// Skontrolujeme okamžité zrážky z current + najbližších 15 minút
 					const currentRain = (data.current.precipitation || 0) + (data.current.rain || 0) + (data.current.showers || 0);
-					const minutelyRain = data?.minutely_15?.precipitation?.[0] || 0;
+					const minutelyRain = data.minutely_15 && data.minutely_15.precipitation ? (data.minutely_15.precipitation[0] || 0) : 0;
 					
 					let code = data.current.weather_code;
 					
@@ -2775,11 +2766,11 @@
 		    const item = DATABASE.find(d => d.id === lastId);
 		
 		    if (item && item.url) {
-		        // Hrá iba vtedy, ak je nastavený typ A ZROVEŇ audio nezamrzlo/nie je pozastavené
-		        const isPlaying = currentPlayingType !== "" && audio && !audio.paused && audio.src !== "";
+		        const isPlaying = audio && !audio.paused && audio.src !== "";
 		
 		        let imgHtml = item.img ? `<img src="${item.img}">` : `<i class="${item.icon || 'fa-solid fa-radio'}"></i>`;
 		        
+		        // Kliknutie na ikonu/názov rádia stanicu zastaví (STOP) alebo zapne
 		        if (pInfo) {
 		            pInfo.innerHTML = `${imgHtml} <span>${item.name}</span>`;
 		            pInfo.style.cursor = "pointer";
@@ -2790,7 +2781,7 @@
 		        }
 		
 		        if (isPlaying) {
-		            // HRAJÚCI STAV
+		            // HRAJÚCI STAV (Biely)
 		            pBox.classList.add('active-playing');
 		            pBox.classList.remove('stopped-state');
 		
@@ -2802,9 +2793,8 @@
 		                }
 		            }
 		        } else {
-		            // ZASTAVENÝ STAV (STOP) - KRITICKÝ KROK: musíme odobrať 'active-playing'
-		            pBox.classList.remove('active-playing');
-		            pBox.classList.add('stopped-state');
+		            // ZASTAVENÝ STAV (Sivý - STOP)
+		            pBox.classList.add('active-playing', 'stopped-state');
 		
 		            if (pBtn) {
 		                pBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
@@ -2818,27 +2808,19 @@
 		    if (!item) return;
 		
 		    if (currentPlayingType === item.id && audio && !audio.paused) {
-		        // Zastavenie rádia (STOP)
+		        // Zastavenie rádia (STOP) -> Okamžité vyčistenie streamu a prechod do sivého stavu
 		        manualnePozastavene = true;
-		        currentPlayingType = ""; // Reset hrajúceho typu
-		
-		        audio.pause();
+		        currentPlayingType = ""; // Zabezpečí odstránenie oranžového rámika
+				
+				audio.pause();
 		        audio.src = "";
 		        audio.load();
-		
-		       // const textNow = document.getElementById("player-now-playing");
-		        // if (textNow) textNow.innerText = "";
-		
-		        // Skrytie bežca hlasitosti
+		        
+				document.getElementById("player-now-playing").innerText = "";
+
+				// Skrytie bežca hlasitosti
 		        const volPanel = document.getElementById('volumePanel');
 		        if (volPanel) volPanel.style.display = 'none';
-		
-		        // Odstránime triedu active-playing z boxu prehrávača
-		        const pBox = document.getElementById('nightPlayer');
-		        if (pBox) {
-		            pBox.classList.remove('active-playing');
-		            pBox.classList.add('stopped-state');
-		        }
 		
 		        renderSidebarFavorites();
 		        aktualizujNochnyPrehravacVizual();
@@ -2954,8 +2936,8 @@
 		    }
 		    
 		    // 4. Vyčistíme text práve hrajúcej pesničky na displeji
-		    // const textElement = document.getElementById("player-now-playing");
-		    // if (textElement) textElement.innerText = "";
+		    const textElement = document.getElementById("player-now-playing");
+		    if (textElement) textElement.innerText = "";
 		
 		    // 5. Označíme aktuálnu aplikáciu a aktualizujeme obľúbené
 		    currentPlayingType = id;
