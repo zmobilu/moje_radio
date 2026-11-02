@@ -2818,19 +2818,27 @@
 		    if (!item) return;
 		
 		    if (currentPlayingType === item.id && audio && !audio.paused) {
-		        // Zastavenie rádia (STOP) -> Okamžité vyčistenie streamu a prechod do sivého stavu
+		        // Zastavenie rádia (STOP)
 		        manualnePozastavene = true;
-		        currentPlayingType = ""; // Zabezpečí odstránenie oranžového rámika
-				
-				audio.pause();
+		        currentPlayingType = ""; // Reset hrajúceho typu
+		
+		        audio.pause();
 		        audio.src = "";
 		        audio.load();
-		        
-				document.getElementById("player-now-playing").innerText = "";
-
-				// Skrytie bežca hlasitosti
+		
+		        const textNow = document.getElementById("player-now-playing");
+		        if (textNow) textNow.innerText = "";
+		
+		        // Skrytie bežca hlasitosti
 		        const volPanel = document.getElementById('volumePanel');
 		        if (volPanel) volPanel.style.display = 'none';
+		
+		        // Odstránime triedu active-playing z boxu prehrávača
+		        const pBox = document.getElementById('nightPlayer');
+		        if (pBox) {
+		            pBox.classList.remove('active-playing');
+		            pBox.classList.add('stopped-state');
+		        }
 		
 		        renderSidebarFavorites();
 		        aktualizujNochnyPrehravacVizual();
