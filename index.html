@@ -208,6 +208,10 @@
 
         .btn { display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; 
               border: none; background: #151515; color: white; border-radius: 18px; cursor: pointer; font-size: 14px; }
+		 .btn img {
+		    transform: scale(1.25); /* 1.15 = 115 % veľkosti, uprav podľa potreby napr. na 1.25 alebo 1.35 */
+		    transition: transform 0.2s ease;
+		}
         .vypni { background-color: #333; grid-column: span 2; }
         .vypni i { color: #eb0028; font-size: 65px; }
         .playing { border: 2px solid #ff9f0a !important; }
@@ -778,7 +782,10 @@
 				const id = slotFavoritesMain[i];
 				const item = DATABASE.find(d => d.id === id);
 				if (item && id !== null) {
-					let innerContent = item.img ? `<img src="${item.img}" style="max-width:90%; max-height:90%; object-fit:contain;">` : `<i class="${item.icon}" style="font-size:60px;"></i>`;
+					const imgScale = item.scale ? `transform: scale(${item.scale});` : '';
+						let innerContent = item.img 
+						    ? `<img src="${item.img}" style="max-width:90%; max-height:90%; object-fit:contain; ${imgScale}">` 
+						    : `<i class="${item.icon}" style="font-size:60px;"></i>`;
 					
 					if(item.id === 'spotify') {
 						container.innerHTML += `<button onclick="showSpotify()" class="btn spotify" style="${item.style}" data-type="spotify">${innerContent}</button>`;
