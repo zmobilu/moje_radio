@@ -173,10 +173,12 @@
 		    flex-direction: column;
 		    justify-content: space-between;
 		    align-items: center;
-		    height: 0.47em;       /* 2/3 výšky číslic (cap-height je ~0.71em) */
-		    width: 0.09em;        /* Minimálna šírka samotného stĺpca bodiek */
-		    margin: 0 0.01em;     /* Takmer nulový bočný okraj */
-		    flex-shrink: 0;
+		    height: 0.47em;       	/* 2/3 výšky číslic (cap-height je ~0.71em) */
+		    width: 0.05;        		/* Minimálna šírka samotného stĺpca bodiek */
+		    margin: 0.01;     			/* nulový bočný okraj */
+			overflow: visible;
+            position: relative;
+            flex-shrink: 0;
 		}
 		
 		.time-colon i {
@@ -279,7 +281,7 @@
             justify-content: space-between; 
             width: 100%; 
             box-sizing: border-box; 
-            margin-top: auto; 
+			margin-top: 0; /* <--- zmenené z 'auto' na '0' */
             margin-bottom: 3.5vh; 
             padding-left: 2vw; 
             padding-right: 0.5vw; 
@@ -313,57 +315,74 @@
         .name-classmates { color: #32CD32 !important; }  
         
         #ss-radio-info {
-		    display: none;
-		}
-		
-		body.screensaver-mode #ss-radio-info {
-		    position: relative;
-		    width: 100%;
-		    box-sizing: border-box;
-		    padding: 4px 2vw;
-		    margin: 7.5vh 0 0 0;     /* Rezerva pod natiahnutými hodinami, aby sa neprekrývali */
-		    font-size: 5.0vw;
-		    font-weight: 500;
-		    color: #ff9f0a;
-		    text-transform: uppercase;
-		    letter-spacing: 2px;
-		    display: flex !important;
-		    justify-content: space-between;
-		    align-items: center;
-		    z-index: 9999 !important;
-		}
-		 .ss-nav-arrow {
-		    padding: 10px 24px;
-		    cursor: pointer;
-		    color: #777;
-		    font-weight: 300;
-		    line-height: 1;
-		    transition: color 0.15s, transform 0.1s;
-		    user-select: none;
-		}
-		
-		.ss-nav-arrow:active {
-		    color: #ff9f0a;
-		    transform: scale(0.9);
-		}
-		
-		.ss-radio-center {
-		    display: inline-flex;
-		    align-items: center;
-		    justify-content: center;
-		    cursor: pointer;
-		    padding: 10px 14px;
-		    white-space: nowrap;
-		}
-        body.screensaver-mode #ss-radio-info { display: flex !important; }
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 2px 1.5vw;
+            margin: 2vh 0 0.5vh 0;  /* 1. číslo (2vh) = odstup od hodín | 3. číslo (0.5vh) = odstup od mesta/teploty */
+            font-size: 3.8vw;
+            font-weight: 500;
+            color: #ff9f0a;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 9999 !important;
+        }
+
+        body.screensaver-mode #ss-radio-info {
+            margin: auto 0 0.5vh 0; /* 'auto' = natlačí dole | 3. číslo (1.5vh) = presný odstup nad dátumom *//* <--- tu meníš tretie číslo (1vh, 5vh, 8vh...) */
+            font-size: 4.5vw;
+        }
+
+        .ss-nav-arrow {
+            padding: 4px 12px;
+            cursor: pointer;
+            color: #777;
+            font-weight: 400;
+            font-size: 0.85em;
+            line-height: 1;
+            transition: color 0.15s, transform 0.1s;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ss-nav-arrow.ss-fav-arrow {
+            color: #aaa;
+        }
+
+        .ss-nav-arrow:active {
+            color: #ff9f0a;
+            transform: scale(0.9);
+        }
+
+        .ss-radio-center {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 4px 10px;
+            white-space: nowrap;
+        }
         body.weather-details-mode #ss-radio-info { display: none !important; }
 
-        .ss-right-col { display: flex; flex-direction: column; justify-content: space-between !important; 
+        .ss-right-col { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between !important; 
             align-items: center; 
             background: #000; 
             padding: 0; 
             width: 70%; 
             border-left: 1px solid #1a1a1a; 
+        }
+
+        body:not(.screensaver-mode) .ss-right-col {
+            width: 100%;
+            border-left: none;
         }
         .current-weather-group { margin-top: 1vh; text-align: center; display: flex; flex-direction: column; align-items: center;}
         .meteo-icon-large { font-size: 12vw; margin-bottom: 5px; }
@@ -441,15 +460,16 @@
 		}
 		
 		body.full-night-mode #time {
-		    font-size: 42vw !important; /* Pôvodne 35vw - zväčšené hodiny */
-		    transform: scaleY(1.20) !important;
-		    letter-spacing: -0.5vw !important; /* Jemne upravené pre verziu bez dvojbodky */
-		    margin: 0 !important;
-		    padding: 0 !important;
-		    pointer-events: auto !important;
-		    display: flex !important;
-		    gap: 0 !important; /* Čas bez dvojbodky a medzery */
-		}
+            font-size: 42vw !important;
+            transform: scaleY(1.20) !important;
+            transform-origin: center !important;
+            letter-spacing: -0.5vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            pointer-events: auto !important;
+            display: flex !important;
+            gap: 0 !important;
+        }
 		
 		/* Použitie centrálnej farby pre všetky časti hodín */
 		body.full-night-mode .hours-part,
@@ -969,51 +989,43 @@
 			aktualizujTlacidlaAutoVypnutia();
         }
 		function prepniNastavenia() {
-    if (fpRetryTimer) {
-        clearInterval(fpRetryTimer);
-        fpRetryTimer = null;
-    }
-    audio.onerror = null;
-    audio.pause(); 
-    audio.removeAttribute('src');
-    audio.load();
-    
-    const volPanel = document.getElementById('volumePanel');
-    const settingsBox = document.getElementById('settings-container');
-    const spotifyFrame = document.getElementById('spotify-player-frame');
-    const btnSettings = document.getElementById('settingsToggleBtn');
-    const isVisible = settingsBox.style.display === 'block';
-    
-    const hodinyEl = document.getElementById('time');
-    const infoRiadokEl = document.querySelector('.radio-info-wrapper');
-    const namedayLineEl = document.getElementById('radio-nameday-line');
-    
-    if (spotifyFrame) spotifyFrame.src = "";
-    
-    if (isVisible) {
-        settingsBox.style.display = 'none';
-        if (btnSettings) btnSettings.classList.remove('active');
+            const volPanel = document.getElementById('volumePanel');
+            const settingsBox = document.getElementById('settings-container');
+            const spotifyBox = document.getElementById('integrated-spotify-container');
+            const btnSettings = document.getElementById('settingsToggleBtn');
+            const isVisible = settingsBox.style.display === 'block';
+            
+            const hodinyEl = document.getElementById('time');
+            const ssRadioInfoEl = document.getElementById('ss-radio-info');
+            const infoRiadokEl = document.querySelector('.radio-info-wrapper');
+            const namedayLineEl = document.getElementById('radio-nameday-line');
+            
+            if (isVisible) {
+                settingsBox.style.display = 'none';
+                if (btnSettings) btnSettings.classList.remove('active');
 
-        if (volPanel) volPanel.style.display = 'flex';
-        if (hodinyEl) hodinyEl.style.display = 'flex';
-        if (infoRiadokEl) infoRiadokEl.style.display = 'flex';
-        if (namedayLineEl) namedayLineEl.style.display = 'block'; 
-        
-        currentPlayingType = "";
-    } else {
-        document.body.classList.remove('weather-details-mode');
-        settingsBox.style.display = 'block';
-        if (btnSettings) btnSettings.classList.add('active');
+                if (hodinyEl) hodinyEl.style.display = 'flex';
+                if (ssRadioInfoEl) ssRadioInfoEl.style.display = '';
+                if (infoRiadokEl) infoRiadokEl.style.display = 'flex';
+                if (namedayLineEl) namedayLineEl.style.display = 'block';
+                
+                const hraRadio = currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "none" && currentPlayingType !== "spotify";
+                if (volPanel) volPanel.style.display = hraRadio ? 'flex' : 'none';
+                if (spotifyBox && currentPlayingType === 'spotify') spotifyBox.style.display = 'block';
+            } else {
+                document.body.classList.remove('weather-details-mode');
+                settingsBox.style.display = 'block';
+                if (btnSettings) btnSettings.classList.add('active');
 
-        if (volPanel) volPanel.style.display = 'none';
-        if (hodinyEl) hodinyEl.style.display = 'none';
-        if (infoRiadokEl) infoRiadokEl.style.display = 'none';
-        if (namedayLineEl) namedayLineEl.style.display = 'none'; 
-        
-        currentPlayingType = "settings";
-    }
-    aktualizujTitulokStranky();
-}
+                if (volPanel) volPanel.style.display = 'none';
+                if (hodinyEl) hodinyEl.style.display = 'none';
+                if (ssRadioInfoEl) ssRadioInfoEl.style.display = 'none';
+                if (infoRiadokEl) infoRiadokEl.style.display = 'none';
+                if (namedayLineEl) namedayLineEl.style.display = 'none';
+                if (spotifyBox) spotifyBox.style.display = 'none';
+            }
+            aktualizujTitulokStranky();
+        }
 	        
 	function zmenNastavenieCasu(typ) {
 	    let povodny = (typ === 'od') ? cfgNocOd : cfgNocDo;
@@ -1600,39 +1612,60 @@ function prepniDenGrafu(e, dayIndex) {
 		return plnyNazov.replace(/^(Rádio|Radio)[_\s]+/i, '').trim();
 	}
 	
-	// Vykreslí ovládací riadok: <<   NAZOV [power]   >>
-	function aktualizujSsRadioRiadok(jeZapnute, idRadia) {
-		const radioInfoEl = document.getElementById('ss-radio-info');
-		if (!radioInfoEl) return;
-	
-		const nazov = idRadia ? dajKratkyNazovRadia(idRadia) : 'ZAPNI';
-		const farbaTextu = jeZapnute ? 'opacity: 1; color: #ff9f0a;' : 'opacity: 0.65; color: #ff9f0a;';
-		const farbaIkony = jeZapnute ? '#eb0028' : '#555';
-	
-		radioInfoEl.innerHTML = `
-			<span class="ss-nav-arrow" onclick="event.stopPropagation(); prepniRadioVSetrici(-1);">&laquo;</span>
-			<span class="ss-radio-center" onclick="event.stopPropagation(); stopRadio();" style="${farbaTextu}">
-				${nazov} <i class="fa-solid fa-power-off" style="color: ${farbaIkony}; font-size: 0.8em; margin-left: 14px;"></i>
-			</span>
-			<span class="ss-nav-arrow" onclick="event.stopPropagation(); prepniRadioVSetrici(1);">&raquo;</span>
-		`;
-	}
-	
-	// Cyklicky prepína medzi všetkými streamami z DATABASE (vynechá Spotify)
-	function prepniRadioVSetrici(smer) {
-		const vsetkyStreamy = DATABASE.filter(item => item.url && item.id !== 'spotify');
-		if (vsetkyStreamy.length === 0) return;
-	
-		const aktualneId = (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "settings")
-			? currentPlayingType
-			: localStorage.getItem('kiosk_last_radio_type');
-	
-		let idx = vsetkyStreamy.findIndex(item => item.id === aktualneId);
-		idx = (idx === -1) ? 0 : (idx + smer + vsetkyStreamy.length) % vsetkyStreamy.length;
-	
-		const noveRadio = vsetkyStreamy[idx];
-		playRadio(noveRadio.url, null, noveRadio.id);
-	}  
+	// Vykreslí ovládací riadok: <<  I<  NAZOV [power]  >I  >>
+        function aktualizujSsRadioRiadok(jeZapnute, idRadia) {
+            const radioInfoEl = document.getElementById('ss-radio-info');
+            if (!radioInfoEl) return;
+
+            const nazov = idRadia ? dajKratkyNazovRadia(idRadia) : 'ZAPNI';
+            const farbaTextu = jeZapnute ? 'opacity: 1; color: #ff9f0a;' : 'opacity: 0.65; color: #ff9f0a;';
+            const farbaIkony = jeZapnute ? '#eb0028' : '#555';
+
+            radioInfoEl.innerHTML = `
+                <div style="display: inline-flex; align-items: center; gap: 2px;">
+                    <span class="ss-nav-arrow" title="Predchádzajúce z databázy" onclick="event.stopPropagation(); prepniRadioVSetrici(-1, false);"><i class="fa-solid fa-angles-left"></i></span>
+                    <span class="ss-nav-arrow ss-fav-arrow" title="Predchádzajúce z obľúbených" onclick="event.stopPropagation(); prepniRadioVSetrici(-1, true);"><i class="fa-solid fa-backward-step"></i></span>
+                </div>
+                <span class="ss-radio-center" onclick="event.stopPropagation(); stopRadio();" style="${farbaTextu}">
+                    ${nazov} <i class="fa-solid fa-power-off" style="color: ${farbaIkony}; font-size: 0.8em; margin-left: 12px;"></i>
+                </span>
+                <div style="display: inline-flex; align-items: center; gap: 2px;">
+                    <span class="ss-nav-arrow ss-fav-arrow" title="Ďalšie z obľúbených" onclick="event.stopPropagation(); prepniRadioVSetrici(1, true);"><i class="fa-solid fa-forward-step"></i></span>
+                    <span class="ss-nav-arrow" title="Ďalšie z databázy" onclick="event.stopPropagation(); prepniRadioVSetrici(1, false);"><i class="fa-solid fa-angles-right"></i></span>
+                </div>
+            `;
+        }
+
+        // Prepína buď medzi 6 zvolenými obľúbenými stanicami (lenOblubene = true), alebo celou DATABASE
+        function prepniRadioVSetrici(smer, lenOblubene = false) {
+            let zoznamStreamov = [];
+
+            if (lenOblubene) {
+                zoznamStreamov = slotFavoritesMain
+                    .filter(id => id && id !== 'spotify')
+                    .map(id => DATABASE.find(item => item.id === id))
+                    .filter(item => item && item.url);
+            }
+
+            if (zoznamStreamov.length === 0) {
+                zoznamStreamov = DATABASE.filter(item => item.url && item.id !== 'spotify');
+            }
+            if (zoznamStreamov.length === 0) return;
+
+            const aktualneId = (currentPlayingType && currentPlayingType !== "" && currentPlayingType !== "settings")
+                ? currentPlayingType
+                : localStorage.getItem('kiosk_last_radio_type');
+
+            let idx = zoznamStreamov.findIndex(item => item.id === aktualneId);
+            if (idx === -1) {
+                idx = (smer > 0) ? 0 : (zoznamStreamov.length - 1);
+            } else {
+                idx = (idx + smer + zoznamStreamov.length) % zoznamStreamov.length;
+            }
+
+            const noveRadio = zoznamStreamov[idx];
+            playRadio(noveRadio.url, null, noveRadio.id);
+        }
 		
     function playRadio(url, element, type) {
     // 1. OKAMŽITÉ SYNCHRÓNNE OTVORENIE PRE FORCEPOINT (len ak test siete potvrdil firemné proxy)
@@ -1656,8 +1689,11 @@ function prepniDenGrafu(e, dayIndex) {
     }
 
     if (document.getElementById('settings-container')) document.getElementById('settings-container').style.display = 'none';
+    if (document.getElementById('settingsToggleBtn')) document.getElementById('settingsToggleBtn').classList.remove('active');
     if (document.getElementById('time')) document.getElementById('time').style.display = 'flex';
     if (document.querySelector('.radio-info-wrapper')) document.querySelector('.radio-info-wrapper').style.display = 'flex';
+    if (document.getElementById('radio-nameday-line')) document.getElementById('radio-nameday-line').style.display = 'block';
+	if (document.getElementById('ss-radio-info')) document.getElementById('ss-radio-info').style.display = '';
     
     localStorage.setItem('kiosk_last_radio_url', url);
     localStorage.setItem('kiosk_last_radio_type', type);
@@ -1843,6 +1879,7 @@ function showSpotify() {
     if(document.getElementById('time')) document.getElementById('time').style.display = 'flex';
     if(document.querySelector('.radio-info-wrapper')) document.querySelector('.radio-info-wrapper').style.display = 'flex';
     if(document.getElementById('spotify-links-container')) document.getElementById('spotify-links-container').style.display = 'flex';
+	if (document.getElementById('ss-radio-info')) document.getElementById('ss-radio-info').style.display = '';
     
     audio.onerror = null;
     audio.pause(); 
