@@ -2,14 +2,10 @@
 <html lang="sk">
 <head>
     <script>
-	  // Zistenie zvolenej verzie pred vykreslením hlavnej stránky index.html
+	  // Ak mal používateľ zapamätanú inú verziu (v1, v2, v3), prepneme ho späť na Main
 	  var savedVer = localStorage.getItem('dashboard_version');
-	  if (savedVer === 'v3') {
-	    window.location.replace('indexv3.html');
-	  } else if (savedVer === 'v2') {
-	    window.location.replace('indexv2.html');
-	  } else if (savedVer === 'v1') {
-	    window.location.replace('indexv1.html');
+	  if (savedVer && savedVer !== 'main') {
+	    localStorage.setItem('dashboard_version', 'main');
 	  }
 	</script>
     <meta charset="UTF-8">
@@ -28,11 +24,7 @@
     
      <style>
          
-        @keyframes pulse-v2 {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        
 		/* --- TLAČIDLO NASTAVENÍ VPRAVO HORE --- */
         .btn-settings { 
             position: absolute !important;
@@ -737,14 +729,6 @@
 					        </div>
 					    </div>
 					</div>
-			
-			        <div style="display: flex; justify-content: space-between; align-items: center; background: #111; padding: 8px 12px; border-radius: 10px; border: 1px solid #222;">
-			            <span style="font-size: 1.5vw; color: #fff;"><i class="fa-solid fa-code-branch" style="color: #4dabff; margin-right: 8px;"></i> Verzia Kiosku</span>
-			            <div style="display: flex; gap: 6px; align-items: center;">
-			                <button onclick="localStorage.setItem('dashboard_version', 'v2'); window.location.replace('indexv2.html');" style="background: #222; color: #fff; border: 1px solid #444; padding: 4px 10px; border-radius: 6px; font-size: 1.3vw; cursor: pointer;">Verzia 2</button>
-			                <button onclick="localStorage.setItem('dashboard_version', 'v3'); window.location.replace('indexv3.html');" style="background: #222; color: #fff; border: 1px solid #444; padding: 4px 10px; border-radius: 6px; font-size: 1.3vw; cursor: pointer;">Verzia 3</button>
-			            </div>
-			        </div>
 			    </div>
 			
 			    <h2 style="color: #ff9f0a; margin-top: 15px; font-weight: 400; font-size: 1.8vw; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #222; padding-bottom: 6px; margin-bottom: 8px;">Výber 6 rádií do panelu</h2>
@@ -1030,28 +1014,6 @@
         let cfgNocDo = localStorage.getItem('cfg_night_to') || "05:20";
         let cfgSnoozeMin = parseInt(localStorage.getItem('cfg_snooze_min') || "2");
         let cfgFarbaNoci = localStorage.getItem('cfg_night_color') || "#ffff00";
-
-        // Verzia buildu V2 (pri vydaní veľkých zmien zmeňte napr. na '2.1' a banner sa znova zvýrazní)
-		const CURRENT_V2_BUILD = '2.0';
-		
-		function switchToV2() {
-		    // Zapamätáme si, že používateľ túto verziu otvoril/videl
-		    localStorage.setItem('v2_seen_build', CURRENT_V2_BUILD);
-		    localStorage.setItem('dashboard_version', 'v2');
-		    window.location.replace('indexv2.html');
-		}
-		
-		function skontrolujV2Tlacidlo() {
-		    const btn = document.getElementById('v2-btn');
-		    if (!btn) return;
-		
-		    const lastSeenBuild = localStorage.getItem('v2_seen_build');
-		
-		    // Ak používateľ túto verziu už videl/otvoril, prepneme tlačidlo na sivý kruh
-		    if (lastSeenBuild === CURRENT_V2_BUILD) {
-		        btn.classList.add('is-seen');
-		    }
-		}
 
         function inicializujPlochuNastaveni() {
             if(document.getElementById('set-night-from')) document.getElementById('set-night-from').textContent = cfgNocOd;
@@ -2366,8 +2328,6 @@ updateClock();
 
 inicializujPocasie();
 inicializujPlochuNastaveni();
-// Pri načítaní preveríme, či už bola V2 navštívená
-skontrolujV2Tlacidlo();
 		
 		// --- INTELIGENTNÁ NOČNÁ AKTUALIZÁCIA SO ZNOVU-SPUSTENÍM RÁDIA ---
 		
